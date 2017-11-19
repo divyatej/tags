@@ -1,0 +1,11 @@
+{
+  "name": "tags",
+  "description": "creating and validating tags",
+  "version": "1.0.0",
+  "engines": {
+    "node": "8.9.1"
+  },
+  "scripts": {
+  "start": "node config/server.js"
+}
+}
