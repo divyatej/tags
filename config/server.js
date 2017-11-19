@@ -32,6 +32,7 @@ http.createServer( function(req, res) {
 	};
 	var mimeType = validExtensions[ext];
 	localPath += filename;
+	localPath=localPath.replace('\config','');
 	fs.exists(localPath, function(exists) {
 			if(exists) {
 				getFile(localPath, res, mimeType);
