@@ -2,6 +2,8 @@ var countryCodesList='ar,au,at,be,br,ca,cl,cn,fj,fi,fr,pf,de,gl,hk,in,id,ie,it,j
 var businessUnitCodesList='qd,re,ql,rp,pro,dg,sbu,qs,eq,cs,fs,pt,om,aq,gc,rs,mv,gcc,gcp,as,ff,ccr,acc';
 var agencyCodesList='omd,in,15b,ttas';
 var channelCodesList='edm,sem,dis,os,ps,pr,prs,bb,tv,rd,ol,af,cm';
+var languagesList='en,zh_CN,zh_TW,ja,de,fr,es';
+var productsList='flights,cars,hotels,baggage,seats,transfers,activities,insurance,manage-your-trip,qantas-store,epiqure,cash,financial-services,points,online-mall,aquire,golf-club,restaurants,movies,gift-cards-cash,gift-cards-points,assure,frequent-flyer';
 //Not empty and 10 characters
 var regexp=/^[a-z0-9-]{1,10}$/i;
 var regexpnonm=/^[a-z0-9-]{0,10}$/i;
@@ -24,7 +26,7 @@ var getURL=function(url){
     });
 }
 
-var validationAPI={
+var externalTagValidationAPI={
     0:{
         validationMethod:"isValidCountryCode",
         validationError:"Error in country code"
@@ -67,6 +69,60 @@ var validationAPI={
     }
 }
 
+var internalTagValidationAPI={
+    0:{
+        validationMethod:"isValidCountryCode",
+        validationError:"Error in country code"
+    },
+    1:{
+        validationMethod:"isValidPlacementOrCampaignInt",
+        validationError:"Error in page name"
+    },
+    2:{
+        validationMethod:"isValidPlacementOrCampaignInt",
+        validationError:"Error in location"
+    },
+    3:{
+        validationMethod:"isValidPlacementOrCampaignInt",
+        validationError:"Error in campaign name"
+    },
+    4:{
+        validationMethod:"isValidLanguage",
+        validationError:"Error in language"
+    },
+    5:{
+        validationMethod:"isValidProduct",
+        validationError:"Error in product"
+    }
+}
+
+var isValidPlacementOrCampaignInt=function(input){
+    if(regexp.test(input) && input!=='n'){
+        if(isValidLanguage(input) || isValidProduct(input) || isValidCountryCode(input)){
+            return false;
+        }
+        return true;
+    }else{
+        return false;
+    }
+}
+
+var isValidLanguage=function(input){
+    if(languagesList.indexOf(input)!=-1){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+var isValidProduct=function(input){
+    if(productsList.indexOf(input)!=-1){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 var validateTags=function(){
     getURL('/include/validateTags.html').then(function(response){
         document.querySelector('.contentSection').innerHTML=response;
@@ -91,10 +147,21 @@ var validateField=function(){
         try{
             urlObject.url=tag;
             urlObject.error=[];
-            var urlParam=tag.substring(tag.indexOf("alt_cam="),tag.length).replace("alt_cam=","").trim();
-            if(urlParam!="" && urlParam!=null){
-                //au:pro:ttas:edm:ttas:ttas:promo:n:n:n
-                urlParam.split(":").forEach(function(param,index){
+            var validationAPI={};
+            var urlParam="";
+            if(tag.indexOf("alt_cam=")!=-1){
+                validationAPI=externalTagValidationAPI;
+                urlParam=tag.substring(tag.indexOf("alt_cam="),tag.length).replace("alt_cam=","").trim();
+            }else if(tag.indexOf("int_cam=")!=-1){
+                validationAPI=internalTagValidationAPI;
+                urlParam=tag.substring(tag.indexOf("int_cam="),tag.length).replace("int_cam=","").trim();
+            }else{
+                urlObject.error.push("Invalid URL");
+            }
+            
+            if(urlParam!="" && urlParam!=null && Object.keys(validationAPI).length>0){
+                if(urlParam.split(":").length>0){
+                    urlParam.split(":").forEach(function(param,index){
                         var postion=index;
                         if(typeof validationAPI[index].validationMethod=="undefined"){
                             throw "Internal Error";
@@ -103,35 +170,21 @@ var validateField=function(){
                         if(!isValid){
                             urlObject.error.push(validationAPI[index].validationError+"::"+param+" at position::"+(++postion));
                         }
-                });
+                    });
+                }else{
+                    urlObject.error.push("Not a proper campaign tag");
+                }
                 if(urlObject.error.length==0){
                     urlObject.success=true;
                 }
+            }else{
+                urlObject.error.push("Not a proper campaign tag");
             }
         }catch(error){
-            urlObject.error="Internal Error. Please contact team about this."+error;
+            urlObject.error.push("Internal Error. Please contact team about this--"+error);
         }
     errorsArray.push(urlObject);
-    getURL('/include/validationResults.html').then(function(response){
-        document.querySelector('.contentSection').innerHTML=response;
-        if(errorsArray.length>0){
-            errorsArray.forEach(function(error){
-                if(error.success){
-                    var item=
-                    document.querySelector('.list-group').innerHTML+=('<a href="javascript:void(\'0\');" class="list-group-item list-group-item-action list-group-item-success"><p>'+error.url+'</p><p>No errors in this campaign tag</p></a>')
-                }else{
-                    var errors='<p>';
-                    error.error.forEach(function(err){
-                        errors+=err+'<br/>';
-                    })
-                    errors+='</p>';
-                    document.querySelector('.list-group').innerHTML+=('<a href="javascript:void(\'0\');" class="list-group-item list-group-item-action list-group-item-danger"><p>'+error.url+'</p>'+errors+'</a>')
-                }
-            });
-        }
-    },function(error){
-        console.error('Error',error);
-    });
+    displayResults(errorsArray);
     });
     console.log(errorsArray);
 }
@@ -142,6 +195,28 @@ var isValidCountryCode=function(input){
     }else{
         return false;
     }
+}
+
+var displayResults=function(errorsArray){
+    getURL('/include/validationResults.html').then(function(response){
+        document.querySelector('.contentSection').innerHTML=response;
+        if(errorsArray.length>0){
+            errorsArray.forEach(function(error){
+                if(error.success){
+                    document.querySelector('.list-group').innerHTML+=('<a href="javascript:void(\'0\');" class="list-group-item list-group-item-action list-group-item-success"><p>'+error.url+'</p><p>No errors in this campaign tag</p></a>');
+                }else{
+                    var errors='<p>';
+                    error.error.forEach(function(err){
+                        errors+=err+'<br/>';
+                    })
+                    errors+='</p>';
+                    document.querySelector('.list-group').innerHTML+=('<a href="javascript:void(\'0\');" class="list-group-item list-group-item-action list-group-item-danger"><p>'+(error.url!=""?error.url:"No url entered for validation")+'</p>'+errors+'</a>');
+                }
+            });
+        }
+    },function(error){
+        console.error('Error',error);
+    });
 }
 
 var isValidBusinessUnitCode=function(input){
