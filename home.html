@@ -14,11 +14,14 @@
                     <p class="lead text=muted">Create new tags or validate existing tags</p>
                     <p>
                       <a href="javascript:void('0');" class="btn btn-primary createTags">CREATE NEW TAGS</a>
-                      <a href="javascript:void('0');" class="btn btn-primary validateTags">VALIDATE EXISTING TAGS</a>
+                      <a href="javascript:lib.validateTags();" class="btn btn-primary validateTags">VALIDATE EXISTING TAGS</a>
                     </p>
                 </div>
             </section>
         </main>
     </body>
-    <script type="text/javascript" src="/js/scripts.js"></script>
+    <script type="text/javascript" src="/js/bundle.js"></script>
+    <script type="text/javascript">
+        var lib=new Library();
+    </script>
 </html>

@@ -6,6 +6,10 @@
     "node": "8.9.1"
   },
   "scripts": {
-  "start": "node config/server.js"
-}
+    "start": "node config/server.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "browserify": "^14.5.0"
+  }
 }
