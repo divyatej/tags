@@ -1,15 +1,52 @@
 var requests=require('./requests.js');
-let validateTags=function(){
-    requests.getURL('/include/validateTags.html').then(function(response){
+
+let respondToRequest=function(template){
+    requests.getURL(template).then(function(response){
         document.querySelector('.contentSection').innerHTML=response;
     },function(error){
         console.error('Error',error);
     });
 }
 
-let clearField=function(){
-    document.querySelector('#existingTags').value='';
+let validateTags=function(){
+    respondToRequest('/include/validateTags.html');
 }
+
+let createTags=function(){
+    respondToRequest('/include/createTags.html');
+}
+
+let clearField=function(){
+    document.querySelector('#form').reset();
+}
+
+let highlightErrors=function(validationData){
+    let errorFields=validationData.errorFields;
+    validationData.errors.forEach(function(error,index){
+        var errorField=errorFields[index];
+        document.querySelector(errorField).className+=' is-invalid';
+        var divElement=document.createElement('div');
+        divElement.innerHTML=error;
+        divElement.className='invalid-feedback '+errorField.replace('#','');
+        document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
+    });
+    Array.from(document.querySelectorAll('.is-invalid')).forEach(link => {
+        link.addEventListener('change', function(event) {
+            this.className=this.className.replace(' is-invalid','');
+            document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
+        });
+        link.addEventListener('keypress', function(event) {
+            this.className=this.className.replace(' is-invalid','');
+            document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
+        });
+    });
+}
+
+let nextStep=function(){
+    
+}
+
+
 
 let displayResults=function(errorsArray){
     requests.getURL('/include/validationResults.html').then(function(response){
@@ -36,5 +73,8 @@ let displayResults=function(errorsArray){
 module.exports={
     validateTags:validateTags,
     clearField:clearField,
-    displayResults:displayResults
+    displayResults:displayResults,
+    createTags:createTags,
+    nextStep:nextStep,
+    highlightErrors:highlightErrors
 }

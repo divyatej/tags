@@ -157,6 +157,45 @@ let isValidPlcOrConOrSegOrKey=function(input){
     }
 }
 
+let isValidURL=function (input){
+    try{
+        if(/https|http/.test(input)){
+            input='https://'+input;
+        }
+        const url=new URL(input);
+    }catch(error){
+        return false;
+    }
+}
+
+let validateForm=function(){
+    let validationData={errorFields:[],errors:[]};
+    if(!(document.querySelector('#externalCampaign').checked || document.querySelector('#internalCampaign').checked)){
+        validationData.errors.push("Please select a campaign");
+        validationData.errorFields.push("#externalCampaign");
+        validationData.errorFields.push("#internalCampaign");
+        return validationData;
+    }else{
+        if(document.querySelector('#internalCampaign').checked && document.querySelector('#agency').value!=="internal"){
+            validationData.errors.push("Please select internal from dropdown as this is an Internal campaign");
+            validationData.errorFields.push("#agency");
+        }
+        if(document.querySelector('#agency').value=="Select"){
+            validationData.errors.push("Please select from dropdown");
+            validationData.errorFields.push("#agency");
+        }
+        if(!validationmethods.isValidURL(document.querySelector('#link').value)){
+            validationData.errors.push("Please enter proper url");
+            validationData.errorFields.push("#link");
+        }
+        if(!validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
+            validationData.errors.push("Please enter proper campaign name");
+            validationData.errorFields.push("#cname");
+        }
+        return validationData;
+    }
+}
+
 let validateField=function(){
     var tags=document.querySelector('#existingTags').value;
     var errorsArray=[];
@@ -215,10 +254,12 @@ let validationmethods={
     isValidCountryCode:isValidCountryCode,
     isValidPlacementOrCampaignInt:isValidPlacementOrCampaignInt,
     isValidLanguage:isValidLanguage,
-    isValidProduct:isValidProduct
+    isValidProduct:isValidProduct,
+    isValidURL:isValidURL
 }
 
 module.exports={
     validateField:validateField,
-    validationmethods:validationmethods
+    validationmethods:validationmethods,
+    validateForm:validateForm
 }

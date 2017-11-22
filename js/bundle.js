@@ -50,17 +50,54 @@ module.exports={
 
 },{}],3:[function(require,module,exports){
 var requests=require('./requests.js');
-let validateTags=function(){
-    requests.getURL('/include/validateTags.html').then(function(response){
+
+let respondToRequest=function(template){
+    requests.getURL(template).then(function(response){
         document.querySelector('.contentSection').innerHTML=response;
     },function(error){
         console.error('Error',error);
     });
 }
 
-let clearField=function(){
-    document.querySelector('#existingTags').value='';
+let validateTags=function(){
+    respondToRequest('/include/validateTags.html');
 }
+
+let createTags=function(){
+    respondToRequest('/include/createTags.html');
+}
+
+let clearField=function(){
+    document.querySelector('#form').reset();
+}
+
+let highlightErrors=function(validationData){
+    let errorFields=validationData.errorFields;
+    validationData.errors.forEach(function(error,index){
+        var errorField=errorFields[index];
+        document.querySelector(errorField).className+=' is-invalid';
+        var divElement=document.createElement('div');
+        divElement.innerHTML=error;
+        divElement.className='invalid-feedback '+errorField.replace('#','');
+        document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
+    });
+    Array.from(document.querySelectorAll('.is-invalid')).forEach(link => {
+        link.addEventListener('change', function(event) {
+            this.className=this.className.replace(' is-invalid','');
+            document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
+        });
+        link.addEventListener('keypress', function(event) {
+            this.className=this.className.replace(' is-invalid','');
+            document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
+        });
+    });
+}
+
+let nextStep=function(){
+    
+}
+
+
 
 let displayResults=function(errorsArray){
     requests.getURL('/include/validationResults.html').then(function(response){
@@ -87,7 +124,10 @@ let displayResults=function(errorsArray){
 module.exports={
     validateTags:validateTags,
     clearField:clearField,
-    displayResults:displayResults
+    displayResults:displayResults,
+    createTags:createTags,
+    nextStep:nextStep,
+    highlightErrors:highlightErrors
 }
 },{"./requests.js":2}],4:[function(require,module,exports){
 let codesList=require("./abbreviations.js");
@@ -249,6 +289,45 @@ let isValidPlcOrConOrSegOrKey=function(input){
     }
 }
 
+let isValidURL=function (input){
+    try{
+        if(/https|http/.test(input)){
+            input='https://'+input;
+        }
+        const url=new URL(input);
+    }catch(error){
+        return false;
+    }
+}
+
+let validateForm=function(){
+    let validationData={errorFields:[],errors:[]};
+    if(!(document.querySelector('#externalCampaign').checked || document.querySelector('#internalCampaign').checked)){
+        validationData.errors.push("Please select a campaign");
+        validationData.errorFields.push("#externalCampaign");
+        validationData.errorFields.push("#internalCampaign");
+        return validationData;
+    }else{
+        if(document.querySelector('#internalCampaign').checked && document.querySelector('#agency').value!=="internal"){
+            validationData.errors.push("Please select internal from dropdown as this is an Internal campaign");
+            validationData.errorFields.push("#agency");
+        }
+        if(document.querySelector('#agency').value=="Select"){
+            validationData.errors.push("Please select from dropdown");
+            validationData.errorFields.push("#agency");
+        }
+        if(!validationmethods.isValidURL(document.querySelector('#link').value)){
+            validationData.errors.push("Please enter proper url");
+            validationData.errorFields.push("#link");
+        }
+        if(!validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
+            validationData.errors.push("Please enter proper campaign name");
+            validationData.errorFields.push("#cname");
+        }
+        return validationData;
+    }
+}
+
 let validateField=function(){
     var tags=document.querySelector('#existingTags').value;
     var errorsArray=[];
@@ -307,12 +386,14 @@ let validationmethods={
     isValidCountryCode:isValidCountryCode,
     isValidPlacementOrCampaignInt:isValidPlacementOrCampaignInt,
     isValidLanguage:isValidLanguage,
-    isValidProduct:isValidProduct
+    isValidProduct:isValidProduct,
+    isValidURL:isValidURL
 }
 
 module.exports={
     validateField:validateField,
-    validationmethods:validationmethods
+    validationmethods:validationmethods,
+    validateForm:validateForm
 }
 },{"./abbreviations.js":1,"./userInteraction.js":3}],5:[function(require,module,exports){
 let ui=require('./modules/userInteraction.js');
@@ -331,6 +412,20 @@ Library.prototype.clearField=function(){
 
 Library.prototype.validateField=function(){
     validation.validateField();
+}
+
+Library.prototype.createTags=function(){
+    ui.createTags();
+}
+
+Library.prototype.nextStep=function(){
+    let validationData=validation.validateForm();
+    console.log(validationData);
+    if(validationData.errors.length>0 || validationData.errorFields.length>0){
+        ui.highlightErrors(validationData);
+    }else{
+        ui.nextStep();
+    }
 }
 
 module.exports=Library;
