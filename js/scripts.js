@@ -51,4 +51,12 @@ Library.prototype.generateTags=function(){
     }
 }
 
+Library.prototype.removeTag=function(className){
+    ui.removeTag(className);
+}
+
+Library.prototype.editTag=function(className){
+    ui.editTag(className);
+}
+
 module.exports=Library;

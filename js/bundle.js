@@ -52,32 +52,106 @@ module.exports={
 var requests=require('./requests.js');
 
 let respondToRequest=function(template,displayValue,displayNextValue){
-    requests.getURL(template).then(function(response){
+    var values='';
+    var valuesHTML='';
+    if(document.querySelector('.values')!=null){
+        values=document.querySelector('.values').innerText;
+        valuesHTML=document.querySelector('.values').innerHTML+'<br/>';
+    }
+    requests.getURL(template).then(function(response){   
         document.querySelector('.contentSection').innerHTML=response;
+        //This is for adding another channel page
         if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined" && template.indexOf('createTagsChannels')!=-1){
             //<a href="javascript:void('0');"><i class="fa fa-minus-square" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
             document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
+            if(valuesHTML!=''){
+                document.querySelector('.values').innerHTML=valuesHTML;    
+            }
+            var icon=document.createElement('a');
+            icon.innerHTML="<i class=\"fa fa-minus-square "+displayNextValue.split('|').join("")+"\" aria-hidden=\"true\"></i>";
+            icon.href="javascript:lib.removeTag('"+displayNextValue.split('|').join("")+"');";
+            document.querySelector('.values').appendChild(icon);
             var element=document.createElement('a');
-            element.innerHTML="<i class=\"fa fa-minus-square\" aria-hidden=\"true\"></i>&nbsp;"+displayNextValue;
-            element.href="javascript:void(''0);";
+            element.innerHTML=displayNextValue;
+            element.className=displayNextValue.split('|').join("") + " anchorTag";
+            element.href="javascript:lib.editTag('"+displayNextValue.split('|').join("")+"');";
             document.querySelector('.values').appendChild(element);
             document.querySelector('.valuesDiv').className=document.querySelector('.valuesDiv').className.replace('hidden','');
         }
+        //This is for confirmation page
         else if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined"){
             document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
-            document.querySelector('.exisitngInfoNext').innerHTML='<u>'+displayNextValue+'</u>';
+            if(values!=null && values!=''){
+                    values.split('\n').forEach(function(tag){
+                        if(tag!=''){
+                            document.querySelector('.exisitngInfoNext').innerHTML+=('<u>'+tag+'</u><br/>');
+                            let tags=displayValue.replace("External|","").replace("Internal|","");
+                            let url=tags.split('|')[tags.split('|').length-1];
+                            tags=tags.replace('|'+url,'');
+                            tags=tags+'|'+(tag.replace("External|","").replace("Internal|","").trim());
+                            tags=tags.split('|').join(':');
+                            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+'?alt_cam='+(tags.toLowerCase())+'<strong><br/>');
+                        }
+                });
+            }
+            //Add the things that are present in fields when generate button is clicked
+            document.querySelector('.exisitngInfoNext').innerHTML+=('<u>'+displayNextValue+'</u>');
             let tags=displayValue.replace("External|","").replace("Internal|","");
             let url=tags.split('|')[tags.split('|').length-1];
             tags=tags.replace('|'+url,'');
-            tags=tags+'|'+(displayNextValue.replace("External|","").replace("Internal|",""));
-            tags=tags.split('|').join(':')
-            document.querySelector('.finalTags').innerHTML='<strong>'+url+'?alt_cam='+(tags.toLowerCase())+'<strong>';
+            tags=tags+'|'+(displayNextValue.replace("External|","").replace("Internal|","").trim());
+            tags=tags.split('|').join(':');
+            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+'?alt_cam='+(tags.toLowerCase())+'<strong><br/>');
         }
+        //This is for adding channel page
         else if(typeof displayValue!=="undefined"){
             document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
         }
     },function(error){
         console.error('Error',error);
+    });
+}
+
+let removeTag=function(className){
+    document.querySelector(".fa-minus-square."+className).remove();
+    document.querySelector("."+className).remove();
+}
+
+let editTag=function(className){
+    var tagData=document.querySelector("."+className+".anchorTag").innerHTML.replace("External|","").replace("Internal|","").trim();
+    document.querySelector(".fa-minus-square."+className).remove();
+    document.querySelector("."+className).remove();
+    var expanded=false;
+    tagData.split('|').forEach(function(tag,index){
+        switch(index){
+            case 0:document.querySelector('#channel [value="' + tag + '"]').selected = true;break;
+            case 1:document.querySelector('#placement [value="' + tag + '"]').selected = true;break;
+            case 2:
+                if(tag!='n'){
+                    !expanded && expandTags() && (expanded=true);
+                    document.querySelector('#ptype').value = tag;   
+                }
+                break;
+            case 3:
+                if(tag!='n'){
+                    !expanded && expandTags() && (expanded=true);
+                    document.querySelector('#ctype').value = tag;   
+                }
+                break;
+            case 4:
+                if(tag!='n'){
+                    !expanded && expandTags() && (expanded=true);
+                    document.querySelector('#segment').value = tag;   
+                }
+                break;
+            case 5:
+                if(tag!='n'){
+                    !expanded && expandTags() && (expanded=true);
+                    document.querySelector('#keywords').value = tag;
+                }
+                break;
+            default:break;
+        }
     });
 }
 
@@ -175,7 +249,9 @@ module.exports={
     highlightErrors:highlightErrors,
     expandTags:expandTags,
     confirm:confirm,
-    addAnotherChannel:addAnotherChannel
+    addAnotherChannel:addAnotherChannel,
+    removeTag:removeTag,
+    editTag:editTag
 }
 },{"./requests.js":2}],4:[function(require,module,exports){
 let codesList=require("./abbreviations.js");
@@ -555,6 +631,14 @@ Library.prototype.generateTags=function(){
     }else{
         ui.confirm(validationData.topDisplayValue,validationData.displayValue);
     }
+}
+
+Library.prototype.removeTag=function(className){
+    ui.removeTag(className);
+}
+
+Library.prototype.editTag=function(className){
+    ui.editTag(className);
 }
 
 module.exports=Library;
