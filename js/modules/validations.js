@@ -85,7 +85,7 @@ let isValidPlacementOrCampaignInt=function(input){
 }
 
 let isValidLanguage=function(input){
-    if(codesList.getLanguageCodeList().indexOf(input)!=-1){
+    if(codesList.getLanguageCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -93,7 +93,7 @@ let isValidLanguage=function(input){
 }
 
 let isValidProduct=function(input){
-    if(codesList.getProductCodeList().indexOf(input)!=-1){
+    if(codesList.getProductCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -101,7 +101,7 @@ let isValidProduct=function(input){
 }
 
 let isValidCountryCode=function(input){
-    if(codesList.getCountryCodeList().indexOf(input)!=-1){
+    if(codesList.getCountryCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -109,7 +109,7 @@ let isValidCountryCode=function(input){
 }
 
 let isValidBusinessUnitCode=function(input){
-    if(codesList.getBusinessUnitCodeList().indexOf(input)!=-1){
+    if(codesList.getBusinessUnitCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -117,7 +117,7 @@ let isValidBusinessUnitCode=function(input){
 }
 
 let isValidAgencyUnitCode=function(input){
-    if(codesList.getAgencyCodeList().indexOf(input)!=-1){
+    if(codesList.getAgencyCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -125,7 +125,7 @@ let isValidAgencyUnitCode=function(input){
 }
 
 let isValidChannelCode=function(input){
-    if(codesList.getChannelCodeList().indexOf(input)!=-1){
+    if(codesList.getChannelCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -159,17 +159,56 @@ let isValidPlcOrConOrSegOrKey=function(input){
 
 let isValidURL=function (input){
     try{
-        if(/https|http/.test(input)){
+        if(!/https|http/.test(input)){
             input='https://'+input;
         }
         const url=new URL(input);
     }catch(error){
         return false;
     }
+    return true;
+}
+
+let validateChannelsForm=function(){
+    let validationData={errorFields:[],errors:[],displayValue:"",topDisplayValue:""};
+    validationData.topDisplayValue=document.querySelector('.exisitngInfo').innerText;
+    var campaignType=validationData.topDisplayValue.split('|')[0];
+    if(document.querySelector('#channel').value=="Select"){
+        validationData.errors.push("Please select from dropdown");
+        validationData.errorFields.push("#channel");
+    }
+    if(document.querySelector('#placement').value=="Select"){
+        validationData.errors.push("Please select from dropdown");
+        validationData.errorFields.push("#placement");
+    }
+    if(document.querySelector('#ptype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ptype').value)){
+        validationData.errors.push("Please enter proper placement type");
+        validationData.errorFields.push("#ptype");
+    }
+    if(document.querySelector('#ctype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ctype').value)){
+        validationData.errors.push("Please enter proper content type");
+        validationData.errorFields.push("#ctype");
+    }
+    if(document.querySelector('#segment').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#segment').value)){
+        validationData.errors.push("Please enter proper segment");
+        validationData.errorFields.push("#segment");
+    }
+    if(document.querySelector('#keywords').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#keywords').value)){
+        validationData.errors.push("Please enter proper key words");
+        validationData.errorFields.push("#keywords");
+    }
+    validationData.displayValue=campaignType;
+    validationData.displayValue+=('|'+document.querySelector('#channel').value);
+    validationData.displayValue+=('|'+document.querySelector('#placement').value);
+    validationData.displayValue+=('|'+(document.querySelector('#ptype').value!==""?document.querySelector('#ptype').value:'n'));
+    validationData.displayValue+=('|'+(document.querySelector('#ctype').value!==""?document.querySelector('#ctype').value:'n'));
+    validationData.displayValue+=('|'+(document.querySelector('#segment').value!==""?document.querySelector('#segment').value:'n'));
+    validationData.displayValue+=('|'+(document.querySelector('#keywords').value!==""?document.querySelector('#keywords').value:'n'));
+    return validationData;
 }
 
 let validateForm=function(){
-    let validationData={errorFields:[],errors:[]};
+    let validationData={errorFields:[],errors:[],displayValue:""};
     if(!(document.querySelector('#externalCampaign').checked || document.querySelector('#internalCampaign').checked)){
         validationData.errors.push("Please select a campaign");
         validationData.errorFields.push("#externalCampaign");
@@ -180,6 +219,10 @@ let validateForm=function(){
             validationData.errors.push("Please select internal from dropdown as this is an Internal campaign");
             validationData.errorFields.push("#agency");
         }
+        if(document.querySelector('#businessUnit').value=="Select"){
+            validationData.errors.push("Please select from dropdown");
+            validationData.errorFields.push("#businessUnit");
+        }
         if(document.querySelector('#agency').value=="Select"){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#agency");
@@ -188,10 +231,26 @@ let validateForm=function(){
             validationData.errors.push("Please enter proper url");
             validationData.errorFields.push("#link");
         }
-        if(!validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
+        if(document.querySelector('#internalCampaign').checked && !validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#cname').value)){
             validationData.errors.push("Please enter proper campaign name");
             validationData.errorFields.push("#cname");
         }
+        if(document.querySelector('#externalCampaign').checked && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
+            validationData.errors.push("Please enter proper campaign name");
+            validationData.errorFields.push("#cname");
+        }
+        //Build value string
+        if(document.querySelector('#internalCampaign').checked){
+            validationData.displayValue+="Internal";
+        }
+        if(document.querySelector('#externalCampaign').checked){
+            validationData.displayValue+="External";
+        }
+        validationData.displayValue+=("|"+document.querySelector('#country').value);
+        validationData.displayValue+=("|"+document.querySelector('#businessUnit').value);
+        validationData.displayValue+=("|"+document.querySelector('#agency').value);
+        validationData.displayValue+=("|"+document.querySelector('#cname').value);
+        validationData.displayValue+=("|"+document.querySelector('#link').value);
         return validationData;
     }
 }
@@ -261,5 +320,6 @@ let validationmethods={
 module.exports={
     validateField:validateField,
     validationmethods:validationmethods,
-    validateForm:validateForm
+    validateForm:validateForm,
+    validateChannelsForm:validateChannelsForm
 }

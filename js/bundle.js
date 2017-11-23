@@ -51,9 +51,31 @@ module.exports={
 },{}],3:[function(require,module,exports){
 var requests=require('./requests.js');
 
-let respondToRequest=function(template){
+let respondToRequest=function(template,displayValue,displayNextValue){
     requests.getURL(template).then(function(response){
         document.querySelector('.contentSection').innerHTML=response;
+        if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined" && template.indexOf('createTagsChannels')!=-1){
+            //<a href="javascript:void('0');"><i class="fa fa-minus-square" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
+            document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
+            var element=document.createElement('a');
+            element.innerHTML="<i class=\"fa fa-minus-square\" aria-hidden=\"true\"></i>&nbsp;"+displayNextValue;
+            element.href="javascript:void(''0);";
+            document.querySelector('.values').appendChild(element);
+            document.querySelector('.valuesDiv').className=document.querySelector('.valuesDiv').className.replace('hidden','');
+        }
+        else if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined"){
+            document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
+            document.querySelector('.exisitngInfoNext').innerHTML='<u>'+displayNextValue+'</u>';
+            let tags=displayValue.replace("External|","").replace("Internal|","");
+            let url=tags.split('|')[tags.split('|').length-1];
+            tags=tags.replace('|'+url,'');
+            tags=tags+'|'+(displayNextValue.replace("External|","").replace("Internal|",""));
+            tags=tags.split('|').join(':')
+            document.querySelector('.finalTags').innerHTML='<strong>'+url+'?alt_cam='+(tags.toLowerCase())+'<strong>';
+        }
+        else if(typeof displayValue!=="undefined"){
+            document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
+        }
     },function(error){
         console.error('Error',error);
     });
@@ -71,6 +93,21 @@ let clearField=function(){
     document.querySelector('#form').reset();
 }
 
+let expandTags=function(){
+    if(document.querySelector('.fa-angle-down')!=null){
+        Array.from(document.querySelectorAll('.expandField')).forEach(link=>{
+            link.className=link.className.replace('hidden','');
+        });
+        document.querySelector('.fa-angle-down').className=(document.querySelector('.fa-angle-down').className.replace('fa-angle-down','')+'fa-angle-up');
+    }
+    else{
+        Array.from(document.querySelectorAll('.expandField')).forEach(link=>{
+            link.className+=' hidden';
+        });
+        document.querySelector('.fa-angle-up').className=(document.querySelector('.fa-angle-up').className.replace('fa-angle-up','')+'fa-angle-down');
+    }
+}
+
 let highlightErrors=function(validationData){
     let errorFields=validationData.errorFields;
     validationData.errors.forEach(function(error,index){
@@ -79,7 +116,9 @@ let highlightErrors=function(validationData){
         var divElement=document.createElement('div');
         divElement.innerHTML=error;
         divElement.className='invalid-feedback '+errorField.replace('#','');
-        document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
+        if(typeof document.querySelector(errorField).nextSibling.className=="undefined"){
+            document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
+        }
     });
     Array.from(document.querySelectorAll('.is-invalid')).forEach(link => {
         link.addEventListener('change', function(event) {
@@ -93,11 +132,17 @@ let highlightErrors=function(validationData){
     });
 }
 
-let nextStep=function(){
-    
+let nextStep=function(displayValue){
+    respondToRequest('/include/createTagsChannels.html',displayValue);
 }
 
+let confirm=function(topDisplayValue,displayValue){
+    respondToRequest('/include/confirmTags.html',topDisplayValue,displayValue);
+}
 
+let addAnotherChannel=function(topDisplayValue,displayValue){
+    respondToRequest('/include/createTagsChannels.html',topDisplayValue,displayValue);
+}
 
 let displayResults=function(errorsArray){
     requests.getURL('/include/validationResults.html').then(function(response){
@@ -127,7 +172,10 @@ module.exports={
     displayResults:displayResults,
     createTags:createTags,
     nextStep:nextStep,
-    highlightErrors:highlightErrors
+    highlightErrors:highlightErrors,
+    expandTags:expandTags,
+    confirm:confirm,
+    addAnotherChannel:addAnotherChannel
 }
 },{"./requests.js":2}],4:[function(require,module,exports){
 let codesList=require("./abbreviations.js");
@@ -217,7 +265,7 @@ let isValidPlacementOrCampaignInt=function(input){
 }
 
 let isValidLanguage=function(input){
-    if(codesList.getLanguageCodeList().indexOf(input)!=-1){
+    if(codesList.getLanguageCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -225,7 +273,7 @@ let isValidLanguage=function(input){
 }
 
 let isValidProduct=function(input){
-    if(codesList.getProductCodeList().indexOf(input)!=-1){
+    if(codesList.getProductCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -233,7 +281,7 @@ let isValidProduct=function(input){
 }
 
 let isValidCountryCode=function(input){
-    if(codesList.getCountryCodeList().indexOf(input)!=-1){
+    if(codesList.getCountryCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -241,7 +289,7 @@ let isValidCountryCode=function(input){
 }
 
 let isValidBusinessUnitCode=function(input){
-    if(codesList.getBusinessUnitCodeList().indexOf(input)!=-1){
+    if(codesList.getBusinessUnitCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -249,7 +297,7 @@ let isValidBusinessUnitCode=function(input){
 }
 
 let isValidAgencyUnitCode=function(input){
-    if(codesList.getAgencyCodeList().indexOf(input)!=-1){
+    if(codesList.getAgencyCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -257,7 +305,7 @@ let isValidAgencyUnitCode=function(input){
 }
 
 let isValidChannelCode=function(input){
-    if(codesList.getChannelCodeList().indexOf(input)!=-1){
+    if(codesList.getChannelCodeList().split(',').includes(input)){
         return true;
     }else{
         return false;
@@ -291,17 +339,56 @@ let isValidPlcOrConOrSegOrKey=function(input){
 
 let isValidURL=function (input){
     try{
-        if(/https|http/.test(input)){
+        if(!/https|http/.test(input)){
             input='https://'+input;
         }
         const url=new URL(input);
     }catch(error){
         return false;
     }
+    return true;
+}
+
+let validateChannelsForm=function(){
+    let validationData={errorFields:[],errors:[],displayValue:"",topDisplayValue:""};
+    validationData.topDisplayValue=document.querySelector('.exisitngInfo').innerText;
+    var campaignType=validationData.topDisplayValue.split('|')[0];
+    if(document.querySelector('#channel').value=="Select"){
+        validationData.errors.push("Please select from dropdown");
+        validationData.errorFields.push("#channel");
+    }
+    if(document.querySelector('#placement').value=="Select"){
+        validationData.errors.push("Please select from dropdown");
+        validationData.errorFields.push("#placement");
+    }
+    if(document.querySelector('#ptype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ptype').value)){
+        validationData.errors.push("Please enter proper placement type");
+        validationData.errorFields.push("#ptype");
+    }
+    if(document.querySelector('#ctype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ctype').value)){
+        validationData.errors.push("Please enter proper content type");
+        validationData.errorFields.push("#ctype");
+    }
+    if(document.querySelector('#segment').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#segment').value)){
+        validationData.errors.push("Please enter proper segment");
+        validationData.errorFields.push("#segment");
+    }
+    if(document.querySelector('#keywords').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#keywords').value)){
+        validationData.errors.push("Please enter proper key words");
+        validationData.errorFields.push("#keywords");
+    }
+    validationData.displayValue=campaignType;
+    validationData.displayValue+=('|'+document.querySelector('#channel').value);
+    validationData.displayValue+=('|'+document.querySelector('#placement').value);
+    validationData.displayValue+=('|'+(document.querySelector('#ptype').value!==""?document.querySelector('#ptype').value:'n'));
+    validationData.displayValue+=('|'+(document.querySelector('#ctype').value!==""?document.querySelector('#ctype').value:'n'));
+    validationData.displayValue+=('|'+(document.querySelector('#segment').value!==""?document.querySelector('#segment').value:'n'));
+    validationData.displayValue+=('|'+(document.querySelector('#keywords').value!==""?document.querySelector('#keywords').value:'n'));
+    return validationData;
 }
 
 let validateForm=function(){
-    let validationData={errorFields:[],errors:[]};
+    let validationData={errorFields:[],errors:[],displayValue:""};
     if(!(document.querySelector('#externalCampaign').checked || document.querySelector('#internalCampaign').checked)){
         validationData.errors.push("Please select a campaign");
         validationData.errorFields.push("#externalCampaign");
@@ -312,6 +399,10 @@ let validateForm=function(){
             validationData.errors.push("Please select internal from dropdown as this is an Internal campaign");
             validationData.errorFields.push("#agency");
         }
+        if(document.querySelector('#businessUnit').value=="Select"){
+            validationData.errors.push("Please select from dropdown");
+            validationData.errorFields.push("#businessUnit");
+        }
         if(document.querySelector('#agency').value=="Select"){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#agency");
@@ -320,10 +411,26 @@ let validateForm=function(){
             validationData.errors.push("Please enter proper url");
             validationData.errorFields.push("#link");
         }
-        if(!validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
+        if(document.querySelector('#internalCampaign').checked && !validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#cname').value)){
             validationData.errors.push("Please enter proper campaign name");
             validationData.errorFields.push("#cname");
         }
+        if(document.querySelector('#externalCampaign').checked && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
+            validationData.errors.push("Please enter proper campaign name");
+            validationData.errorFields.push("#cname");
+        }
+        //Build value string
+        if(document.querySelector('#internalCampaign').checked){
+            validationData.displayValue+="Internal";
+        }
+        if(document.querySelector('#externalCampaign').checked){
+            validationData.displayValue+="External";
+        }
+        validationData.displayValue+=("|"+document.querySelector('#country').value);
+        validationData.displayValue+=("|"+document.querySelector('#businessUnit').value);
+        validationData.displayValue+=("|"+document.querySelector('#agency').value);
+        validationData.displayValue+=("|"+document.querySelector('#cname').value);
+        validationData.displayValue+=("|"+document.querySelector('#link').value);
         return validationData;
     }
 }
@@ -393,7 +500,8 @@ let validationmethods={
 module.exports={
     validateField:validateField,
     validationmethods:validationmethods,
-    validateForm:validateForm
+    validateForm:validateForm,
+    validateChannelsForm:validateChannelsForm
 }
 },{"./abbreviations.js":1,"./userInteraction.js":3}],5:[function(require,module,exports){
 let ui=require('./modules/userInteraction.js');
@@ -420,11 +528,32 @@ Library.prototype.createTags=function(){
 
 Library.prototype.nextStep=function(){
     let validationData=validation.validateForm();
-    console.log(validationData);
     if(validationData.errors.length>0 || validationData.errorFields.length>0){
         ui.highlightErrors(validationData);
     }else{
-        ui.nextStep();
+        ui.nextStep(validationData.displayValue);
+    }
+}
+
+Library.prototype.expandTags=function(){
+    ui.expandTags();
+}
+
+Library.prototype.addAnotherChannel=function(){
+    let validationData=validation.validateChannelsForm();
+    if(validationData.errors.length>0 || validationData.errorFields.length>0){
+        ui.highlightErrors(validationData);
+    }else{
+        ui.addAnotherChannel(validationData.topDisplayValue,validationData.displayValue);
+    }
+}
+
+Library.prototype.generateTags=function(){
+    let validationData=validation.validateChannelsForm();
+    if(validationData.errors.length>0 || validationData.errorFields.length>0){
+        ui.highlightErrors(validationData);
+    }else{
+        ui.confirm(validationData.topDisplayValue,validationData.displayValue);
     }
 }
 

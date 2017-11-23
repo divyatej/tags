@@ -1,0 +1,13 @@
+.hidden{
+    display: none;
+}
+.fa-plus-square{
+    color:green
+}
+.customAnchor{
+    float: right;
+    margin-top: 10px;
+}
+.fa-minus-square{
+    color: red;
+}

@@ -22,11 +22,32 @@ Library.prototype.createTags=function(){
 
 Library.prototype.nextStep=function(){
     let validationData=validation.validateForm();
-    console.log(validationData);
     if(validationData.errors.length>0 || validationData.errorFields.length>0){
         ui.highlightErrors(validationData);
     }else{
-        ui.nextStep();
+        ui.nextStep(validationData.displayValue);
+    }
+}
+
+Library.prototype.expandTags=function(){
+    ui.expandTags();
+}
+
+Library.prototype.addAnotherChannel=function(){
+    let validationData=validation.validateChannelsForm();
+    if(validationData.errors.length>0 || validationData.errorFields.length>0){
+        ui.highlightErrors(validationData);
+    }else{
+        ui.addAnotherChannel(validationData.topDisplayValue,validationData.displayValue);
+    }
+}
+
+Library.prototype.generateTags=function(){
+    let validationData=validation.validateChannelsForm();
+    if(validationData.errors.length>0 || validationData.errorFields.length>0){
+        ui.highlightErrors(validationData);
+    }else{
+        ui.confirm(validationData.topDisplayValue,validationData.displayValue);
     }
 }
 

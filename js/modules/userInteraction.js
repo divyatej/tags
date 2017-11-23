@@ -1,8 +1,30 @@
 var requests=require('./requests.js');
 
-let respondToRequest=function(template){
+let respondToRequest=function(template,displayValue,displayNextValue){
     requests.getURL(template).then(function(response){
         document.querySelector('.contentSection').innerHTML=response;
+        if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined" && template.indexOf('createTagsChannels')!=-1){
+            //<a href="javascript:void('0');"><i class="fa fa-minus-square" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
+            document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
+            var element=document.createElement('a');
+            element.innerHTML="<i class=\"fa fa-minus-square\" aria-hidden=\"true\"></i>&nbsp;"+displayNextValue;
+            element.href="javascript:void(''0);";
+            document.querySelector('.values').appendChild(element);
+            document.querySelector('.valuesDiv').className=document.querySelector('.valuesDiv').className.replace('hidden','');
+        }
+        else if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined"){
+            document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
+            document.querySelector('.exisitngInfoNext').innerHTML='<u>'+displayNextValue+'</u>';
+            let tags=displayValue.replace("External|","").replace("Internal|","");
+            let url=tags.split('|')[tags.split('|').length-1];
+            tags=tags.replace('|'+url,'');
+            tags=tags+'|'+(displayNextValue.replace("External|","").replace("Internal|",""));
+            tags=tags.split('|').join(':')
+            document.querySelector('.finalTags').innerHTML='<strong>'+url+'?alt_cam='+(tags.toLowerCase())+'<strong>';
+        }
+        else if(typeof displayValue!=="undefined"){
+            document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
+        }
     },function(error){
         console.error('Error',error);
     });
@@ -20,6 +42,21 @@ let clearField=function(){
     document.querySelector('#form').reset();
 }
 
+let expandTags=function(){
+    if(document.querySelector('.fa-angle-down')!=null){
+        Array.from(document.querySelectorAll('.expandField')).forEach(link=>{
+            link.className=link.className.replace('hidden','');
+        });
+        document.querySelector('.fa-angle-down').className=(document.querySelector('.fa-angle-down').className.replace('fa-angle-down','')+'fa-angle-up');
+    }
+    else{
+        Array.from(document.querySelectorAll('.expandField')).forEach(link=>{
+            link.className+=' hidden';
+        });
+        document.querySelector('.fa-angle-up').className=(document.querySelector('.fa-angle-up').className.replace('fa-angle-up','')+'fa-angle-down');
+    }
+}
+
 let highlightErrors=function(validationData){
     let errorFields=validationData.errorFields;
     validationData.errors.forEach(function(error,index){
@@ -28,7 +65,9 @@ let highlightErrors=function(validationData){
         var divElement=document.createElement('div');
         divElement.innerHTML=error;
         divElement.className='invalid-feedback '+errorField.replace('#','');
-        document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
+        if(typeof document.querySelector(errorField).nextSibling.className=="undefined"){
+            document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
+        }
     });
     Array.from(document.querySelectorAll('.is-invalid')).forEach(link => {
         link.addEventListener('change', function(event) {
@@ -42,11 +81,17 @@ let highlightErrors=function(validationData){
     });
 }
 
-let nextStep=function(){
-    
+let nextStep=function(displayValue){
+    respondToRequest('/include/createTagsChannels.html',displayValue);
 }
 
+let confirm=function(topDisplayValue,displayValue){
+    respondToRequest('/include/confirmTags.html',topDisplayValue,displayValue);
+}
 
+let addAnotherChannel=function(topDisplayValue,displayValue){
+    respondToRequest('/include/createTagsChannels.html',topDisplayValue,displayValue);
+}
 
 let displayResults=function(errorsArray){
     requests.getURL('/include/validationResults.html').then(function(response){
@@ -76,5 +121,8 @@ module.exports={
     displayResults:displayResults,
     createTags:createTags,
     nextStep:nextStep,
-    highlightErrors:highlightErrors
+    highlightErrors:highlightErrors,
+    expandTags:expandTags,
+    confirm:confirm,
+    addAnotherChannel:addAnotherChannel
 }
