@@ -77,25 +77,29 @@ let editTag=function(className){
             case 1:document.querySelector('#placement [value="' + tag + '"]').selected = true;break;
             case 2:
                 if(tag!='n'){
-                    !expanded && expandTags() && (expanded=true);
+                    !expanded && expandTags();
+                    expanded=true;
                     document.querySelector('#ptype').value = tag;   
                 }
                 break;
             case 3:
                 if(tag!='n'){
-                    !expanded && expandTags() && (expanded=true);
+                    !expanded && expandTags();
+                    expanded=true;
                     document.querySelector('#ctype').value = tag;   
                 }
                 break;
             case 4:
                 if(tag!='n'){
-                    !expanded && expandTags() && (expanded=true);
+                    !expanded && expandTags();
+                    expanded=true;
                     document.querySelector('#segment').value = tag;   
                 }
                 break;
             case 5:
                 if(tag!='n'){
-                    !expanded && expandTags() && (expanded=true);
+                    !expanded && expandTags();
+                    expanded=true;
                     document.querySelector('#keywords').value = tag;
                 }
                 break;
