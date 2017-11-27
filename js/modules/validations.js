@@ -57,7 +57,7 @@ let internalTagValidationAPI={
     },
     2:{
         validationMethod:"isValidPlacementOrCampaignInt",
-        validationError:"Error in location"
+        validationError:"Error in placement"
     },
     3:{
         validationMethod:"isValidPlacementOrCampaignInt",
@@ -173,37 +173,59 @@ let validateChannelsForm=function(){
     let validationData={errorFields:[],errors:[],displayValue:"",topDisplayValue:""};
     validationData.topDisplayValue=document.querySelector('.exisitngInfo').innerText;
     var campaignType=validationData.topDisplayValue.split('|')[0];
-    if(document.querySelector('#channel').value=="Select"){
-        validationData.errors.push("Please select from dropdown");
-        validationData.errorFields.push("#channel");
+    if(campaignType=="External"){
+        if(document.querySelector('#channel').value=="Select"){
+            validationData.errors.push("Please select from dropdown");
+            validationData.errorFields.push("#channel");
+        }
+        if(document.querySelector('#placement').value=="Select"){
+            validationData.errors.push("Please select from dropdown");
+            validationData.errorFields.push("#placement");
+        }
+        if(document.querySelector('#ptype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ptype').value)){
+            validationData.errors.push("Please enter proper placement type");
+            validationData.errorFields.push("#ptype");
+        }
+        if(document.querySelector('#ctype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ctype').value)){
+            validationData.errors.push("Please enter proper content type");
+            validationData.errorFields.push("#ctype");
+        }
+        if(document.querySelector('#segment').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#segment').value)){
+            validationData.errors.push("Please enter proper segment");
+            validationData.errorFields.push("#segment");
+        }
+        if(document.querySelector('#keywords').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#keywords').value)){
+            validationData.errors.push("Please enter proper key words");
+            validationData.errorFields.push("#keywords");
+        }
     }
-    if(document.querySelector('#placement').value=="Select"){
-        validationData.errors.push("Please select from dropdown");
-        validationData.errorFields.push("#placement");
-    }
-    if(document.querySelector('#ptype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ptype').value)){
-        validationData.errors.push("Please enter proper placement type");
-        validationData.errorFields.push("#ptype");
-    }
-    if(document.querySelector('#ctype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ctype').value)){
-        validationData.errors.push("Please enter proper content type");
-        validationData.errorFields.push("#ctype");
-    }
-    if(document.querySelector('#segment').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#segment').value)){
-        validationData.errors.push("Please enter proper segment");
-        validationData.errorFields.push("#segment");
-    }
-    if(document.querySelector('#keywords').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#keywords').value)){
-        validationData.errors.push("Please enter proper key words");
-        validationData.errorFields.push("#keywords");
+    else{
+        if(document.querySelector('#product').value=="Select"){
+            validationData.errors.push("Please select from dropdown");
+            validationData.errorFields.push("#product");
+        }
+        if(!validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#page').value)){
+            validationData.errors.push("Please enter proper page");
+            validationData.errorFields.push("#page");
+        }
+        if(!validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#plcment').value)){
+            validationData.errors.push("Please enter proper placement");
+            validationData.errorFields.push("#plcment");
+        }
     }
     validationData.displayValue=campaignType;
-    validationData.displayValue+=('|'+document.querySelector('#channel').value);
-    validationData.displayValue+=('|'+document.querySelector('#placement').value);
-    validationData.displayValue+=('|'+(document.querySelector('#ptype').value!==""?document.querySelector('#ptype').value:'n'));
-    validationData.displayValue+=('|'+(document.querySelector('#ctype').value!==""?document.querySelector('#ctype').value:'n'));
-    validationData.displayValue+=('|'+(document.querySelector('#segment').value!==""?document.querySelector('#segment').value:'n'));
-    validationData.displayValue+=('|'+(document.querySelector('#keywords').value!==""?document.querySelector('#keywords').value:'n'));
+    if(campaignType=="External"){
+        validationData.displayValue+=('|'+document.querySelector('#channel').value);
+        validationData.displayValue+=('|'+document.querySelector('#placement').value);
+        validationData.displayValue+=('|'+(document.querySelector('#ptype').value!==""?document.querySelector('#ptype').value:'n'));
+        validationData.displayValue+=('|'+(document.querySelector('#ctype').value!==""?document.querySelector('#ctype').value:'n'));
+        validationData.displayValue+=('|'+(document.querySelector('#segment').value!==""?document.querySelector('#segment').value:'n'));
+        validationData.displayValue+=('|'+(document.querySelector('#keywords').value!==""?document.querySelector('#keywords').value:'n'));
+    }else{
+        validationData.displayValue+=('|'+document.querySelector('#product').value);
+        validationData.displayValue+=('|'+(document.querySelector('#page').value!==""?document.querySelector('#page').value:'n'));
+        validationData.displayValue+=('|'+(document.querySelector('#plcment').value!==""?document.querySelector('#plcment').value:'n'));
+    }
     return validationData;
 }
 
@@ -215,15 +237,17 @@ let validateForm=function(){
         validationData.errorFields.push("#internalCampaign");
         return validationData;
     }else{
-        if(document.querySelector('#internalCampaign').checked && document.querySelector('#agency').value!=="internal"){
-            validationData.errors.push("Please select internal from dropdown as this is an Internal campaign");
-            validationData.errorFields.push("#agency");
+        var isInternalCampaign=document.querySelector('#internalCampaign').checked;
+        var isExternalCampaign=document.querySelector('#externalCampaign').checked;
+        if(isInternalCampaign && document.querySelector('#language').value=="Select"){
+            validationData.errors.push("Please select language from dropdown");
+            validationData.errorFields.push("#language");
         }
-        if(document.querySelector('#businessUnit').value=="Select"){
+        if(isExternalCampaign && document.querySelector('#businessUnit').value=="Select"){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#businessUnit");
         }
-        if(document.querySelector('#agency').value=="Select"){
+        if(isExternalCampaign && document.querySelector('#agency').value=="Select"){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#agency");
         }
@@ -231,11 +255,11 @@ let validateForm=function(){
             validationData.errors.push("Please enter proper url");
             validationData.errorFields.push("#link");
         }
-        if(document.querySelector('#internalCampaign').checked && !validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#cname').value)){
+        if(isInternalCampaign && !validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#cname').value)){
             validationData.errors.push("Please enter proper campaign name");
             validationData.errorFields.push("#cname");
         }
-        if(document.querySelector('#externalCampaign').checked && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
+        if(isExternalCampaign && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
             validationData.errors.push("Please enter proper campaign name");
             validationData.errorFields.push("#cname");
         }
@@ -247,8 +271,12 @@ let validateForm=function(){
             validationData.displayValue+="External";
         }
         validationData.displayValue+=("|"+document.querySelector('#country').value);
-        validationData.displayValue+=("|"+document.querySelector('#businessUnit').value);
-        validationData.displayValue+=("|"+document.querySelector('#agency').value);
+        if(!isInternalCampaign){
+            validationData.displayValue+=("|"+document.querySelector('#businessUnit').value);
+            validationData.displayValue+=("|"+document.querySelector('#agency').value);
+        }else{
+            validationData.displayValue+=("|"+document.querySelector('#language').value);
+        }
         validationData.displayValue+=("|"+document.querySelector('#cname').value);
         validationData.displayValue+=("|"+document.querySelector('#link').value);
         return validationData;

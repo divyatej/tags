@@ -5,14 +5,14 @@ let respondToRequest=function(template,displayValue,displayNextValue){
     var valuesHTML='';
     if(document.querySelector('.values')!=null){
         values=document.querySelector('.values').innerText;
-        valuesHTML=document.querySelector('.values').innerHTML+'<br/>';
+        valuesHTML=document.querySelector('.values').innerHTML;
     }
     requests.getURL(template).then(function(response){   
         document.querySelector('.contentSection').innerHTML=response;
         //This is for adding another channel page
-        if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined" && template.indexOf('createTagsChannels')!=-1){
+        if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined" && (template.indexOf('createTagsChannels')!=-1 || template.indexOf('createInternalTagsChannels')!=-1)){
             //<a href="javascript:void('0');"><i class="fa fa-minus-square" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
-            document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
+            document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
             if(valuesHTML!=''){
                 document.querySelector('.values').innerHTML=valuesHTML;    
             }
@@ -25,7 +25,60 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             element.className=displayNextValue.split('|').join("") + " anchorTag";
             element.href="javascript:lib.editTag('"+displayNextValue.split('|').join("")+"');";
             document.querySelector('.values').appendChild(element);
+            var breakElement=document.createElement('br');
+            breakElement.className=displayNextValue.split('|').join("");
+            document.querySelector('.values').appendChild(breakElement);
             document.querySelector('.valuesDiv').className=document.querySelector('.valuesDiv').className.replace('hidden','');
+        }
+        //Edit the channel page
+        else if(typeof displayValue!="undefined" && typeof displayNextValue!=="undefined" && displayNextValue=="editStep"){
+            addEventListenersOnCheckBoxes();
+            var isInternalCampaign=false;
+            if(displayValue.indexOf("External|")!=-1){
+                document.querySelector('#externalCampaign').click();
+            }else{
+                document.querySelector('#internalCampaign').click();
+                isInternalCampaign=true;
+            }
+            displayValue=displayValue.replace("External|","").replace("Internal|","").trim();
+            displayValue.split('|').forEach(function(tag,index){
+                switch(index){
+                    case 0:document.querySelector('#country [value="' + tag + '"]').selected = true;break;
+                    case 1:
+                        if(!isInternalCampaign){
+                            document.querySelector('#businessUnit [value="' + tag + '"]').selected = true;
+                        }else{
+                            document.querySelector('#language [value="' + tag + '"]').selected = true;
+                        }
+                        break;
+                    case 2:
+                        if(!isInternalCampaign){
+                            document.querySelector('#agency [value="' + tag + '"]').selected = true;
+                        }else{
+                            if(tag!='n'){
+                                document.querySelector('#cname').value = tag;   
+                            }
+                        }
+                        break;
+                    case 3:
+                        if(!isInternalCampaign){
+                            if(tag!='n'){
+                                document.querySelector('#cname').value = tag;   
+                            }
+                        }else{
+                            if(tag!='n'){
+                                document.querySelector('#link').value = tag;   
+                            }
+                        }
+                        break;
+                    case 4:
+                        if(tag!='n'){
+                            document.querySelector('#link').value = tag;   
+                        }
+                        break;
+                    default:break;
+                }
+            });
         }
         //This is for confirmation page
         else if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined"){
@@ -37,9 +90,12 @@ let respondToRequest=function(template,displayValue,displayNextValue){
                             let tags=displayValue.replace("External|","").replace("Internal|","");
                             let url=tags.split('|')[tags.split('|').length-1];
                             tags=tags.replace('|'+url,'');
-                            tags=tags+'|'+(tag.replace("External|","").replace("Internal|","").trim());
-                            tags=tags.split('|').join(':');
-                            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+'?alt_cam='+(tags.toLowerCase())+'<strong><br/>');
+                            let isExternalCampaign=false;
+                            if(displayNextValue.indexOf('External')!=-1){
+                                isExternalCampaign=true;
+                            }
+                            tags=getTagsText(tags,tag,isExternalCampaign);
+                            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
                         }
                 });
             }
@@ -48,40 +104,112 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             let tags=displayValue.replace("External|","").replace("Internal|","");
             let url=tags.split('|')[tags.split('|').length-1];
             tags=tags.replace('|'+url,'');
-            tags=tags+'|'+(displayNextValue.replace("External|","").replace("Internal|","").trim());
-            tags=tags.split('|').join(':');
-            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+'?alt_cam='+(tags.toLowerCase())+'<strong><br/>');
+            let isExternalCampaign=false;
+            if(displayNextValue.indexOf('External')!=-1){
+                isExternalCampaign=true;
+            }
+            tags=getTagsText(tags,displayNextValue,isExternalCampaign);
+            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
         }
         //This is for adding channel page
         else if(typeof displayValue!=="undefined"){
-            document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
+            document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
+        }
+        //This is for adding event listeners to campaign checkboxes on first create page
+        else if(template=="/include/createTags.html"){
+            addEventListenersOnCheckBoxes();
         }
     },function(error){
         console.error('Error',error);
     });
 }
 
+let getTagsText=function(tags,displayNextValue,isExternalCampaign){
+    if(isExternalCampaign){
+        tags=tags+'|'+(displayNextValue.replace("External|","").replace("Internal|","").trim());
+        tags=tags.split('|').join(':');
+    }
+    else{
+        let tagSplits=tags.split('|');
+        let displaySplits=displayNextValue.replace("External|","").replace("Internal|","").trim().split('|');
+        let country=tagSplits[0];
+        let page=displaySplits[1];
+        let placement=displaySplits[2];
+        let campaignName=tagSplits[2];
+        let language=tagSplits[1];
+        let product=displaySplits[0];
+        tags=country+":"+page+":"+placement+":"+campaignName+":"+language+":"+product;
+    }
+    return tags;
+}
+
+let addEventListenersOnCheckBoxes=function(){
+    document.querySelector('#internalCampaign').addEventListener('click',function(){
+        displayCampaignForm('.internal','.external');
+    });
+    
+    document.querySelector('#externalCampaign').addEventListener('click',function(){
+        displayCampaignForm('.external','.internal');
+    });
+}
+
+let displayCampaignForm=function(campaignType,hideCampaign){
+    document.querySelectorAll(campaignType).forEach(function(link){
+        link.className=link.className.replace(' hidden',''); 
+    });
+    document.querySelectorAll(hideCampaign).forEach(function(link){
+        link.className+=' hidden';
+    });
+}
+
 let removeTag=function(className){
-    document.querySelector(".fa-minus-square."+className).remove();
-    document.querySelector("."+className).remove();
+    document.querySelector(".fa-minus-square."+className).parentNode.remove();
+    document.querySelector("a."+className).remove();
+    document.querySelector("br."+className).remove();
+}
+
+let editFirstPageTags=function(){
+    var existingTags=document.querySelector('.exisitngInfo >a').innerText;
+    respondToRequest('/include/createTags.html',existingTags,"editStep");
 }
 
 let editTag=function(className){
-    var tagData=document.querySelector("."+className+".anchorTag").innerHTML.replace("External|","").replace("Internal|","").trim();
+    let tagData=document.querySelector("."+className+".anchorTag").innerHTML;
+    let isExternalCampaign=false;
+    if(tagData.indexOf('External')!=-1){
+        isExternalCampaign=true;
+    }
+    tagData=tagData.replace("External|","").replace("Internal|","").trim();
     document.querySelector(".fa-minus-square."+className).remove();
     document.querySelector("."+className).remove();
-    var expanded=false;
+    let expanded=false;
     tagData.split('|').forEach(function(tag,index){
         switch(index){
-            case 0:document.querySelector('#channel [value="' + tag + '"]').selected = true;break;
-            case 1:document.querySelector('#placement [value="' + tag + '"]').selected = true;break;
+            case 0:
+            if(isExternalCampaign){
+                document.querySelector('#channel [value="' + tag + '"]').selected = true;
+            }else{
+                document.querySelector('#product [value="' + tag + '"]').selected = true;
+            }
+            break;
+            case 1:
+            if(isExternalCampaign){
+                document.querySelector('#placement [value="' + tag + '"]').selected = true;
+            }else{
+                document.querySelector('#page').value = tag;   
+            }
+            break;
             case 2:
+            if(isExternalCampaign){
                 if(tag!='n'){
                     !expanded && expandTags();
                     expanded=true;
                     document.querySelector('#ptype').value = tag;   
                 }
-                break;
+            }else{
+                document.querySelector('#plcment').value = tag;   
+            } 
+            break;
             case 3:
                 if(tag!='n'){
                     !expanded && expandTags();
@@ -160,7 +288,11 @@ let highlightErrors=function(validationData){
 }
 
 let nextStep=function(displayValue){
-    respondToRequest('/include/createTagsChannels.html',displayValue);
+    if(displayValue.indexOf('External')!=-1){
+        respondToRequest('/include/createTagsChannels.html',displayValue);
+    }else{
+        respondToRequest('/include/createInternalTagsChannels.html',displayValue);
+    }
 }
 
 let confirm=function(topDisplayValue,displayValue){
@@ -168,7 +300,11 @@ let confirm=function(topDisplayValue,displayValue){
 }
 
 let addAnotherChannel=function(topDisplayValue,displayValue){
-    respondToRequest('/include/createTagsChannels.html',topDisplayValue,displayValue);
+    if(topDisplayValue.indexOf('External')!=-1){
+        respondToRequest('/include/createTagsChannels.html',topDisplayValue,displayValue);
+    }else{
+        respondToRequest('/include/createInternalTagsChannels.html',topDisplayValue,displayValue);
+    }
 }
 
 let displayResults=function(errorsArray){
@@ -204,5 +340,7 @@ module.exports={
     confirm:confirm,
     addAnotherChannel:addAnotherChannel,
     removeTag:removeTag,
-    editTag:editTag
+    editTag:editTag,
+    editFirstPageTags:editFirstPageTags,
+    displayCampaignForm:displayCampaignForm
 }

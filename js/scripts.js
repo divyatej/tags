@@ -59,4 +59,8 @@ Library.prototype.editTag=function(className){
     ui.editTag(className);
 }
 
+Library.prototype.editFirstPageTags=function(){
+    ui.editFirstPageTags();
+}
+
 module.exports=Library;
