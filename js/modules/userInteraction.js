@@ -40,57 +40,12 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         }
         //Edit the channel page
         else if(typeof displayValue!="undefined" && typeof displayNextValue!=="undefined" && displayNextValue=="editStep"){
-            addEventListenersOnCheckBoxes();
-            addEventListenerOnPlcmentSelectBox();
-            var isInternalCampaign=false;
-            if(displayValue.indexOf("External|")!=-1){
-                document.querySelector('#externalCampaign').click();
-            }else{
-                document.querySelector('#internalCampaign').click();
-                isInternalCampaign=true;
-            }
-            displayValue=displayValue.replace("External|","").replace("Internal|","").trim();
-            displayValue.split('|').forEach(function(tag,index){
-                switch(index){
-                    case 0:document.querySelector('#country [value="' + tag + '"]').selected = true;break;
-                    case 1:
-                        if(!isInternalCampaign){
-                            document.querySelector('#businessUnit [value="' + tag + '"]').selected = true;
-                        }else{
-                            document.querySelector('#language [value="' + tag + '"]').selected = true;
-                        }
-                        break;
-                    case 2:
-                        if(!isInternalCampaign){
-                            document.querySelector('#agency [value="' + tag + '"]').selected = true;
-                        }else{
-                            if(tag!='n'){
-                                document.querySelector('#cname').value = tag;   
-                            }
-                        }
-                        break;
-                    case 3:
-                        if(!isInternalCampaign){
-                            if(tag!='n'){
-                                document.querySelector('#cname').value = tag;   
-                            }
-                        }else{
-                            if(tag!='n'){
-                                document.querySelector('#link').value = tag;   
-                            }
-                        }
-                        break;
-                    case 4:
-                        if(tag!='n'){
-                            document.querySelector('#link').value = tag;   
-                        }
-                        break;
-                    default:break;
-                }
-            });
+            editFirstPageTagsData(displayValue);
         }
         //This is for confirmation page
         else if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined"){
+            localStorage.setItem('valuesHTML',valuesHTML);
+            localStorage.setItem('exisitngInfo',displayValue);
             document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
             if(values!=null && values!=''){
                     values.split('\n').forEach(function(tag){
@@ -110,6 +65,7 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             }
             //Add the things that are present in fields when generate button is clicked
             document.querySelector('.exisitngInfoNext').innerHTML+=('<u>'+displayNextValue+'</u>');
+            localStorage.setItem('exisitngInfoNext',document.querySelector('.exisitngInfoNext').innerHTML);
             let tags=displayValue.replace("External|","").replace("Internal|","");
             let url=tags.split('|')[tags.split('|').length-1];
             tags=tags.replace('|'+url,'');
@@ -121,6 +77,7 @@ let respondToRequest=function(template,displayValue,displayNextValue){
                 tags=getTagsText(tags,displayNextValue,isExternalCampaign);
                 document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
             }
+            localStorage.setItem('finalTags',document.querySelector('.finalTags').innerHTML);
         }
         //This is for adding channel page
         else if(typeof displayValue!=="undefined"){
@@ -136,8 +93,59 @@ let respondToRequest=function(template,displayValue,displayNextValue){
     });
 }
 
+let editFirstPageTagsData=function(displayValue){
+    addEventListenersOnCheckBoxes();
+    addEventListenerOnPlcmentSelectBox();
+    var isInternalCampaign=false;
+    if(displayValue.indexOf("External|")!=-1){
+        document.querySelector('#externalCampaign').click();
+    }else{
+        document.querySelector('#internalCampaign').click();
+        isInternalCampaign=true;
+    }
+    displayValue=displayValue.replace("External|","").replace("Internal|","").trim();
+    displayValue.split('|').forEach(function(tag,index){
+        switch(index){
+            case 0:document.querySelector('#country [value="' + tag + '"]').selected = true;break;
+            case 1:
+                if(!isInternalCampaign){
+                    document.querySelector('#businessUnit [value="' + tag + '"]').selected = true;
+                }else{
+                    document.querySelector('#language [value="' + tag + '"]').selected = true;
+                }
+                break;
+            case 2:
+                if(!isInternalCampaign){
+                    document.querySelector('#agency [value="' + tag + '"]').selected = true;
+                }else{
+                    if(tag!='n'){
+                        document.querySelector('#cname').value = tag;   
+                    }
+                }
+                break;
+            case 3:
+                if(!isInternalCampaign){
+                    if(tag!='n'){
+                        document.querySelector('#cname').value = tag;   
+                    }
+                }else{
+                    if(tag!='n'){
+                        document.querySelector('#link').value = tag;   
+                    }
+                }
+                break;
+            case 4:
+                if(tag!='n'){
+                    document.querySelector('#link').value = tag;   
+                }
+                break;
+            default:break;
+        }
+    });
+}
+
 let addEventListenerOnPlcmentSelectBox=function(){
-    document.querySelector('#placement').addEventListener('change', function(event) {
+    document.querySelector('#placement') && document.querySelector('#placement').addEventListener('change', function(event) {
         if(this.value=="other"){
             document.querySelector('.textField').classList.remove('hidden');
         }else{
@@ -177,10 +185,10 @@ let addEventListenersOnCheckBoxes=function(){
 
 let displayCampaignForm=function(campaignType,hideCampaign){
     document.querySelectorAll(campaignType).forEach(function(link){
-        link.className=link.className.replace(' hidden',''); 
+        link.classList.remove('hidden'); 
     });
     document.querySelectorAll(hideCampaign).forEach(function(link){
-        link.className+=' hidden';
+        link.classList.add('hidden'); 
     });
 }
 
@@ -195,16 +203,19 @@ let editFirstPageTags=function(){
     respondToRequest('/include/createTags.html',existingTags,"editStep");
 }
 
-let editTag=function(className){
-    let tagData=document.querySelector("."+className+".anchorTag").innerHTML;
+let editTag=function(className,overrideData){
+    let tagData=document.querySelector("."+className+".anchorTag") && document.querySelector("."+className+".anchorTag").innerHTML;
+    if(overrideData!=null && overrideData!='' && typeof overrideData!=="undefined"){
+        tagData=overrideData;
+    }
     let isExternalCampaign=false;
     if(tagData.indexOf('External')!=-1){
         isExternalCampaign=true;
     }
     tagData=tagData.replace("External|","").replace("Internal|","").trim();
-    document.querySelector(".fa-minus-square."+className).parentNode.remove();
-    document.querySelector("a."+className).remove();
-    document.querySelector("br."+className).remove();
+    document.querySelector(".fa-minus-square."+className) && document.querySelector(".fa-minus-square."+className).parentNode.remove();
+    document.querySelector("a."+className) && document.querySelector("a."+className).remove();
+    document.querySelector("br."+className) && document.querySelector("br."+className).remove();
     let expanded=false;
     tagData.split('|').forEach(function(tag,index){
         switch(index){
@@ -354,6 +365,7 @@ let displayResults=function(errorsArray){
                     document.querySelector('.list-group').innerHTML+=('<a href="javascript:void(\'0\');" class="list-group-item list-group-item-action list-group-item-danger"><p>'+(error.url!=""?error.url:"No url entered for validation")+'</p>'+errors+'</a>');
                 }
             });
+            localStorage.setItem('validationResults',document.querySelector('.list-group').innerHTML);
         }
     },function(error){
         console.error('Error',error);
@@ -374,5 +386,6 @@ module.exports={
     editTag:editTag,
     editFirstPageTags:editFirstPageTags,
     displayCampaignForm:displayCampaignForm,
-    appendResponse:appendResponse
+    appendResponse:appendResponse,
+    editFirstPageTagsData:editFirstPageTagsData
 }

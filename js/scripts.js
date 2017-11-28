@@ -27,6 +27,7 @@ Library.prototype.nextStep=function(){
         ui.highlightErrors(validationData);
     }else{
         ui.nextStep(validationData.displayValue);
+        localStorage.setItem('firstStepData',validationData.displayValue);
     }
 }
 
@@ -70,6 +71,30 @@ Library.prototype.stateManagement=function(){
             ui.appendResponse(event.state.response);
             if(document.querySelector('#existingTags')!=null){
                 document.querySelector('#existingTags').value=localStorage.getItem('validationTags');
+            }
+            if(document.querySelector('#externalCampaign')!=null){
+                ui.editFirstPageTagsData(localStorage.getItem('firstStepData'));
+            }
+            if(document.querySelector('.exisitngInfo')!=null){
+                document.querySelector('.exisitngInfo').innerHTML=localStorage.getItem('exisitngInfo');
+            }
+            if(document.querySelector('.exisitngInfoNext')!=null){
+                document.querySelector('.exisitngInfoNext').innerHTML=localStorage.getItem('exisitngInfoNext');
+            }
+            if(document.querySelector('.finalTags')!=null){
+                document.querySelector('.finalTags').innerHTML=localStorage.getItem('finalTags');
+            }
+            if(document.querySelector('.list-group')!=null){
+                document.querySelector('.list-group').innerHTML=localStorage.getItem('validationResults');
+            }
+            if(document.querySelector('.valuesDiv')!=null && localStorage.getItem('valuesHTML').trim()!=''){
+                document.querySelector('.valuesDiv').classList.remove('hidden');
+                document.querySelector('.values').innerHTML=localStorage.getItem('valuesHTML');
+                let value=localStorage.getItem('exisitngInfoNext');
+                ui.editTag('na',value.split('<br>')[1].replace('<u>','').replace('</u>',''));
+            }else if(document.querySelector('.valuesDiv')!=null){
+                let value=localStorage.getItem('exisitngInfoNext');
+                ui.editTag('na',value.replace('<u>','').replace('</u>',''));
             }
         }else{
             requests.getURL('/home.html').then(function(response){
