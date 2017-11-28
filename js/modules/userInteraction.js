@@ -1,5 +1,9 @@
 var requests=require('./requests.js');
 
+let appendResponse=function(response){
+    document.querySelector('.contentSection').innerHTML=response;
+}
+
 let respondToRequest=function(template,displayValue,displayNextValue){
     var values='';
     var valuesHTML='';
@@ -7,8 +11,9 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         values=document.querySelector('.values').innerText;
         valuesHTML=document.querySelector('.values').innerHTML;
     }
-    requests.getURL(template).then(function(response){   
-        document.querySelector('.contentSection').innerHTML=response;
+    requests.getURL(template).then(function(response){
+        history.pushState({pageName:template,response:response},null,template.replace('/include',''));   
+        appendResponse(response);
         //This is for adding another channel page
         if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined" && (template.indexOf('createTagsChannels')!=-1 || template.indexOf('createInternalTagsChannels')!=-1)){
             //<a href="javascript:void('0');"><i class="fa fa-minus-square" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
@@ -335,6 +340,7 @@ let addAnotherChannel=function(topDisplayValue,displayValue){
 let displayResults=function(errorsArray){
     requests.getURL('/include/validationResults.html').then(function(response){
         document.querySelector('.contentSection').innerHTML=response;
+        history.pushState({pageName:'/include/validationResults.html',response:response},null,'validationResults.html');
         if(errorsArray.length>0){
             errorsArray.forEach(function(error){
                 if(error.success){
@@ -367,5 +373,6 @@ module.exports={
     removeTag:removeTag,
     editTag:editTag,
     editFirstPageTags:editFirstPageTags,
-    displayCampaignForm:displayCampaignForm
+    displayCampaignForm:displayCampaignForm,
+    appendResponse:appendResponse
 }

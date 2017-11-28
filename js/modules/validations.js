@@ -303,6 +303,7 @@ let validateForm=function(){
 
 let validateField=function(){
     var tags=document.querySelector('#existingTags').value;
+    localStorage.setItem('validationTags',tags);
     var errorsArray=[];
     tags.split('\n').forEach(function(tag){
         var urlObject={};

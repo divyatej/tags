@@ -1,5 +1,6 @@
 let ui=require('./modules/userInteraction.js');
 let validation=require('./modules/validations.js');
+let requests=require('./modules/requests.js');
 function Library(){
 
 }
@@ -61,6 +62,24 @@ Library.prototype.editTag=function(className){
 
 Library.prototype.editFirstPageTags=function(){
     ui.editFirstPageTags();
+}
+
+Library.prototype.stateManagement=function(){
+    window.onpopstate=function(event){
+        if(event.state){
+            ui.appendResponse(event.state.response);
+            if(document.querySelector('#existingTags')!=null){
+                document.querySelector('#existingTags').value=localStorage.getItem('validationTags');
+            }
+        }else{
+            requests.getURL('/home.html').then(function(response){
+                let parser=new DOMParser();
+                let doc=parser.parseFromString(response,'text/html');
+                let html=doc.querySelector('.contentSection').innerHTML;
+                ui.appendResponse(html);
+            });
+        }
+    }
 }
 
 module.exports=Library;

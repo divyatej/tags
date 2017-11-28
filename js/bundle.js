@@ -55,19 +55,20 @@ module.exports={
 },{}],3:[function(require,module,exports){
 var requests=require('./requests.js');
 
+let appendResponse=function(response){
+    document.querySelector('.contentSection').innerHTML=response;
+}
+
 let respondToRequest=function(template,displayValue,displayNextValue){
-    console.log('template-----'+template);
     var values='';
     var valuesHTML='';
     if(document.querySelector('.values')!=null){
         values=document.querySelector('.values').innerText;
         valuesHTML=document.querySelector('.values').innerHTML;
     }
-    requests.getURL(template).then(function(response){   
-        document.querySelector('.contentSection').innerHTML=response;
-        history.pushState( { 
-                pageName: template,
-        }, null, (template!=="/include/home_include.html"?template:"/home.html"));
+    requests.getURL(template).then(function(response){
+        history.pushState({pageName:template,response:response},null,template.replace('/include',''));   
+        appendResponse(response);
         //This is for adding another channel page
         if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined" && (template.indexOf('createTagsChannels')!=-1 || template.indexOf('createInternalTagsChannels')!=-1)){
             //<a href="javascript:void('0');"><i class="fa fa-minus-square" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
@@ -320,10 +321,6 @@ let editTag=function(className){
     });
 }
 
-let loadHomePage=function(){
-    respondToRequest('/include/home_include.html');
-}
-
 let validateTags=function(){
     respondToRequest('/include/validateTags.html');
 }
@@ -398,6 +395,7 @@ let addAnotherChannel=function(topDisplayValue,displayValue){
 let displayResults=function(errorsArray){
     requests.getURL('/include/validationResults.html').then(function(response){
         document.querySelector('.contentSection').innerHTML=response;
+        history.pushState({pageName:'/include/validationResults.html',response:response},null,'validationResults.html');
         if(errorsArray.length>0){
             errorsArray.forEach(function(error){
                 if(error.success){
@@ -431,7 +429,7 @@ module.exports={
     editTag:editTag,
     editFirstPageTags:editFirstPageTags,
     displayCampaignForm:displayCampaignForm,
-    loadHomePage:loadHomePage
+    appendResponse:appendResponse
 }
 },{"./requests.js":2}],4:[function(require,module,exports){
 let codesList=require("./abbreviations.js");
@@ -739,6 +737,7 @@ let validateForm=function(){
 
 let validateField=function(){
     var tags=document.querySelector('#existingTags').value;
+    localStorage.setItem('validationTags',tags);
     var errorsArray=[];
     tags.split('\n').forEach(function(tag){
         var urlObject={};
@@ -810,6 +809,7 @@ module.exports={
 },{"./abbreviations.js":1,"./userInteraction.js":3}],5:[function(require,module,exports){
 let ui=require('./modules/userInteraction.js');
 let validation=require('./modules/validations.js');
+let requests=require('./modules/requests.js');
 function Library(){
 
 }
@@ -873,6 +873,24 @@ Library.prototype.editFirstPageTags=function(){
     ui.editFirstPageTags();
 }
 
+Library.prototype.stateManagement=function(){
+    window.onpopstate=function(event){
+        if(event.state){
+            ui.appendResponse(event.state.response);
+            if(document.querySelector('#existingTags')!=null){
+                document.querySelector('#existingTags').value=localStorage.getItem('validationTags');
+            }
+        }else{
+            requests.getURL('/home.html').then(function(response){
+                let parser=new DOMParser();
+                let doc=parser.parseFromString(response,'text/html');
+                let html=doc.querySelector('.contentSection').innerHTML;
+                ui.appendResponse(html);
+            });
+        }
+    }
+}
+
 module.exports=Library;
-},{"./modules/userInteraction.js":3,"./modules/validations.js":4}]},{},[5])(5)
+},{"./modules/requests.js":2,"./modules/userInteraction.js":3,"./modules/validations.js":4}]},{},[5])(5)
 });
