@@ -65,10 +65,15 @@ Library.prototype.editFirstPageTags=function(){
     ui.editFirstPageTags();
 }
 
+Library.prototype.back=function(){
+    history.go(-1);
+}
+
 Library.prototype.stateManagement=function(){
     window.onpopstate=function(event){
         if(event.state){
             ui.appendResponse(event.state.response);
+            //Display values of the form prefilled
             if(document.querySelector('#existingTags')!=null){
                 document.querySelector('#existingTags').value=localStorage.getItem('validationTags');
             }
