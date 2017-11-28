@@ -5,6 +5,7 @@ let agencyCodesList='omd,in,15b,blue 449,zenith opti media,perfomics,iclick,mind
 let channelCodesList='edm,sem,dis,os,ps,pr,prs,bb,tv,rd,ol,af,cm';
 let languagesList='en,zh_CN,zh_TW,ja,de,fr,es';
 let productsList='flights,cars,hotels,baggage,seats,transfers,activities,insurance,manage-your-trip,qantas-store,epiqure,cash,financial-services,points,online-mall,aquire,golf-club,restaurants,movies,gift-cards-cash,gift-cards-points,assure,frequent-flyer';
+let placementList='fb,tw,gg,bi,yh,yt,gdn,li,inst,etr,pdc,ff';
 module.exports={
     getCountryCodeList:function(){
         return countryCodesList;
@@ -23,6 +24,9 @@ module.exports={
     },
     getProductCodeList:function(){
         return productsList;
+    },
+    getPlacementList:function(){
+        return placementList;
     }
 }
 },{}],2:[function(require,module,exports){
@@ -52,6 +56,7 @@ module.exports={
 var requests=require('./requests.js');
 
 let respondToRequest=function(template,displayValue,displayNextValue){
+    console.log('template-----'+template);
     var values='';
     var valuesHTML='';
     if(document.querySelector('.values')!=null){
@@ -60,9 +65,15 @@ let respondToRequest=function(template,displayValue,displayNextValue){
     }
     requests.getURL(template).then(function(response){   
         document.querySelector('.contentSection').innerHTML=response;
+        history.pushState( { 
+                pageName: template,
+        }, null, (template!=="/include/home_include.html"?template:"/home.html"));
         //This is for adding another channel page
         if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined" && (template.indexOf('createTagsChannels')!=-1 || template.indexOf('createInternalTagsChannels')!=-1)){
             //<a href="javascript:void('0');"><i class="fa fa-minus-square" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
+            if(template.indexOf('createTagsChannels')!=-1){
+                addEventListenerOnPlcmentSelectBox();
+            }
             document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
             if(valuesHTML!=''){
                 document.querySelector('.values').innerHTML=valuesHTML;    
@@ -84,6 +95,7 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         //Edit the channel page
         else if(typeof displayValue!="undefined" && typeof displayNextValue!=="undefined" && displayNextValue=="editStep"){
             addEventListenersOnCheckBoxes();
+            addEventListenerOnPlcmentSelectBox();
             var isInternalCampaign=false;
             if(displayValue.indexOf("External|")!=-1){
                 document.querySelector('#externalCampaign').click();
@@ -136,15 +148,15 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
             if(values!=null && values!=''){
                     values.split('\n').forEach(function(tag){
-                        if(tag!=''){
+                        if(tag.trim()!=''){
                             document.querySelector('.exisitngInfoNext').innerHTML+=('<u>'+tag+'</u><br/>');
+                            let isExternalCampaign=false;
+                            if(displayValue.indexOf('External')!=-1){
+                                isExternalCampaign=true;
+                            }
                             let tags=displayValue.replace("External|","").replace("Internal|","");
                             let url=tags.split('|')[tags.split('|').length-1];
                             tags=tags.replace('|'+url,'');
-                            let isExternalCampaign=false;
-                            if(displayNextValue.indexOf('External')!=-1){
-                                isExternalCampaign=true;
-                            }
                             tags=getTagsText(tags,tag,isExternalCampaign);
                             document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
                         }
@@ -156,15 +168,18 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             let url=tags.split('|')[tags.split('|').length-1];
             tags=tags.replace('|'+url,'');
             let isExternalCampaign=false;
-            if(displayNextValue.indexOf('External')!=-1){
+            if(displayValue.indexOf('External')!=-1){
                 isExternalCampaign=true;
             }
-            tags=getTagsText(tags,displayNextValue,isExternalCampaign);
-            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
+            if(displayNextValue!==''){
+                tags=getTagsText(tags,displayNextValue,isExternalCampaign);
+                document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
+            }
         }
         //This is for adding channel page
         else if(typeof displayValue!=="undefined"){
             document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
+            addEventListenerOnPlcmentSelectBox();
         }
         //This is for adding event listeners to campaign checkboxes on first create page
         else if(template=="/include/createTags.html"){
@@ -172,6 +187,16 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         }
     },function(error){
         console.error('Error',error);
+    });
+}
+
+let addEventListenerOnPlcmentSelectBox=function(){
+    document.querySelector('#placement').addEventListener('change', function(event) {
+        if(this.value=="other"){
+            document.querySelector('.textField').classList.remove('hidden');
+        }else{
+            document.querySelector('.textField').classList.add('hidden');
+        }
     });
 }
 
@@ -231,8 +256,9 @@ let editTag=function(className){
         isExternalCampaign=true;
     }
     tagData=tagData.replace("External|","").replace("Internal|","").trim();
-    document.querySelector(".fa-minus-square."+className).remove();
-    document.querySelector("."+className).remove();
+    document.querySelector(".fa-minus-square."+className).parentNode.remove();
+    document.querySelector("a."+className).remove();
+    document.querySelector("br."+className).remove();
     let expanded=false;
     tagData.split('|').forEach(function(tag,index){
         switch(index){
@@ -245,7 +271,14 @@ let editTag=function(className){
             break;
             case 1:
             if(isExternalCampaign){
-                document.querySelector('#placement [value="' + tag + '"]').selected = true;
+                if(document.querySelector('#placement [value="' + tag + '"]')!=null){
+                    document.querySelector('#placement [value="' + tag + '"]').selected = true;
+                }else{
+                    document.querySelector('#placement [value="other"]').selected = true;
+                    document.querySelector('.textField').classList.remove('hidden');
+                    document.querySelector('#plcment').value=tag;
+                }
+                
             }else{
                 document.querySelector('#page').value = tag;   
             }
@@ -285,6 +318,10 @@ let editTag=function(className){
             default:break;
         }
     });
+}
+
+let loadHomePage=function(){
+    respondToRequest('/include/home_include.html');
 }
 
 let validateTags=function(){
@@ -393,7 +430,8 @@ module.exports={
     removeTag:removeTag,
     editTag:editTag,
     editFirstPageTags:editFirstPageTags,
-    displayCampaignForm:displayCampaignForm
+    displayCampaignForm:displayCampaignForm,
+    loadHomePage:loadHomePage
 }
 },{"./requests.js":2}],4:[function(require,module,exports){
 let codesList=require("./abbreviations.js");
@@ -530,9 +568,17 @@ let isValidChannelCode=function(input){
     }
 }
 
+let isValidPlacementCode=function(input){
+    if(codesList.getPlacementList().split(',').includes(input)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 let isValidPlacementOrCampaign=function(input){
     if(regexp.test(input) && input!=='n'){
-        if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidCountryCode(input) || isValidCountryCode(input)){
+        if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidCountryCode(input) || isValidCountryCode(input) || isValidPlacementCode(input)){
             return false;
         }
         return true;
@@ -541,11 +587,11 @@ let isValidPlacementOrCampaign=function(input){
     }
 }
 
-let isValidPlcOrConOrSegOrKey=function(input){
+let isValidPlcOrConOrSegOrKey=function(input,isKeyWord){
     if(typeof input=="undefined" || input=="" || input=="n"){
         input="--NA--";
     }
-    if(regexpnonm.test(input)){
+    if(regexpnonm.test(input) || isKeyWord){
         if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidCountryCode(input) || isValidCountryCode(input)){
             return false;
         }
@@ -580,6 +626,10 @@ let validateChannelsForm=function(){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#placement");
         }
+        if(document.querySelector('#placement').value=="other" && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#plcment').value)){
+            validationData.errors.push("Please enter proper placement");
+            validationData.errorFields.push("#plcment");
+        }
         if(document.querySelector('#ptype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ptype').value)){
             validationData.errors.push("Please enter proper placement type");
             validationData.errorFields.push("#ptype");
@@ -592,7 +642,7 @@ let validateChannelsForm=function(){
             validationData.errors.push("Please enter proper segment");
             validationData.errorFields.push("#segment");
         }
-        if(document.querySelector('#keywords').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#keywords').value)){
+        if(document.querySelector('#keywords').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#keywords').value,true)){
             validationData.errors.push("Please enter proper key words");
             validationData.errorFields.push("#keywords");
         }
@@ -611,18 +661,24 @@ let validateChannelsForm=function(){
             validationData.errorFields.push("#plcment");
         }
     }
-    validationData.displayValue=campaignType;
-    if(campaignType=="External"){
-        validationData.displayValue+=('|'+document.querySelector('#channel').value);
-        validationData.displayValue+=('|'+document.querySelector('#placement').value);
-        validationData.displayValue+=('|'+(document.querySelector('#ptype').value!==""?document.querySelector('#ptype').value:'n'));
-        validationData.displayValue+=('|'+(document.querySelector('#ctype').value!==""?document.querySelector('#ctype').value:'n'));
-        validationData.displayValue+=('|'+(document.querySelector('#segment').value!==""?document.querySelector('#segment').value:'n'));
-        validationData.displayValue+=('|'+(document.querySelector('#keywords').value!==""?document.querySelector('#keywords').value:'n'));
-    }else{
-        validationData.displayValue+=('|'+document.querySelector('#product').value);
-        validationData.displayValue+=('|'+(document.querySelector('#page').value!==""?document.querySelector('#page').value:'n'));
-        validationData.displayValue+=('|'+(document.querySelector('#plcment').value!==""?document.querySelector('#plcment').value:'n'));
+    if(validationData.errors.length==0){
+        validationData.displayValue=campaignType;
+        if(campaignType=="External"){
+            validationData.displayValue+=('|'+document.querySelector('#channel').value);
+            if(document.querySelector('#placement').value=="other"){
+                validationData.displayValue+=('|'+document.querySelector('#plcment').value);
+            }else{
+                validationData.displayValue+=('|'+document.querySelector('#placement').value);
+            }
+            validationData.displayValue+=('|'+(document.querySelector('#ptype').value!==""?document.querySelector('#ptype').value:'n'));
+            validationData.displayValue+=('|'+(document.querySelector('#ctype').value!==""?document.querySelector('#ctype').value:'n'));
+            validationData.displayValue+=('|'+(document.querySelector('#segment').value!==""?document.querySelector('#segment').value:'n'));
+            validationData.displayValue+=('|'+(document.querySelector('#keywords').value!==""?document.querySelector('#keywords').value:'n'));
+        }else{
+            validationData.displayValue+=('|'+document.querySelector('#product').value);
+            validationData.displayValue+=('|'+(document.querySelector('#page').value!==""?document.querySelector('#page').value:'n'));
+            validationData.displayValue+=('|'+(document.querySelector('#plcment').value!==""?document.querySelector('#plcment').value:'n'));
+        }
     }
     return validationData;
 }
@@ -691,7 +747,9 @@ let validateField=function(){
             urlObject.error=[];
             var validationAPI={};
             var urlParam="";
+            var isExternalCampaign=false;
             if(tag.indexOf("alt_cam=")!=-1){
+                isExternalCampaign=true;
                 validationAPI=externalTagValidationAPI;
                 urlParam=tag.substring(tag.indexOf("alt_cam="),tag.length).replace("alt_cam=","").trim();
             }else if(tag.indexOf("int_cam=")!=-1){
@@ -796,7 +854,7 @@ Library.prototype.addAnotherChannel=function(){
 
 Library.prototype.generateTags=function(){
     let validationData=validation.validateChannelsForm();
-    if(validationData.errors.length>0 || validationData.errorFields.length>0){
+    if((validationData.errors.length>0 || validationData.errorFields.length>0) && document.querySelector('.values').innerText.trim().length==0){
         ui.highlightErrors(validationData);
     }else{
         ui.confirm(validationData.topDisplayValue,validationData.displayValue);

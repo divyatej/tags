@@ -4,6 +4,7 @@ let agencyCodesList='omd,in,15b,blue 449,zenith opti media,perfomics,iclick,mind
 let channelCodesList='edm,sem,dis,os,ps,pr,prs,bb,tv,rd,ol,af,cm';
 let languagesList='en,zh_CN,zh_TW,ja,de,fr,es';
 let productsList='flights,cars,hotels,baggage,seats,transfers,activities,insurance,manage-your-trip,qantas-store,epiqure,cash,financial-services,points,online-mall,aquire,golf-club,restaurants,movies,gift-cards-cash,gift-cards-points,assure,frequent-flyer';
+let placementList='fb,tw,gg,bi,yh,yt,gdn,li,inst,etr,pdc,ff';
 module.exports={
     getCountryCodeList:function(){
         return countryCodesList;
@@ -22,5 +23,8 @@ module.exports={
     },
     getProductCodeList:function(){
         return productsList;
+    },
+    getPlacementList:function(){
+        return placementList;
     }
 }

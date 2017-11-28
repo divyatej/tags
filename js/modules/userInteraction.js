@@ -12,6 +12,9 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         //This is for adding another channel page
         if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined" && (template.indexOf('createTagsChannels')!=-1 || template.indexOf('createInternalTagsChannels')!=-1)){
             //<a href="javascript:void('0');"><i class="fa fa-minus-square" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
+            if(template.indexOf('createTagsChannels')!=-1){
+                addEventListenerOnPlcmentSelectBox();
+            }
             document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
             if(valuesHTML!=''){
                 document.querySelector('.values').innerHTML=valuesHTML;    
@@ -33,6 +36,7 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         //Edit the channel page
         else if(typeof displayValue!="undefined" && typeof displayNextValue!=="undefined" && displayNextValue=="editStep"){
             addEventListenersOnCheckBoxes();
+            addEventListenerOnPlcmentSelectBox();
             var isInternalCampaign=false;
             if(displayValue.indexOf("External|")!=-1){
                 document.querySelector('#externalCampaign').click();
@@ -85,15 +89,15 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
             if(values!=null && values!=''){
                     values.split('\n').forEach(function(tag){
-                        if(tag!=''){
+                        if(tag.trim()!=''){
                             document.querySelector('.exisitngInfoNext').innerHTML+=('<u>'+tag+'</u><br/>');
+                            let isExternalCampaign=false;
+                            if(displayValue.indexOf('External')!=-1){
+                                isExternalCampaign=true;
+                            }
                             let tags=displayValue.replace("External|","").replace("Internal|","");
                             let url=tags.split('|')[tags.split('|').length-1];
                             tags=tags.replace('|'+url,'');
-                            let isExternalCampaign=false;
-                            if(displayNextValue.indexOf('External')!=-1){
-                                isExternalCampaign=true;
-                            }
                             tags=getTagsText(tags,tag,isExternalCampaign);
                             document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
                         }
@@ -105,15 +109,18 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             let url=tags.split('|')[tags.split('|').length-1];
             tags=tags.replace('|'+url,'');
             let isExternalCampaign=false;
-            if(displayNextValue.indexOf('External')!=-1){
+            if(displayValue.indexOf('External')!=-1){
                 isExternalCampaign=true;
             }
-            tags=getTagsText(tags,displayNextValue,isExternalCampaign);
-            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
+            if(displayNextValue!==''){
+                tags=getTagsText(tags,displayNextValue,isExternalCampaign);
+                document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
+            }
         }
         //This is for adding channel page
         else if(typeof displayValue!=="undefined"){
             document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
+            addEventListenerOnPlcmentSelectBox();
         }
         //This is for adding event listeners to campaign checkboxes on first create page
         else if(template=="/include/createTags.html"){
@@ -121,6 +128,16 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         }
     },function(error){
         console.error('Error',error);
+    });
+}
+
+let addEventListenerOnPlcmentSelectBox=function(){
+    document.querySelector('#placement').addEventListener('change', function(event) {
+        if(this.value=="other"){
+            document.querySelector('.textField').classList.remove('hidden');
+        }else{
+            document.querySelector('.textField').classList.add('hidden');
+        }
     });
 }
 
@@ -180,8 +197,9 @@ let editTag=function(className){
         isExternalCampaign=true;
     }
     tagData=tagData.replace("External|","").replace("Internal|","").trim();
-    document.querySelector(".fa-minus-square."+className).remove();
-    document.querySelector("."+className).remove();
+    document.querySelector(".fa-minus-square."+className).parentNode.remove();
+    document.querySelector("a."+className).remove();
+    document.querySelector("br."+className).remove();
     let expanded=false;
     tagData.split('|').forEach(function(tag,index){
         switch(index){
@@ -194,7 +212,14 @@ let editTag=function(className){
             break;
             case 1:
             if(isExternalCampaign){
-                document.querySelector('#placement [value="' + tag + '"]').selected = true;
+                if(document.querySelector('#placement [value="' + tag + '"]')!=null){
+                    document.querySelector('#placement [value="' + tag + '"]').selected = true;
+                }else{
+                    document.querySelector('#placement [value="other"]').selected = true;
+                    document.querySelector('.textField').classList.remove('hidden');
+                    document.querySelector('#plcment').value=tag;
+                }
+                
             }else{
                 document.querySelector('#page').value = tag;   
             }

@@ -132,9 +132,17 @@ let isValidChannelCode=function(input){
     }
 }
 
+let isValidPlacementCode=function(input){
+    if(codesList.getPlacementList().split(',').includes(input)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 let isValidPlacementOrCampaign=function(input){
     if(regexp.test(input) && input!=='n'){
-        if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidCountryCode(input) || isValidCountryCode(input)){
+        if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidCountryCode(input) || isValidCountryCode(input) || isValidPlacementCode(input)){
             return false;
         }
         return true;
@@ -143,11 +151,11 @@ let isValidPlacementOrCampaign=function(input){
     }
 }
 
-let isValidPlcOrConOrSegOrKey=function(input){
+let isValidPlcOrConOrSegOrKey=function(input,isKeyWord){
     if(typeof input=="undefined" || input=="" || input=="n"){
         input="--NA--";
     }
-    if(regexpnonm.test(input)){
+    if(regexpnonm.test(input) || isKeyWord){
         if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidCountryCode(input) || isValidCountryCode(input)){
             return false;
         }
@@ -182,6 +190,10 @@ let validateChannelsForm=function(){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#placement");
         }
+        if(document.querySelector('#placement').value=="other" && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#plcment').value)){
+            validationData.errors.push("Please enter proper placement");
+            validationData.errorFields.push("#plcment");
+        }
         if(document.querySelector('#ptype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ptype').value)){
             validationData.errors.push("Please enter proper placement type");
             validationData.errorFields.push("#ptype");
@@ -194,7 +206,7 @@ let validateChannelsForm=function(){
             validationData.errors.push("Please enter proper segment");
             validationData.errorFields.push("#segment");
         }
-        if(document.querySelector('#keywords').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#keywords').value)){
+        if(document.querySelector('#keywords').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#keywords').value,true)){
             validationData.errors.push("Please enter proper key words");
             validationData.errorFields.push("#keywords");
         }
@@ -213,18 +225,24 @@ let validateChannelsForm=function(){
             validationData.errorFields.push("#plcment");
         }
     }
-    validationData.displayValue=campaignType;
-    if(campaignType=="External"){
-        validationData.displayValue+=('|'+document.querySelector('#channel').value);
-        validationData.displayValue+=('|'+document.querySelector('#placement').value);
-        validationData.displayValue+=('|'+(document.querySelector('#ptype').value!==""?document.querySelector('#ptype').value:'n'));
-        validationData.displayValue+=('|'+(document.querySelector('#ctype').value!==""?document.querySelector('#ctype').value:'n'));
-        validationData.displayValue+=('|'+(document.querySelector('#segment').value!==""?document.querySelector('#segment').value:'n'));
-        validationData.displayValue+=('|'+(document.querySelector('#keywords').value!==""?document.querySelector('#keywords').value:'n'));
-    }else{
-        validationData.displayValue+=('|'+document.querySelector('#product').value);
-        validationData.displayValue+=('|'+(document.querySelector('#page').value!==""?document.querySelector('#page').value:'n'));
-        validationData.displayValue+=('|'+(document.querySelector('#plcment').value!==""?document.querySelector('#plcment').value:'n'));
+    if(validationData.errors.length==0){
+        validationData.displayValue=campaignType;
+        if(campaignType=="External"){
+            validationData.displayValue+=('|'+document.querySelector('#channel').value);
+            if(document.querySelector('#placement').value=="other"){
+                validationData.displayValue+=('|'+document.querySelector('#plcment').value);
+            }else{
+                validationData.displayValue+=('|'+document.querySelector('#placement').value);
+            }
+            validationData.displayValue+=('|'+(document.querySelector('#ptype').value!==""?document.querySelector('#ptype').value:'n'));
+            validationData.displayValue+=('|'+(document.querySelector('#ctype').value!==""?document.querySelector('#ctype').value:'n'));
+            validationData.displayValue+=('|'+(document.querySelector('#segment').value!==""?document.querySelector('#segment').value:'n'));
+            validationData.displayValue+=('|'+(document.querySelector('#keywords').value!==""?document.querySelector('#keywords').value:'n'));
+        }else{
+            validationData.displayValue+=('|'+document.querySelector('#product').value);
+            validationData.displayValue+=('|'+(document.querySelector('#page').value!==""?document.querySelector('#page').value:'n'));
+            validationData.displayValue+=('|'+(document.querySelector('#plcment').value!==""?document.querySelector('#plcment').value:'n'));
+        }
     }
     return validationData;
 }
@@ -293,7 +311,9 @@ let validateField=function(){
             urlObject.error=[];
             var validationAPI={};
             var urlParam="";
+            var isExternalCampaign=false;
             if(tag.indexOf("alt_cam=")!=-1){
+                isExternalCampaign=true;
                 validationAPI=externalTagValidationAPI;
                 urlParam=tag.substring(tag.indexOf("alt_cam="),tag.length).replace("alt_cam=","").trim();
             }else if(tag.indexOf("int_cam=")!=-1){
