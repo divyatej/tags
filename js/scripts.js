@@ -81,10 +81,16 @@ Library.prototype.stateManagement=function(){
                 ui.editFirstPageTagsData(localStorage.getItem('firstStepData'));
             }
             if(document.querySelector('.exisitngInfo')!=null){
-                document.querySelector('.exisitngInfo').innerHTML=localStorage.getItem('exisitngInfo');
+                var anchor=document.createElement('a');
+                anchor.href="javascript:lib.editFirstPageTags();";
+                anchor.innerHTML=localStorage.getItem('exisitngInfo');
+                document.querySelector('.exisitngInfo').appendChild(anchor);
             }
             if(document.querySelector('.exisitngInfoNext')!=null){
-                document.querySelector('.exisitngInfoNext').innerHTML=localStorage.getItem('exisitngInfoNext');
+                localStorage.getItem('exisitngInfoNext').split('\n').forEach(function(tag,index){
+                    let anchorHTML="<a href=\"javascript:lib.editFinalTag('"+index+"');\">";
+                    document.querySelector('.exisitngInfoNext').innerHTML+=(anchorHTML+'<u>'+tag+'</u></a><br/>');
+                })
             }
             if(document.querySelector('.finalTags')!=null){
                 document.querySelector('.finalTags').innerHTML=localStorage.getItem('finalTags');
@@ -94,9 +100,11 @@ Library.prototype.stateManagement=function(){
             }
             if(document.querySelector('.valuesDiv')!=null && localStorage.getItem('valuesHTML').trim()!=''){
                 document.querySelector('.valuesDiv').classList.remove('hidden');
-                document.querySelector('.values').innerHTML=localStorage.getItem('valuesHTML');
                 let value=localStorage.getItem('exisitngInfoNext');
-                ui.editTag('na',value.split('<br>')[1].replace('<u>','').replace('</u>',''));
+                value=value.split('\n')[localStorage.getItem('tagEdited')];
+                document.querySelector('.values').innerHTML=localStorage.getItem('valuesHTML');
+                ui.removeTag(value.split('|').join(""));
+                ui.editTag('na',value);
             }else if(document.querySelector('.valuesDiv')!=null){
                 let value=localStorage.getItem('exisitngInfoNext');
                 ui.editTag('na',value.replace('<u>','').replace('</u>',''));
@@ -110,6 +118,11 @@ Library.prototype.stateManagement=function(){
             });
         }
     }
+}
+
+Library.prototype.editFinalTag=function(index){
+    localStorage.setItem('tagEdited',index);
+    history.go(-1);
 }
 
 module.exports=Library;

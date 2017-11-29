@@ -44,13 +44,15 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         }
         //This is for confirmation page
         else if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined"){
-            localStorage.setItem('valuesHTML',valuesHTML);
             localStorage.setItem('exisitngInfo',displayValue);
-            document.querySelector('.exisitngInfo').innerHTML='<u>'+displayValue+'</u>';
+            document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
+            var indexCount=0;
             if(values!=null && values!=''){
-                    values.split('\n').forEach(function(tag){
+                    values.split('\n').forEach(function(tag,index){
+                        indexCount=index;
                         if(tag.trim()!=''){
-                            document.querySelector('.exisitngInfoNext').innerHTML+=('<u>'+tag+'</u><br/>');
+                            let anchorHTML="<a href=\"javascript:lib.editFinalTag('"+index+"');\">";
+                            document.querySelector('.exisitngInfoNext').innerHTML+=(anchorHTML+'<u>'+tag+'</u></a><br/>');
                             let isExternalCampaign=false;
                             if(displayValue.indexOf('External')!=-1){
                                 isExternalCampaign=true;
@@ -63,9 +65,11 @@ let respondToRequest=function(template,displayValue,displayNextValue){
                         }
                 });
             }
+            localStorage.setItem('tagEdited',indexCount);
             //Add the things that are present in fields when generate button is clicked
-            document.querySelector('.exisitngInfoNext').innerHTML+=('<u>'+displayNextValue+'</u>');
-            localStorage.setItem('exisitngInfoNext',document.querySelector('.exisitngInfoNext').innerHTML);
+            let anchorHTML="<a href=\"javascript:lib.editFinalTag('"+indexCount+"');\">";
+            document.querySelector('.exisitngInfoNext').innerHTML+=(anchorHTML+'<u>'+displayNextValue+'</u></a>');
+            localStorage.setItem('exisitngInfoNext',document.querySelector('.exisitngInfoNext').innerText);
             let tags=displayValue.replace("External|","").replace("Internal|","");
             let url=tags.split('|')[tags.split('|').length-1];
             tags=tags.replace('|'+url,'');
@@ -76,7 +80,14 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             if(displayNextValue!==''){
                 tags=getTagsText(tags,displayNextValue,isExternalCampaign);
                 document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
-            }
+            }     
+            //<a class="Externaledmfbnnnn anchorTag" href="javascript:lib.editTag('Externaledmfbnnnn');">External|edm|fb|n|n|n|n</a><br class="Externaledmfbnnnn">
+            
+            var lastAnchor="<a href=\"javascript:lib.removeTag('"+displayNextValue.split('|').join('')+"');\"><i class=\"fa fa-minus-square "+displayNextValue.split('|').join('')+"\"></i></a>";
+            var anotherAnchor="<a class=\""+displayNextValue.split('|').join('')+" anchorTag\" href=\"javascript:lib.editTag('"+displayNextValue.split('|').join('')+"');\">"+displayNextValue+"</a>";
+            var breakElement="<br class=\""+displayNextValue.split('|').join('')+"\">";
+            valuesHTML=valuesHTML+lastAnchor+anotherAnchor+breakElement;
+            localStorage.setItem('valuesHTML',valuesHTML);
             localStorage.setItem('finalTags',document.querySelector('.finalTags').innerHTML);
         }
         //This is for adding channel page
