@@ -103,11 +103,11 @@ Library.prototype.stateManagement=function(){
                 let value=localStorage.getItem('exisitngInfoNext');
                 value=value.split('\n')[localStorage.getItem('tagEdited')];
                 document.querySelector('.values').innerHTML=localStorage.getItem('valuesHTML');
-                ui.removeTag(value.split('|').join(""));
+                ui.removeTag(value.split(' ').join('').split('|').join(""));
                 ui.editTag('na',value);
             }else if(document.querySelector('.valuesDiv')!=null){
                 let value=localStorage.getItem('exisitngInfoNext');
-                ui.editTag('na',value.replace('<u>','').replace('</u>',''));
+                ui.editTag('na',value.split(' ').join(''));
             }
         }else{
             requests.getURL('/home.html').then(function(response){
@@ -122,7 +122,7 @@ Library.prototype.stateManagement=function(){
 
 Library.prototype.editFinalTag=function(index){
     localStorage.setItem('tagEdited',index);
-    history.go(-1);
+    history.go(-1);//Check stateManagement for next step
 }
 
 module.exports=Library;

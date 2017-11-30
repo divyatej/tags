@@ -24,6 +24,7 @@ http.createServer( function(req, res) {
 	filename=filename.replace('?'+params,'');
 	var ext = path.extname(filename);
 	var localPath = __dirname;
+	var copyLocalPath=localPath;
 	var validExtensions = {
 		".html" : "text/html",
 		".js": "application/javascript",
@@ -32,13 +33,16 @@ http.createServer( function(req, res) {
 	};
 	var mimeType = validExtensions[ext];
 	localPath += filename;
+	copyLocalPath=copyLocalPath.replace('\config','');
 	localPath=localPath.replace('\config','');
 	fs.exists(localPath, function(exists) {
 			if(exists) {
 				getFile(localPath, res, mimeType);
 			} else {
-				res.writeHead(404);
-				res.end();
+				console.log('not exists'+localPath);
+				getFile(copyLocalPath+'/home.html', res, mimeType);
+				//res.writeHead(404);
+				//res.end();
 			}
 	});
 }).listen(port, serverUrl);

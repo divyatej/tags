@@ -18,7 +18,7 @@ let externalTagValidationAPI={
     },
     3:{
         validationMethod:"isValidChannelCode",
-        validationError:"Error in agency code"
+        validationError:"Error in channel code"
     },
     4:{
         validationMethod:"isValidPlacementOrCampaign",
@@ -180,7 +180,7 @@ let isValidURL=function (input){
 let validateChannelsForm=function(){
     let validationData={errorFields:[],errors:[],displayValue:"",topDisplayValue:""};
     validationData.topDisplayValue=document.querySelector('.exisitngInfo').innerText;
-    var campaignType=validationData.topDisplayValue.split('|')[0];
+    var campaignType=validationData.topDisplayValue.split(' ').join('').split('|')[0];
     if(campaignType=="External"){
         if(document.querySelector('#channel').value=="Select"){
             validationData.errors.push("Please select from dropdown");
@@ -228,20 +228,20 @@ let validateChannelsForm=function(){
     if(validationData.errors.length==0){
         validationData.displayValue=campaignType;
         if(campaignType=="External"){
-            validationData.displayValue+=('|'+document.querySelector('#channel').value);
+            validationData.displayValue+=(' | '+document.querySelector('#channel').value);
             if(document.querySelector('#placement').value=="other"){
-                validationData.displayValue+=('|'+document.querySelector('#plcment').value);
+                validationData.displayValue+=(' | '+document.querySelector('#plcment').value);
             }else{
-                validationData.displayValue+=('|'+document.querySelector('#placement').value);
+                validationData.displayValue+=(' | '+document.querySelector('#placement').value);
             }
-            validationData.displayValue+=('|'+(document.querySelector('#ptype').value!==""?document.querySelector('#ptype').value:'n'));
-            validationData.displayValue+=('|'+(document.querySelector('#ctype').value!==""?document.querySelector('#ctype').value:'n'));
-            validationData.displayValue+=('|'+(document.querySelector('#segment').value!==""?document.querySelector('#segment').value:'n'));
-            validationData.displayValue+=('|'+(document.querySelector('#keywords').value!==""?document.querySelector('#keywords').value:'n'));
+            validationData.displayValue+=(' | '+(document.querySelector('#ptype').value!==""?document.querySelector('#ptype').value:'n'));
+            validationData.displayValue+=(' | '+(document.querySelector('#ctype').value!==""?document.querySelector('#ctype').value:'n'));
+            validationData.displayValue+=(' | '+(document.querySelector('#segment').value!==""?document.querySelector('#segment').value:'n'));
+            validationData.displayValue+=(' | '+(document.querySelector('#keywords').value!==""?document.querySelector('#keywords').value:'n'));
         }else{
-            validationData.displayValue+=('|'+document.querySelector('#product').value);
-            validationData.displayValue+=('|'+(document.querySelector('#page').value!==""?document.querySelector('#page').value:'n'));
-            validationData.displayValue+=('|'+(document.querySelector('#plcment').value!==""?document.querySelector('#plcment').value:'n'));
+            validationData.displayValue+=(' | '+document.querySelector('#product').value);
+            validationData.displayValue+=(' | '+(document.querySelector('#page').value!==""?document.querySelector('#page').value:'n'));
+            validationData.displayValue+=(' | '+(document.querySelector('#plcment').value!==""?document.querySelector('#plcment').value:'n'));
         }
     }
     return validationData;
@@ -270,15 +270,21 @@ let validateForm=function(){
             validationData.errorFields.push("#agency");
         }
         if(!validationmethods.isValidURL(document.querySelector('#link').value)){
-            validationData.errors.push("Please enter proper url");
+            validationData.errors.push("Provide a valid URL. Eg. www.qantas.com/au/en.html");
             validationData.errorFields.push("#link");
         }
-        if(isInternalCampaign && !validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#cname').value)){
-            validationData.errors.push("Please enter proper campaign name");
+        if(!/^[a-z0-9-]{1,10}$/i.test(document.querySelector('#cname').value)){
+            validationData.errors.push("cannot include any special characters except \"-\"");
             validationData.errorFields.push("#cname");
         }
-        if(isExternalCampaign && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
-            validationData.errors.push("Please enter proper campaign name");
+        else if(isInternalCampaign && !validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#cname').value)){
+            validationData.errors.push("cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
+            validationData.errorFields.push("#cname");
+        }
+        else if(isExternalCampaign && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
+            validationData.errors.push("cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
             validationData.errorFields.push("#cname");
         }
         //Build value string
@@ -288,15 +294,15 @@ let validateForm=function(){
         if(document.querySelector('#externalCampaign').checked){
             validationData.displayValue+="External";
         }
-        validationData.displayValue+=("|"+document.querySelector('#country').value);
+        validationData.displayValue+=(" | "+document.querySelector('#country').value);
         if(!isInternalCampaign){
-            validationData.displayValue+=("|"+document.querySelector('#businessUnit').value);
-            validationData.displayValue+=("|"+document.querySelector('#agency').value);
+            validationData.displayValue+=(" | "+document.querySelector('#businessUnit').value);
+            validationData.displayValue+=(" | "+document.querySelector('#agency').value);
         }else{
-            validationData.displayValue+=("|"+document.querySelector('#language').value);
+            validationData.displayValue+=(" | "+document.querySelector('#language').value);
         }
-        validationData.displayValue+=("|"+document.querySelector('#cname').value);
-        validationData.displayValue+=("|"+document.querySelector('#link').value);
+        validationData.displayValue+=(" | "+document.querySelector('#cname').value);
+        validationData.displayValue+=(" | "+document.querySelector('#link').value);
         return validationData;
     }
 }
@@ -321,7 +327,7 @@ let validateField=function(){
                 validationAPI=internalTagValidationAPI;
                 urlParam=tag.substring(tag.indexOf("int_cam="),tag.length).replace("int_cam=","").trim();
             }else{
-                urlObject.error.push("Invalid URL");
+                urlObject.error.push("Provide a valid URL. Eg. www.qantas.com/au/en.html");
             }
             if(urlParam!="" && urlParam!=null && Object.keys(validationAPI).length>0){
                 if(urlParam.split(":").length>0){
@@ -332,7 +338,7 @@ let validateField=function(){
                         }
                         var isValid=(validationmethods[validationAPI[index].validationMethod](param));
                         if(!isValid){
-                            urlObject.error.push(validationAPI[index].validationError+"::"+param+" at position::"+(++postion));
+                            urlObject.error.push(validationAPI[index].validationError+"::"+param);
                         }
                     });
                 }else{

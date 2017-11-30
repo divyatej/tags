@@ -25,16 +25,16 @@ let respondToRequest=function(template,displayValue,displayNextValue){
                 document.querySelector('.values').innerHTML=valuesHTML;    
             }
             var icon=document.createElement('a');
-            icon.innerHTML="<i class=\"fa fa-minus-square "+displayNextValue.split('|').join("")+"\" aria-hidden=\"true\"></i>";
-            icon.href="javascript:lib.removeTag('"+displayNextValue.split('|').join("")+"');";
+            icon.innerHTML="<i class=\"fa fa-minus-square "+displayNextValue.split(' ').join('').split('|').join("")+"\" aria-hidden=\"true\"></i>";
+            icon.href="javascript:lib.removeTag('"+displayNextValue.split(' ').join('').split('|').join("")+"');";
             document.querySelector('.values').appendChild(icon);
             var element=document.createElement('a');
             element.innerHTML=displayNextValue;
-            element.className=displayNextValue.split('|').join("") + " anchorTag";
-            element.href="javascript:lib.editTag('"+displayNextValue.split('|').join("")+"');";
+            element.className=displayNextValue.split(' ').join('').split('|').join("") + " anchorTag";
+            element.href="javascript:lib.editTag('"+displayNextValue.split(' ').join('').split('|').join("")+"');";
             document.querySelector('.values').appendChild(element);
             var breakElement=document.createElement('br');
-            breakElement.className=displayNextValue.split('|').join("");
+            breakElement.className=displayNextValue.split(' ').join('').split('|').join("");
             document.querySelector('.values').appendChild(breakElement);
             document.querySelector('.valuesDiv').className=document.querySelector('.valuesDiv').className.replace('hidden','');
         }
@@ -47,30 +47,35 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             localStorage.setItem('exisitngInfo',displayValue);
             document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
             var indexCount=0;
+            var isMoreThanOne=false;
             if(values!=null && values!=''){
-                    values.split('\n').forEach(function(tag,index){
-                        indexCount=index;
+                values.split('\n').forEach(function(tag,index){
                         if(tag.trim()!=''){
+                            isMoreThanOne=true;
+                            indexCount=index;
                             let anchorHTML="<a href=\"javascript:lib.editFinalTag('"+index+"');\">";
                             document.querySelector('.exisitngInfoNext').innerHTML+=(anchorHTML+'<u>'+tag+'</u></a><br/>');
                             let isExternalCampaign=false;
                             if(displayValue.indexOf('External')!=-1){
                                 isExternalCampaign=true;
                             }
-                            let tags=displayValue.replace("External|","").replace("Internal|","");
+                            let tags=displayValue.split(' ').join('').replace("External|","").replace("Internal|","");
                             let url=tags.split('|')[tags.split('|').length-1];
                             tags=tags.replace('|'+url,'');
                             tags=getTagsText(tags,tag,isExternalCampaign);
-                            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
+                            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+'<strong><br/>');
                         }
-                });
+                });   
+            }
+            if(isMoreThanOne){
+                indexCount++;
             }
             localStorage.setItem('tagEdited',indexCount);
             //Add the things that are present in fields when generate button is clicked
             let anchorHTML="<a href=\"javascript:lib.editFinalTag('"+indexCount+"');\">";
             document.querySelector('.exisitngInfoNext').innerHTML+=(anchorHTML+'<u>'+displayNextValue+'</u></a>');
             localStorage.setItem('exisitngInfoNext',document.querySelector('.exisitngInfoNext').innerText);
-            let tags=displayValue.replace("External|","").replace("Internal|","");
+            let tags=displayValue.split(' ').join('').replace("External|","").replace("Internal|","");
             let url=tags.split('|')[tags.split('|').length-1];
             tags=tags.replace('|'+url,'');
             let isExternalCampaign=false;
@@ -79,14 +84,13 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             }
             if(displayNextValue!==''){
                 tags=getTagsText(tags,displayNextValue,isExternalCampaign);
-                document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.toLowerCase())+'<strong><br/>');
+                document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+'<strong><br/>');
+                var lastAnchor="<a href=\"javascript:lib.removeTag('"+displayNextValue.split('').join('').split('|').join('')+"');\"><i class=\"fa fa-minus-square "+displayNextValue.split(' ').join('').split('|').join('')+"\"></i></a>";
+                var anotherAnchor="<a class=\""+displayNextValue.split(' ').join('').split('|').join('')+" anchorTag\" href=\"javascript:lib.editTag('"+displayNextValue.split(' ').join('').split('|').join('')+"');\">"+displayNextValue+"</a>";
+                var breakElement="<br class=\""+displayNextValue.split(' ').join('').split('|').join('')+"\">";
+                valuesHTML=valuesHTML+lastAnchor+anotherAnchor+breakElement;
             }     
             //<a class="Externaledmfbnnnn anchorTag" href="javascript:lib.editTag('Externaledmfbnnnn');">External|edm|fb|n|n|n|n</a><br class="Externaledmfbnnnn">
-            
-            var lastAnchor="<a href=\"javascript:lib.removeTag('"+displayNextValue.split('|').join('')+"');\"><i class=\"fa fa-minus-square "+displayNextValue.split('|').join('')+"\"></i></a>";
-            var anotherAnchor="<a class=\""+displayNextValue.split('|').join('')+" anchorTag\" href=\"javascript:lib.editTag('"+displayNextValue.split('|').join('')+"');\">"+displayNextValue+"</a>";
-            var breakElement="<br class=\""+displayNextValue.split('|').join('')+"\">";
-            valuesHTML=valuesHTML+lastAnchor+anotherAnchor+breakElement;
             localStorage.setItem('valuesHTML',valuesHTML);
             localStorage.setItem('finalTags',document.querySelector('.finalTags').innerHTML);
         }
@@ -105,6 +109,7 @@ let respondToRequest=function(template,displayValue,displayNextValue){
 }
 
 let editFirstPageTagsData=function(displayValue){
+    displayValue=displayValue.split(' ').join('');
     addEventListenersOnCheckBoxes();
     addEventListenerOnPlcmentSelectBox();
     var isInternalCampaign=false;
@@ -167,12 +172,24 @@ let addEventListenerOnPlcmentSelectBox=function(){
 
 let getTagsText=function(tags,displayNextValue,isExternalCampaign){
     if(isExternalCampaign){
-        tags=tags+'|'+(displayNextValue.replace("External|","").replace("Internal|","").trim());
-        tags=tags.split('|').join(':');
+        let tagSplits=tags.split('|');
+        let displaySplits=displayNextValue.split(' ').join('').replace("External|","").replace("Internal|","").trim().split('|');
+        let tagArray=[];
+        tagArray.push(tagSplits[0]);
+        tagArray.push(tagSplits[1]);
+        tagArray.push(tagSplits[2]);
+        tagArray.push(displaySplits[0]);
+        tagArray.push(tagSplits[1]);
+        tagArray.push(tagSplits[3]);
+        tagArray.push(displaySplits[2]);
+        tagArray.push(displaySplits[3]);
+        tagArray.push(displaySplits[4]);
+        tagArray.push(displaySplits[5]);
+        tags=tagArray.join(':');
     }
     else{
         let tagSplits=tags.split('|');
-        let displaySplits=displayNextValue.replace("External|","").replace("Internal|","").trim().split('|');
+        let displaySplits=displayNextValue.split(' ').join('').replace("External|","").replace("Internal|","").trim().split('|');        
         let country=tagSplits[0];
         let page=displaySplits[1];
         let placement=displaySplits[2];
@@ -219,6 +236,7 @@ let editTag=function(className,overrideData){
     if(overrideData!=null && overrideData!='' && typeof overrideData!=="undefined"){
         tagData=overrideData;
     }
+    tagData=tagData.split(' ').join('').replace('<spanclass="hidden">','').replace('</span>','');
     let isExternalCampaign=false;
     if(tagData.indexOf('External')!=-1){
         isExternalCampaign=true;
@@ -317,6 +335,7 @@ let expandTags=function(){
 
 let highlightErrors=function(validationData){
     let errorFields=validationData.errorFields;
+    let displayAbbreviations=validationData.displayAbbrList;
     validationData.errors.forEach(function(error,index){
         var errorField=errorFields[index];
         document.querySelector(errorField).className+=' is-invalid';
@@ -325,15 +344,25 @@ let highlightErrors=function(validationData){
         divElement.className='invalid-feedback '+errorField.replace('#','');
         if(typeof document.querySelector(errorField).nextSibling.className=="undefined"){
             document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
+            if(errorField=="#cname" && displayAbbreviations){
+                var anchor=document.createElement('a');
+                anchor.href="/include/abbreviations.html";
+                anchor.target="_blank";
+                anchor.innerText="Abbreviations list";
+                anchor.className=errorField.replace('#','');
+                document.querySelector(errorField.replace('#','.')).insertAdjacentElement('afterend',anchor);
+            }
         }
     });
     Array.from(document.querySelectorAll('.is-invalid')).forEach(link => {
         link.addEventListener('change', function(event) {
             this.className=this.className.replace(' is-invalid','');
             document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
+            document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
         });
         link.addEventListener('keypress', function(event) {
             this.className=this.className.replace(' is-invalid','');
+            document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
             document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
         });
     });
