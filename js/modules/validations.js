@@ -190,24 +190,49 @@ let validateChannelsForm=function(){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#placement");
         }
-        if(document.querySelector('#placement').value=="other" && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#plcment').value)){
-            validationData.errors.push("Please enter proper placement");
+        if(document.querySelector('#placement').value=="other" && !/^[a-z0-9-]{1,10}$/i.test(document.querySelector('#plcment').value)){
+            document.querySelector('#plcment').value!==""?validationData.errors.push("Placement cannot include any special characters except \"-\""):validationData.errors.push("Provide a Placement");
             validationData.errorFields.push("#plcment");
         }
-        if(document.querySelector('#ptype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ptype').value)){
-            validationData.errors.push("Please enter proper placement type");
+        else if(document.querySelector('#placement').value=="other" && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#plcment').value)){
+            validationData.errors.push("Placement cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
+            validationData.errorFields.push("#plcment");
+        }
+        if(document.querySelector('#ptype').value!=="" && /^[a-z0-9-]{0,10}$/i.test(document.querySelector('#ptype').value)){
+            document.querySelector('#ptype').value!==""?validationData.errors.push("Placement type cannot include any special characters except \"-\""):validationData.errors.push("Provide a Placement type");
             validationData.errorFields.push("#ptype");
         }
-        if(document.querySelector('#ctype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ctype').value)){
-            validationData.errors.push("Please enter proper content type");
+        else if(document.querySelector('#ptype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ptype').value)){
+            validationData.errors.push("Placement type cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
+            validationData.errorFields.push("#ptype");
+        }
+        if(document.querySelector('#ctype').value!=="" && /^[a-z0-9-]{0,10}$/i.test(document.querySelector('#ctype').value)){
+            document.querySelector('#ctype').value!==""?validationData.errors.push("Content type cannot include any special characters except \"-\""):validationData.errors.push("Provide a Content type");
             validationData.errorFields.push("#ctype");
         }
-        if(document.querySelector('#segment').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#segment').value)){
-            validationData.errors.push("Please enter proper segment");
+        else if(document.querySelector('#ctype').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#ctype').value)){
+            validationData.errors.push("Content type cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
+            validationData.errorFields.push("#ctype");
+        }
+        if(document.querySelector('#segment').value!=="" && /^[a-z0-9-]{0,10}$/i.test(document.querySelector('#segment').value)){
+            document.querySelector('#segment').value!==""?validationData.errors.push("Segment cannot include any special characters except \"-\""):validationData.errors.push("Provide a Segment");
             validationData.errorFields.push("#segment");
         }
-        if(document.querySelector('#keywords').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#keywords').value,true)){
-            validationData.errors.push("Please enter proper key words");
+        else if(document.querySelector('#segment').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#segment').value)){
+            validationData.errors.push("Segment cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
+            validationData.errorFields.push("#segment");
+        }
+        if(document.querySelector('#keywords').value!=="" && /^[a-z0-9-]{0,1000}$/i.test(document.querySelector('#keywords').value)){
+            document.querySelector('#keywords').value!==""?validationData.errors.push("Keywords cannot include any special characters except \"-\""):validationData.errors.push("Provide Keywords");
+            validationData.errorFields.push("#keywords");
+        }
+        else if(document.querySelector('#keywords').value!=="" && !validationmethods.isValidPlcOrConOrSegOrKey(document.querySelector('#keywords').value,true)){
+            validationData.errors.push("Keywords cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
             validationData.errorFields.push("#keywords");
         }
     }
@@ -216,12 +241,22 @@ let validateChannelsForm=function(){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#product");
         }
-        if(!validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#page').value)){
-            validationData.errors.push("Please enter proper page");
+        if(document.querySelector('#page').value!=="" && /^[a-z0-9-]{1,10}$/i.test(document.querySelector('#page').value)){
+            document.querySelector('#page').value!==""?validationData.errors.push("Page cannot include any special characters except \"-\""):validationData.errors.push("Provide a Page");
             validationData.errorFields.push("#page");
         }
-        if(!validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#plcment').value)){
-            validationData.errors.push("Please enter proper placement");
+        else if(!validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#page').value)){
+            validationData.errors.push("Page cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
+            validationData.errorFields.push("#page");
+        }
+        if(document.querySelector('#plcment').value!=="" && /^[a-z0-9-]{1,10}$/i.test(document.querySelector('#plcment').value)){
+            document.querySelector('#plcment').value!==""?validationData.errors.push("Placement cannot include any special characters except \"-\""):validationData.errors.push("Provide a Placement");
+            validationData.errorFields.push("#plcment");
+        }
+        else if(!validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#plcment').value)){
+            validationData.errors.push("Placement cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
             validationData.errorFields.push("#plcment");
         }
     }
@@ -274,16 +309,16 @@ let validateForm=function(){
             validationData.errorFields.push("#link");
         }
         if(!/^[a-z0-9-]{1,10}$/i.test(document.querySelector('#cname').value)){
-            validationData.errors.push("cannot include any special characters except \"-\"");
+            document.querySelector('#cname').value!==""?validationData.errors.push("Campaign name cannot include any special characters except \"-\""):validationData.errors.push("Provide a Campaign name");
             validationData.errorFields.push("#cname");
         }
         else if(isInternalCampaign && !validationmethods.isValidPlacementOrCampaignInt(document.querySelector('#cname').value)){
-            validationData.errors.push("cannot use any of the standard abbreviations");
+            validationData.errors.push("Campaign name cannot use any of the standard abbreviations");
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#cname");
         }
         else if(isExternalCampaign && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#cname').value)){
-            validationData.errors.push("cannot use any of the standard abbreviations");
+            validationData.errors.push("Campaign name cannot use any of the standard abbreviations");
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#cname");
         }

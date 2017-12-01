@@ -344,7 +344,7 @@ let highlightErrors=function(validationData){
         divElement.className='invalid-feedback '+errorField.replace('#','');
         if(typeof document.querySelector(errorField).nextSibling.className=="undefined"){
             document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
-            if(errorField=="#cname" && displayAbbreviations){
+            if(document.querySelector(errorField).type=="text" && displayAbbreviations){
                 var anchor=document.createElement('a');
                 anchor.href="/include/abbreviations.html";
                 anchor.target="_blank";
