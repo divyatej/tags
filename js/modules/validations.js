@@ -199,7 +199,7 @@ let validateChannelsForm=function(){
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#plcment");
         }
-        if(document.querySelector('#ptype').value!=="" && /^[a-z0-9-]{0,10}$/i.test(document.querySelector('#ptype').value)){
+        if(document.querySelector('#ptype').value!=="" && !/^[a-z0-9-]{0,10}$/i.test(document.querySelector('#ptype').value)){
             document.querySelector('#ptype').value!==""?validationData.errors.push("Placement type cannot include any special characters except \"-\""):validationData.errors.push("Provide a Placement type");
             validationData.errorFields.push("#ptype");
         }
@@ -208,7 +208,7 @@ let validateChannelsForm=function(){
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#ptype");
         }
-        if(document.querySelector('#ctype').value!=="" && /^[a-z0-9-]{0,10}$/i.test(document.querySelector('#ctype').value)){
+        if(document.querySelector('#ctype').value!=="" && !/^[a-z0-9-]{0,10}$/i.test(document.querySelector('#ctype').value)){
             document.querySelector('#ctype').value!==""?validationData.errors.push("Content type cannot include any special characters except \"-\""):validationData.errors.push("Provide a Content type");
             validationData.errorFields.push("#ctype");
         }
@@ -217,7 +217,7 @@ let validateChannelsForm=function(){
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#ctype");
         }
-        if(document.querySelector('#segment').value!=="" && /^[a-z0-9-]{0,10}$/i.test(document.querySelector('#segment').value)){
+        if(document.querySelector('#segment').value!=="" && !/^[a-z0-9-]{0,10}$/i.test(document.querySelector('#segment').value)){
             document.querySelector('#segment').value!==""?validationData.errors.push("Segment cannot include any special characters except \"-\""):validationData.errors.push("Provide a Segment");
             validationData.errorFields.push("#segment");
         }
@@ -226,7 +226,7 @@ let validateChannelsForm=function(){
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#segment");
         }
-        if(document.querySelector('#keywords').value!=="" && /^[a-z0-9-]{0,1000}$/i.test(document.querySelector('#keywords').value)){
+        if(document.querySelector('#keywords').value!=="" && !/^[a-z0-9-]{0,1000}$/i.test(document.querySelector('#keywords').value)){
             document.querySelector('#keywords').value!==""?validationData.errors.push("Keywords cannot include any special characters except \"-\""):validationData.errors.push("Provide Keywords");
             validationData.errorFields.push("#keywords");
         }
@@ -241,7 +241,7 @@ let validateChannelsForm=function(){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#product");
         }
-        if(document.querySelector('#page').value!=="" && /^[a-z0-9-]{1,10}$/i.test(document.querySelector('#page').value)){
+        if(document.querySelector('#page').value!=="" && !/^[a-z0-9-]{1,10}$/i.test(document.querySelector('#page').value)){
             document.querySelector('#page').value!==""?validationData.errors.push("Page cannot include any special characters except \"-\""):validationData.errors.push("Provide a Page");
             validationData.errorFields.push("#page");
         }
@@ -250,7 +250,7 @@ let validateChannelsForm=function(){
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#page");
         }
-        if(document.querySelector('#plcment').value!=="" && /^[a-z0-9-]{1,10}$/i.test(document.querySelector('#plcment').value)){
+        if(document.querySelector('#plcment').value!=="" && !/^[a-z0-9-]{1,10}$/i.test(document.querySelector('#plcment').value)){
             document.querySelector('#plcment').value!==""?validationData.errors.push("Placement cannot include any special characters except \"-\""):validationData.errors.push("Provide a Placement");
             validationData.errorFields.push("#plcment");
         }
