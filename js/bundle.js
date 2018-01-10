@@ -460,7 +460,6 @@ let displayResults=function(errorsArray){
                     document.querySelector('.list-group').innerHTML+=('<a href="javascript:void(\'0\');" class="list-group-item list-group-item-action list-group-item-danger"><p>'+(error.url!=""?error.url:"No url entered for validation")+'</p>'+errors+'</a>');
                 }
             });
-            localStorage.setItem('validationResults',document.querySelector('.list-group').innerHTML);
         }
     },function(error){
         console.error('Error',error);
@@ -487,76 +486,92 @@ module.exports={
 },{"./requests.js":2}],4:[function(require,module,exports){
 let codesList=require("./abbreviations.js");
 let ui=require('./userInteraction.js');
-let regexp=/^[a-z0-9-]{1,10}$/i;
-let regexpnonm=/^[a-z0-9-]{0,10}$/i;
+let regexp=/^[a-z0-9-]{1,25}$/i;
+let regexpnonm=/^[a-z0-9-]{0,25}$/i;
 
 let externalTagValidationAPI={
     0:{
         validationMethod:"isValidCountryCode",
-        validationError:"Error in country code"
+        validationError:"Error in country code. Country code should be from Abbreviations list link given on this page",
+        validationKey:"country"
     },
     1:{
         validationMethod:"isValidBusinessUnitCode",
-        validationError:"Error in business unit code"
+        validationError:"Error in business unit code. Business unit code should be from Abbreviations list link given on this page",
+        validationKey:"businessUnit"
     },
     2:{
         validationMethod:"isValidAgencyUnitCode",
-        validationError:"Error in agency code"
+        validationError:"Error in agency code. Agency code should be from Abbreviations list link given on this page",
+        validationKey:"agency"
     },
     3:{
         validationMethod:"isValidChannelCode",
-        validationError:"Error in channel code"
+        validationError:"Error in channel code. Channel code should be from Abbreviations list link given on this page",
+        validationKey:"channel"
     },
     4:{
-        validationMethod:"isValidPlacementOrCampaign",
-        validationError:"Error in Placement"
+        validationMethod:"isValidPlacementCode",
+        validationError:"Error in Placement. Placement should be from Abbreviations list link given on this page",
+        validationKey:"placement"
     },
     5:{
         validationMethod:"isValidPlacementOrCampaign",
-        validationError:"Error in Campaign"
+        validationError:"Error in Campaign. Campaign name cannot use any of the standard abbreviations",
+        validationKey:"cname"
     },
     6:{
         validationMethod:"isValidPlcOrConOrSegOrKey",
-        validationError:"Error in Placement type"
+        validationError:"Error in Placement type. Placement type cannot use any of the standard abbreviations",
+        validationKey:"ptype"
     },
     7:{
         validationMethod:"isValidPlcOrConOrSegOrKey",
-        validationError:"Error in Content type"
+        validationError:"Error in Content type. Content type cannot use any of the standard abbreviations",
+        validationKey:"ctype"
     },
     8:{
         validationMethod:"isValidPlcOrConOrSegOrKey",
-        validationError:"Error in Segment"
+        validationError:"Error in Segment. Segment cannot use any of the standard abbreviations",
+        validationKey:"segment"
     },
     9:{
         validationMethod:"isValidPlcOrConOrSegOrKey",
-        validationError:"Error in Key word"
+        validationError:"Error in Key word. Key word cannot use any of the standard abbreviations",
+        validationKey:"keywords"
     }
 }
 
 let internalTagValidationAPI={
     0:{
         validationMethod:"isValidCountryCode",
-        validationError:"Error in country code"
+        validationError:"Error in country code. Country code should be from Abbreviations list link given on this page",
+        validationKey:"country"
     },
     1:{
         validationMethod:"isValidPlacementOrCampaignInt",
-        validationError:"Error in page name"
+        validationError:"Error in page name. Page name cannot use any of the standard abbreviations",
+        validationKey:"page"
     },
     2:{
         validationMethod:"isValidPlacementOrCampaignInt",
-        validationError:"Error in placement"
+        validationError:"Error in placement. Placement cannot use any of the standard abbreviations",
+        validationKey:"plcment"
     },
     3:{
         validationMethod:"isValidPlacementOrCampaignInt",
-        validationError:"Error in campaign name"
+        validationError:"Error in campaign name. Campaign name cannot use any of the standard abbreviations",
+        validationKey:"cname"
     },
     4:{
         validationMethod:"isValidLanguage",
-        validationError:"Error in language"
+        validationError:"Error in language. Language should be from Abbreviations list link given on this page",
+        validationKey:"language"
     },
     5:{
         validationMethod:"isValidProduct",
-        validationError:"Error in product"
+        validationError:"Error in product. Product should be from Abbreviations list link given on this page",
+        validationKey:"product"
     }
 }
 
@@ -629,7 +644,7 @@ let isValidPlacementCode=function(input){
 
 let isValidPlacementOrCampaign=function(input){
     if(regexp.test(input) && input!=='n'){
-        if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidCountryCode(input) || isValidCountryCode(input) || isValidPlacementCode(input)){
+        if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidBusinessUnitCode(input) || isValidCountryCode(input) || isValidPlacementCode(input)){
             return false;
         }
         return true;
@@ -643,7 +658,7 @@ let isValidPlcOrConOrSegOrKey=function(input,isKeyWord){
         input="--NA--";
     }
     if(regexpnonm.test(input) || isKeyWord){
-        if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidCountryCode(input) || isValidCountryCode(input)){
+        if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidBusinessUnitCode(input) || isValidCountryCode(input) || isValidPlacementCode(input)){
             return false;
         }
         return true;
@@ -677,7 +692,7 @@ let validateChannelsForm=function(){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#placement");
         }
-        if(document.querySelector('#placement').value=="other" && !/^[a-z0-9-]{1,10}$/i.test(document.querySelector('#plcment').value)){
+        if(document.querySelector('#placement').value=="other" && !/^[a-z0-9-]{1,25}$/i.test(document.querySelector('#plcment').value)){
             document.querySelector('#plcment').value!==""?validationData.errors.push("Placement cannot include any special characters except \"-\""):validationData.errors.push("Provide a Placement");
             validationData.errorFields.push("#plcment");
         }
@@ -686,7 +701,7 @@ let validateChannelsForm=function(){
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#plcment");
         }
-        if(document.querySelector('#ptype').value!=="" && !/^[a-z0-9-]{0,10}$/i.test(document.querySelector('#ptype').value)){
+        if(document.querySelector('#ptype').value!=="" && !/^[a-z0-9-]{0,25}$/i.test(document.querySelector('#ptype').value)){
             document.querySelector('#ptype').value!==""?validationData.errors.push("Placement type cannot include any special characters except \"-\""):validationData.errors.push("Provide a Placement type");
             validationData.errorFields.push("#ptype");
         }
@@ -695,7 +710,7 @@ let validateChannelsForm=function(){
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#ptype");
         }
-        if(document.querySelector('#ctype').value!=="" && !/^[a-z0-9-]{0,10}$/i.test(document.querySelector('#ctype').value)){
+        if(document.querySelector('#ctype').value!=="" && !/^[a-z0-9-]{0,25}$/i.test(document.querySelector('#ctype').value)){
             document.querySelector('#ctype').value!==""?validationData.errors.push("Content type cannot include any special characters except \"-\""):validationData.errors.push("Provide a Content type");
             validationData.errorFields.push("#ctype");
         }
@@ -704,7 +719,7 @@ let validateChannelsForm=function(){
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#ctype");
         }
-        if(document.querySelector('#segment').value!=="" && !/^[a-z0-9-]{0,10}$/i.test(document.querySelector('#segment').value)){
+        if(document.querySelector('#segment').value!=="" && !/^[a-z0-9-]{0,25}$/i.test(document.querySelector('#segment').value)){
             document.querySelector('#segment').value!==""?validationData.errors.push("Segment cannot include any special characters except \"-\""):validationData.errors.push("Provide a Segment");
             validationData.errorFields.push("#segment");
         }
@@ -713,7 +728,7 @@ let validateChannelsForm=function(){
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#segment");
         }
-        if(document.querySelector('#keywords').value!=="" && !/^[a-z0-9-]{0,1000}$/i.test(document.querySelector('#keywords').value)){
+        if(document.querySelector('#keywords').value!=="" && !/^[a-z0-9-]{0,2500}$/i.test(document.querySelector('#keywords').value)){
             document.querySelector('#keywords').value!==""?validationData.errors.push("Keywords cannot include any special characters except \"-\""):validationData.errors.push("Provide Keywords");
             validationData.errorFields.push("#keywords");
         }
@@ -728,7 +743,7 @@ let validateChannelsForm=function(){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#product");
         }
-        if(document.querySelector('#page').value!=="" && !/^[a-z0-9-]{1,10}$/i.test(document.querySelector('#page').value)){
+        if(document.querySelector('#page').value!=="" && !/^[a-z0-9-]{1,25}$/i.test(document.querySelector('#page').value)){
             document.querySelector('#page').value!==""?validationData.errors.push("Page cannot include any special characters except \"-\""):validationData.errors.push("Provide a Page");
             validationData.errorFields.push("#page");
         }
@@ -737,7 +752,7 @@ let validateChannelsForm=function(){
             validationData.displayAbbrList=true;
             validationData.errorFields.push("#page");
         }
-        if(document.querySelector('#plcment').value!=="" && !/^[a-z0-9-]{1,10}$/i.test(document.querySelector('#plcment').value)){
+        if(document.querySelector('#plcment').value!=="" && !/^[a-z0-9-]{1,25}$/i.test(document.querySelector('#plcment').value)){
             document.querySelector('#plcment').value!==""?validationData.errors.push("Placement cannot include any special characters except \"-\""):validationData.errors.push("Provide a Placement");
             validationData.errorFields.push("#plcment");
         }
@@ -795,7 +810,7 @@ let validateForm=function(){
             validationData.errors.push("Provide a valid URL. Eg. www.qantas.com/au/en.html");
             validationData.errorFields.push("#link");
         }
-        if(!/^[a-z0-9-]{1,10}$/i.test(document.querySelector('#cname').value)){
+        if(!/^[a-z0-9-]{1,25}$/i.test(document.querySelector('#cname').value)){
             document.querySelector('#cname').value!==""?validationData.errors.push("Campaign name cannot include any special characters except \"-\""):validationData.errors.push("Provide a Campaign name");
             validationData.errorFields.push("#cname");
         }
@@ -816,6 +831,11 @@ let validateForm=function(){
         if(document.querySelector('#externalCampaign').checked){
             validationData.displayValue+="External";
         }
+        /*
+        Spotlight - 300M$ - 1950CR - PC(6)10$ 390CR, X(12) 20$ 1560CR, PS(15) 20$ 1950CR, AN(10) 5$ 325CR, IO(10) 5$ 325CR - 1300CR
+        Soldier - 300M$ - PC(6)10$ 390CR, X(12) 20$ 1560CR, PS(15) 20$ 1950CR, AN(10) 5$ 325CR, IO(10) 5$ 325CR - 2925 CR(Final)
+        */
+
         validationData.displayValue+=(" | "+document.querySelector('#country').value);
         if(!isInternalCampaign){
             validationData.displayValue+=(" | "+document.querySelector('#businessUnit').value);
@@ -858,7 +878,73 @@ let validateField=function(){
                         if(typeof validationAPI[index].validationMethod=="undefined"){
                             throw "Internal Error";
                         }
+                        var validationKey=validationAPI[index].validationKey;
                         var isValid=(validationmethods[validationAPI[index].validationMethod](param));
+                        if(validationKey=="placement" && !/^[a-z0-9-]{1,25}$/i.test(param)){
+                            if(param.length>25){
+                                urlObject.error.push("Placement cannot be more than 25 characters"+"::"+param);
+                                isValid=true;
+                            }else{
+                                param!==""?urlObject.error.push("Placement cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide a Placement");
+                                isValid=true;
+                            }
+                        }else{
+                            isValid=true;//Placement can be entered manually
+                        }
+                        if(validationKey=="cname" && !/^[a-z0-9-]{1,25}$/i.test(param)){
+                            if(param.length>25){
+                                urlObject.error.push("Campaign name cannot be more than 25 characters"+"::"+param);
+                                isValid=true;
+                            }else{
+                                param!==""?urlObject.error.push("Campaign name cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide a Campaign name");
+                                isValid=true;
+                            }
+                        }
+                        if(validationKey=="page" && !/^[a-z0-9-]{1,25}$/i.test(param)){
+                            if(param.length>25){
+                                urlObject.error.push("Page name cannot be more than 25 characters"+"::"+param);
+                                isValid=true;
+                            }else{
+                                param!==""?urlObject.error.push("Page name cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide a Page name");
+                                isValid=true;
+                            }
+                        }
+                        if(validationKey=="ptype" && !/^[a-z0-9-]{0,25}$/i.test(param)){
+                            if(param.length>25){
+                                urlObject.error.push("Placement type cannot be more than 25 characters"+"::"+param);
+                                isValid=true;
+                            }else{
+                                param!==""?urlObject.error.push("Placement type cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide a Placement type");
+                                isValid=true;
+                            }
+                        }
+                        if(validationKey=="ctype" && !/^[a-z0-9-]{0,25}$/i.test(param)){
+                            if(param.length>25){
+                                urlObject.error.push("Campaign type cannot be more than 25 characters"+"::"+param);
+                                isValid=true;
+                            }else{
+                                param!==""?urlObject.error.push("Campaign type cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide a Campaign type");
+                                isValid=true;
+                            }
+                        }
+                        if(validationKey=="segment" && !/^[a-z0-9-]{0,25}$/i.test(param)){
+                            if(param.length>25){
+                                urlObject.error.push("Segment cannot be more than 25 characters"+"::"+param);
+                                isValid=true;
+                            }else{
+                                param!==""?urlObject.error.push("Segment cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide a Segment");
+                                isValid=true;
+                            }
+                        }
+                        if(validationKey=="keywords" && !/^[a-z0-9-]{0,25}$/i.test(param)){
+                            if(param.length>25){
+                                urlObject.error.push("Key words cannot be more than 25 characters"+"::"+param);
+                                isValid=true;
+                            }else{
+                                param!==""?urlObject.error.push("Key words cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide Key words");
+                                isValid=true;
+                            } 
+                        }
                         if(!isValid){
                             urlObject.error.push(validationAPI[index].validationError+"::"+param);
                         }
@@ -891,6 +977,7 @@ let validationmethods={
     isValidPlacementOrCampaignInt:isValidPlacementOrCampaignInt,
     isValidLanguage:isValidLanguage,
     isValidProduct:isValidProduct,
+    isValidPlacementCode:isValidPlacementCode,
     isValidURL:isValidURL
 }
 

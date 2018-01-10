@@ -405,7 +405,6 @@ let displayResults=function(errorsArray){
                     document.querySelector('.list-group').innerHTML+=('<a href="javascript:void(\'0\');" class="list-group-item list-group-item-action list-group-item-danger"><p>'+(error.url!=""?error.url:"No url entered for validation")+'</p>'+errors+'</a>');
                 }
             });
-            localStorage.setItem('validationResults',document.querySelector('.list-group').innerHTML);
         }
     },function(error){
         console.error('Error',error);
