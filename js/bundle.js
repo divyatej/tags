@@ -1,7 +1,7 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Library = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 let countryCodesList='ar,au,at,be,br,ca,cl,cn,fj,fi,fr,pf,de,gl,hk,in,id,ie,it,jp,kr,mx,nl,nc,nz,na,pg,ph,sg,za,sa,es,ch,tw,th,ae,gb,us,vu,vn';
 let businessUnitCodesList='qd,re,ql,rp,pro,dg,sbu,qs,eq,cs,fs,pt,om,aq,gc,rs,mv,gcc,gcp,as,ff,ccr,acc';
-let agencyCodesList='omd,in,15b,blue 449,zenith opti media,perfomics,iclick,mindshare,maxus,int';
+let agencyCodesList='omd,in,15b,blue449,zenith opti media,perfomics,iclick,mindshare,maxus,int';
 let channelCodesList='edm,sem,dis,os,ps,pr,prs,bb,tv,rd,ol,af,cm';
 let languagesList='en,zh_CN,zh_TW,ja,de,fr,es';
 let productsList='flights,cars,hotels,baggage,seats,transfers,activities,insurance,manage-your-trip,qantas-store,epiqure,cash,financial-services,points,online-mall,aquire,golf-club,restaurants,movies,gift-cards-cash,gift-cards-points,assure,frequent-flyer';
@@ -831,11 +831,6 @@ let validateForm=function(){
         if(document.querySelector('#externalCampaign').checked){
             validationData.displayValue+="External";
         }
-        /*
-        Spotlight - 300M$ - 1950CR - PC(6)10$ 390CR, X(12) 20$ 1560CR, PS(15) 20$ 1950CR, AN(10) 5$ 325CR, IO(10) 5$ 325CR - 1300CR
-        Soldier - 300M$ - PC(6)10$ 390CR, X(12) 20$ 1560CR, PS(15) 20$ 1950CR, AN(10) 5$ 325CR, IO(10) 5$ 325CR - 2925 CR(Final)
-        */
-
         validationData.displayValue+=(" | "+document.querySelector('#country').value);
         if(!isInternalCampaign){
             validationData.displayValue+=(" | "+document.querySelector('#businessUnit').value);
@@ -879,7 +874,7 @@ let validateField=function(){
                             throw "Internal Error";
                         }
                         var validationKey=validationAPI[index].validationKey;
-                        var isValid=(validationmethods[validationAPI[index].validationMethod](param));
+                        var isValid=(validationKey=="keywords")?(validationmethods[validationAPI[index].validationMethod](param,true)):(validationmethods[validationAPI[index].validationMethod](param));
                         if(validationKey=="placement" && !/^[a-z0-9-]{1,25}$/i.test(param)){
                             if(param.length>25){
                                 urlObject.error.push("Placement cannot be more than 25 characters"+"::"+param);
@@ -888,7 +883,7 @@ let validateField=function(){
                                 param!==""?urlObject.error.push("Placement cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide a Placement");
                                 isValid=true;
                             }
-                        }else{
+                        }else if(validationKey=="placement"){
                             isValid=true;//Placement can be entered manually
                         }
                         if(validationKey=="cname" && !/^[a-z0-9-]{1,25}$/i.test(param)){
@@ -935,15 +930,6 @@ let validateField=function(){
                                 param!==""?urlObject.error.push("Segment cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide a Segment");
                                 isValid=true;
                             }
-                        }
-                        if(validationKey=="keywords" && !/^[a-z0-9-]{0,25}$/i.test(param)){
-                            if(param.length>25){
-                                urlObject.error.push("Key words cannot be more than 25 characters"+"::"+param);
-                                isValid=true;
-                            }else{
-                                param!==""?urlObject.error.push("Key words cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide Key words");
-                                isValid=true;
-                            } 
                         }
                         if(!isValid){
                             urlObject.error.push(validationAPI[index].validationError+"::"+param);

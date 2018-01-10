@@ -388,7 +388,7 @@ let validateField=function(){
                             throw "Internal Error";
                         }
                         var validationKey=validationAPI[index].validationKey;
-                        var isValid=(validationmethods[validationAPI[index].validationMethod](param));
+                        var isValid=(validationKey=="keywords")?(validationmethods[validationAPI[index].validationMethod](param,true)):(validationmethods[validationAPI[index].validationMethod](param));
                         if(validationKey=="placement" && !/^[a-z0-9-]{1,25}$/i.test(param)){
                             if(param.length>25){
                                 urlObject.error.push("Placement cannot be more than 25 characters"+"::"+param);
@@ -397,7 +397,7 @@ let validateField=function(){
                                 param!==""?urlObject.error.push("Placement cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide a Placement");
                                 isValid=true;
                             }
-                        }else{
+                        }else if(validationKey=="placement"){
                             isValid=true;//Placement can be entered manually
                         }
                         if(validationKey=="cname" && !/^[a-z0-9-]{1,25}$/i.test(param)){
@@ -444,15 +444,6 @@ let validateField=function(){
                                 param!==""?urlObject.error.push("Segment cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide a Segment");
                                 isValid=true;
                             }
-                        }
-                        if(validationKey=="keywords" && !/^[a-z0-9-]{0,25}$/i.test(param)){
-                            if(param.length>25){
-                                urlObject.error.push("Key words cannot be more than 25 characters"+"::"+param);
-                                isValid=true;
-                            }else{
-                                param!==""?urlObject.error.push("Key words cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide Key words");
-                                isValid=true;
-                            } 
                         }
                         if(!isValid){
                             urlObject.error.push(validationAPI[index].validationError+"::"+param);
