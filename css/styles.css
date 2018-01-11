@@ -15,3 +15,49 @@
 .finalTags{
     color:brown;
 }
+
+.btn-primary,.btn-primary:hover,.btn-primary:visited,.btn-primary:focus{
+    background-color: #e00;
+    border:0;
+    box-shadow: 0 0 0.2rem rgba(255,0,0,.5);
+}
+
+.btn-primary:not([disabled]):not(.disabled).active, .btn-primary:not([disabled]):not(.disabled):active, .show>.btn-primary.dropdown-toggle{
+    background-color: #e00;
+    border:0;
+    box-shadow: 0 0 0.2rem rgba(255,0,0,.5);
+}
+.img-thumbnail{
+    padding:0rem;
+    background-color: #fff;
+    border:0px solid #ddd;
+    border-radius: .25rem;
+    transition: all .2s ease-in-out;
+    max-width: 100%;
+    height: auto;
+    top: 1rem;
+    width: 12.875rem;
+    height: 2.5rem;
+    display: block;
+    margin-left:160px;
+}
+
+.logo-oneworld{
+    background-image: url(http://www.qantas.com/etc/designs/qantas/global/img/spritesheet-44c17a2a871b686092b066021387c451.png);
+    background-position: 0 -109px;
+    width: 32px;
+    height: 32px;
+    position: relative;
+    float: left;
+    left: 3rem;
+    display: block;
+    top: 1.5rem;
+    text-indent: 150%;
+    overflow: hidden;
+    margin-left:-34px;
+    margin-top:-18px;
+}
+
+.headerRow{
+    padding:15px;
+}
