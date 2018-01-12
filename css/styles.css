@@ -138,3 +138,11 @@ h1,h2{
 .validateTags{
     margin-left:10px;
 }
+
+.form-check-label{
+    font-size:18px;
+}
+
+.form-check-input{
+    margin-top:0.45rem;
+}
