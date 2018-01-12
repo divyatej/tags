@@ -1,3 +1,8 @@
+@font-face{font-family:'Ciutadella';src:url("../fonts/315CA1_3_0.eot?#iefix") format("embedded-opentype"),url("../fonts/315CA1_3_0.woff2") format("woff2"),url("../fonts/315CA1_3_0.woff") format("woff"),url("../fonts/315CA1_3_0.ttf") format("truetype");font-weight:normal;font-style:normal}
+@font-face{font-family:'Ciutadella';src:url("../fonts/315CA1_1_0.eot?#iefix") format("embedded-opentype"),url("../fonts/315CA1_1_0.woff2") format("woff2"),url("../fonts/315CA1_1_0.woff") format("woff"),url("../fonts/315CA1_1_0.ttf") format("truetype");font-weight:bold;font-style:normal}
+body{
+    font-family:"Ciutadella",Helvetica,Arial,sans-serif;
+}
 .hidden{
     display: none;
 }
@@ -16,7 +21,13 @@
     color:brown;
 }
 
-.btn-primary,.btn-primary:hover,.btn-primary:visited,.btn-primary:focus{
+.btn-primary{
+    background-color: #e0001b;
+    border:0;
+    box-shadow: 0 0 0.2rem #e0001b;
+}
+
+.btn-primary:hover,.btn-primary:visited,.btn-primary:focus{
     background-color: #e00;
     border:0;
     box-shadow: 0 0 0.2rem rgba(255,0,0,.5);
@@ -60,4 +71,70 @@
 
 .headerRow{
     padding:15px;
+}
+
+.header{
+    border-bottom:1px solid #e5e5e5;
+}
+
+.headerRow{
+    margin-left: 291px;
+    margin-right:291px;
+    width:1140px;
+    padding-left:15px;
+    padding-right:15px;
+}
+
+.container{
+    margin-left: 291px;
+    margin-right:291px;
+}
+
+.customcontainer{
+    margin-left:160px;
+}
+
+h1,h2{
+    margin-top:0.67em;
+    margin-bottom:0.67em;
+    font-family:"Ciutadella","Arial Narrow",sans-serif;
+}
+
+.createTags,.validateTags{
+    background: transparent;
+    color:#e0001b;
+    -webkit-font-smoothing:antialiased;
+    border:2px solid #e00;
+    box-shadow: 0 0 0.2rem #fff;
+    font-weight:bold;
+    font-size: 1rem;
+    letter-spacing: .125rem;
+    border-radius: .1875rem;
+    line-height: 1.5rem;
+    text-align: center;
+    padding:.625rem 1.5rem;
+}
+.createTags:hover,.validateTags:hover,.createTags:visited,.createTags:focus,
+.validateTags:hover,.validateTags:visited,.validateTags:focus{
+    color:#cd0000;
+    border:2px solid #cd0000;
+    background: transparent;
+}
+
+.createTags:not([disabled]):not(.disabled).active, .createTags:not([disabled]):not(.disabled):active, .show>.createTags.dropdown-toggle{
+    background: transparent;
+    border:2px solid #e00;
+    box-shadow: 0 0 0.2rem #cd0000;
+    color:#cd0000;
+}
+
+.validateTags:not([disabled]):not(.disabled).active, .validateTags:not([disabled]):not(.disabled):active, .show>.validateTags.dropdown-toggle{
+    background: transparent;
+    border:2px solid #e00;
+    box-shadow: 0 0 0.2rem #cd0000;
+    color:#cd0000;
+}
+
+.validateTags{
+    margin-left:10px;
 }
