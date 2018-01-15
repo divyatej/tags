@@ -146,3 +146,92 @@ h1,h2{
 .form-check-input{
     margin-top:0.45rem;
 }
+
+.radiobutton-icon__box-border{
+    stroke:#dadada;
+}
+
+.radiobutton-icon__box{
+    position: absolute;
+}
+
+.radiobutton-icon__check{
+    position: absolute;
+}
+
+.radiobutton-icon{
+    margin-left:-25px;
+}
+
+.labelText{
+    padding-left:10px;
+}
+
+.form-check-inline{
+    margin-right:0.85rem;
+}
+
+.input-styles{
+    border:2px solid #dadada;
+    border-radius: 0;
+    box-sizing: border-box;
+    color: #323232;
+    font-size: 18px;
+    height: 48px;
+    line-height: 25.5px;
+    padding:10.5px 35px 12px 14px;
+    width:100%;
+    cursor: pointer;
+}
+
+path{
+    fill:#323232;
+}
+
+svg[type=button]{
+    -webkit-appearance: none;
+}
+
+.up-arrow,.down-arrow{
+    bottom:37px;
+    left:319px;
+    position: relative;
+    cursor: pointer;
+}
+
+.qfa1-dropdown-list__list{
+    border-bottom: 2px solid #dadada;
+    border-left: 2px solid #dadada;
+    border-right: 2px solid #dadada;
+    cursor: pointer;
+    list-style-type: none;
+    margin-top:0;
+    max-height:242px;
+    overflow-y: auto;
+    padding-left: 0;
+    top: 0;
+    width:100%;
+    margin-top:-31px;
+}
+
+.qfa1-dropdown-list__list-item:hover{
+    border-left:3px solid #90e2df;
+    background-color: #fff;
+    outline: none;
+}
+
+.qfa1-dropdown-list__list-item{
+    border-top:1px solid #dadada;
+    background-color: #f4f5f6;
+    border-left: 3px solid transparent;
+    font-size: 18px;
+    line-height: 25.5px;
+    min-height:47px;
+    padding:10.5px 21px 10.5px 18px;
+    position: relative;
+    vertical-align: middle;
+}
+
+.form-control:disabled, .form-control[readonly]{
+    background-color: #ffffff;
+}

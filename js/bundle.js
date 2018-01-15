@@ -169,9 +169,9 @@ let editFirstPageTagsData=function(displayValue){
     addEventListenerOnPlcmentSelectBox();
     var isInternalCampaign=false;
     if(displayValue.indexOf("External|")!=-1){
-        document.querySelector('#externalCampaign').click();
+        document.querySelector('.externalCampaign').click();
     }else{
-        document.querySelector('#internalCampaign').click();
+        document.querySelector('.internalCampaign').click();
         isInternalCampaign=true;
     }
     displayValue=displayValue.replace("External|","").replace("Internal|","").trim();
@@ -257,13 +257,54 @@ let getTagsText=function(tags,displayNextValue,isExternalCampaign){
 }
 
 let addEventListenersOnCheckBoxes=function(){
-    document.querySelector('#internalCampaign').addEventListener('click',function(){
+
+    document.querySelectorAll('.qfa1-dropdown-list__list-item').forEach(function(elem){
+      elem.addEventListener('click',function(){
+        console.log(this.parentNode.parentNode.querySelector('select').id);
+        console.log(this.attributes['select'].value);
+        var id=this.parentNode.parentNode.querySelector('select').id;
+        document.querySelector('#'+id+' [value="' + this.attributes['select'].value + '"]').selected = true;
+        document.querySelector('#'+id+'temp').value=this.attributes['selectabbr'].value;
+        replaceArrows(this);
+    });  
+    });
+
+    document.querySelector('.internalCampaign').addEventListener('click',function(){
+        document.querySelector('#internalCampaign').attributes.setNamedItem(document.createAttribute('checked'));
+        document.querySelector('#externalCampaign').attributes['checked'] && document.querySelector('#externalCampaign').attributes.removeNamedItem('checked');
+        document.querySelector('.radiobutton-icon__check.internalCampaign').classList.remove('hidden');
+        document.querySelector('.radiobutton-icon__check.externalCampaign').classList.add('hidden');
         displayCampaignForm('.internal','.external');
     });
     
-    document.querySelector('#externalCampaign').addEventListener('click',function(){
+    document.querySelector('.externalCampaign').addEventListener('click',function(){
+        document.querySelector('#externalCampaign').attributes.setNamedItem(document.createAttribute('checked'));
+        document.querySelector('#internalCampaign').attributes['checked'] && document.querySelector('#internalCampaign').attributes.removeNamedItem('checked');
+        document.querySelector('.radiobutton-icon__check.externalCampaign').classList.remove('hidden');
+        document.querySelector('.radiobutton-icon__check.internalCampaign').classList.add('hidden');
         displayCampaignForm('.external','.internal');
     });
+
+    document.querySelector('.input-styles').addEventListener('click',function(){
+        replaceArrows();
+        
+    })
+    document.querySelector('.down-arrow').addEventListener('click',function(){
+        replaceArrows();
+    })
+}
+
+let replaceArrows=function(elem){
+        var node=typeof elem!=="undefined"?elem.parentNode.parentNode:document;
+        if(node.querySelector('.down-arrow').classList.value.includes('hidden')){
+            node.querySelector('.down-arrow').classList.remove('hidden');
+            node.querySelector('.up-arrow').classList.add('hidden');
+            node.querySelector('.qfa1-dropdown-list__list').classList.add('hidden');
+        }else{
+            node.querySelector('.up-arrow').classList.remove('hidden');
+            node.querySelector('.down-arrow').classList.add('hidden');
+            node.querySelector('.qfa1-dropdown-list__list').classList.remove('hidden');
+        }
 }
 
 let displayCampaignForm=function(campaignType,hideCampaign){

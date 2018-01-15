@@ -4,19 +4,20 @@
         <h2>Who needs it and what campaign is it for?</h2>
         <form id="form">
                 <div class="form-group">
-
-                </div>
-                <div class="form-group">
                         <div class="row">
-                                <div class="col-lg-4 col-lg-offset-4">
+                                <div class="col-lg-6 col-lg-offset-4">
                                         <div class="form-check form-check-inline">
                                                 <label class="form-check-label">
-                                                  <input class="form-check-input" type="radio" name="campaign" id="externalCampaign" value="externalCampaign" checked> External Campaign
+                                                  <div class="radiobutton-icon externalCampaign" role="presentation"><div class="radiobutton-icon__box" tabindex="-1"><svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" aria-hidden="true" role="presentation" tabindex="-1" focusable="false"><title>Radiobutton</title><g stroke="none" stroke-width="2" fill="none" fill-rule="evenodd"><g transform="translate(-1286.000000, -1543.000000)" class="radiobutton-icon__box-border"><g transform="translate(485.000000, 1478.000000)"><circle cx="813" cy="77" r="10" fill="#ffffff" width="24" height="24"></circle></g></g></g></svg></div>
+                                                  <div class="radiobutton-icon__check externalCampaign" tabindex="-1"><svg width="24px" fill="none" height="24px" viewBox="0 0 48 48" version="1.1" aria-hidden="true" role="presentation" tabindex="-1" focusable="false"><title>selected</title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-1297.000000, -1555.000000)"><g transform="translate(497.000000, 1490.000000)"><circle cx="824" cy="89" r="8" fill="#4A4A4A" width="24" height="24"></circle></g></g></g></svg></div></div>
+                                                  <input class="form-check-input hidden" type="radio" name="campaign" id="externalCampaign" value="externalCampaign" checked> <span class="labelText">External Campaign</span>
                                                 </label>
                                               </div>
                                               <div class="form-check form-check-inline">
                                                 <label class="form-check-label">
-                                                  <input class="form-check-input" type="radio" name="campaign" id="internalCampaign" value="internalCampaign"> Internal Campaign
+                                                  <div class="radiobutton-icon internalCampaign" role="presentation"><div class="radiobutton-icon__box" tabindex="-1"><svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" aria-hidden="true" role="presentation" tabindex="-1" focusable="false"><title>Radiobutton</title><g stroke="none" stroke-width="2" fill="none" fill-rule="evenodd"><g transform="translate(-1286.000000, -1543.000000)" class="radiobutton-icon__box-border"><g transform="translate(485.000000, 1478.000000)"><circle cx="813" cy="77" r="10" fill="#ffffff" width="24" height="24"></circle></g></g></g></svg></div>
+                                                  <div class="radiobutton-icon__check hidden internalCampaign" tabindex="-1"><svg width="24px" fill="none" height="24px" viewBox="0 0 48 48" version="1.1" aria-hidden="true" role="presentation" tabindex="-1" focusable="false"><title>selected</title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-1297.000000, -1555.000000)"><g transform="translate(497.000000, 1490.000000)"><circle cx="824" cy="89" r="8" fill="#4A4A4A" width="24" height="24"></circle></g></g></g></svg></div></div>
+                                                  <input class="form-check-input hidden" type="radio" name="campaign" id="internalCampaign" value="internalCampaign"> <span class="labelText">Internal Campaign</span>
                                                 </label>
                                         </div>
                                 </div>
@@ -26,7 +27,52 @@
                         <div class="row">
                                 <div class="col-lg-4 col-lg-offset-4">
                                         <label for="country">Country</label>
-                                        <select class="form-control form-control-sm" id="country">
+                                        <input type="text" class="form-control input-styles" id="countrytemp" value="Australia" readonly>
+                                        <div class="qfa1-arrow-icon__dropdown qfa1-arrow-icon down-arrow" tabindex="-1" role="button"><svg width="24px" height="24px" viewBox="0 0 48 48" type="button" version="1.1" aria-hidden="true" role="presentation" tabindex="-1" focusable="false" style="background-color: rgb(255, 255, 255);"><title><!-- react-text: 153 -->Arrow <!-- /react-text --><!-- react-text: 154 -->down<!-- /react-text --></title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-1972, -1755)"><g transform="translate(485, 1478)"><g transform="translate(1275, 210)"><path d="M245,88.8026316 L242.24569,86 L236,92.3552632 L229.75431,86 L227,88.8026316 L236,98 L245,88.8026316 Z"></path></g></g></g></g></svg></div>
+                                        <div class="qfa1-arrow-icon__dropdown qfa1-arrow-icon up-arrow hidden" tabindex="-1" role="button"><svg width="24px" height="24px" viewBox="0 0 48 48" type="button" version="1.1" aria-hidden="true" role="presentation" tabindex="-1" focusable="false" style="background-color: rgb(255, 255, 255);"><title><!-- react-text: 153 -->Arrow <!-- /react-text --><!-- react-text: 154 -->up<!-- /react-text --></title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-1172, -1755)"><g transform="translate(425, 1408)"><g transform="translate(532, 281)"><path d="M248,87.8026316 L245.24569,85 L239,91.3552632 L232.75431,85 L230,87.8026316 L239,97 L248,87.8026316 Z" transform="translate(239, 91) scale(1, -1) translate(-239, -91) "></path></g></g></g></g></g></svg></div>
+                                        <ul class="qfa1-dropdown-list__list hidden" role="listbox" id="select-picker-select-input-countryOfResidencelist" tabindex="-1">
+                                                <li role="option" select="ar" selectabbr="Argentina" class="qfa1-dropdown-list__list-item"><div>Argentina</div></li>
+                                                <li role="option" select="au" selectabbr="Australia" class="qfa1-dropdown-list__list-item"><div>Australia</div></li>
+                                                <li role="option" select="at" selectabbr="Austria" class="qfa1-dropdown-list__list-item"><div>Austria</div></li>
+                                                <li role="option" select="be" selectabbr="Belgium" class="qfa1-dropdown-list__list-item"><div>Belgium</div></li>
+                                                <li role="option" select="br" selectabbr="Brazil" class="qfa1-dropdown-list__list-item"><div>Brazil</div></li>
+                                                <li role="option" select="ca" selectabbr="Canada" class="qfa1-dropdown-list__list-item"><div>Canada</div></li>
+                                                <li role="option" select="cl" selectabbr="Chile" class="qfa1-dropdown-list__list-item"><div>Chile</div></li>
+                                                <li role="option" select="cn" selectabbr="China" class="qfa1-dropdown-list__list-item"><div>China</div></li>
+                                                <li role="option" select="fj" selectabbr="Fiji" class="qfa1-dropdown-list__list-item"><div>Fiji</div></li>
+                                                <li role="option" select="fi" selectabbr="Finland" class="qfa1-dropdown-list__list-item"><div>Finland</div></li>
+                                                <li role="option" select="fr" selectabbr="France" class="qfa1-dropdown-list__list-item"><div>France</div></li>
+                                                <li role="option" select="pf" selectabbr="French Polynesia" class="qfa1-dropdown-list__list-item"><div>French Polynesia</div></li>
+                                                <li role="option" select="de" selectabbr="Germany" class="qfa1-dropdown-list__list-item"><div>Germany</div></li>
+                                                <li role="option" select="gl" selectabbr="Global" class="qfa1-dropdown-list__list-item"><div>Global</div></li>
+                                                <li role="option" select="hk" selectabbr="Hong Kong" class="qfa1-dropdown-list__list-item"><div>Hong Kong</div></li>
+                                                <li role="option" select="in" selectabbr="India" class="qfa1-dropdown-list__list-item"><div>India</div></li>
+                                                <li role="option" select="id" selectabbr="Indonesia" class="qfa1-dropdown-list__list-item"><div>Indonesia</div></li>
+                                                <li role="option" select="ie" selectabbr="Ireland" class="qfa1-dropdown-list__list-item"><div>Ireland</div></li>
+                                                <li role="option" select="it" selectabbr="Italy" class="qfa1-dropdown-list__list-item"><div>Italy</div></li>
+                                                <li role="option" select="jp" selectabbr="Japan" class="qfa1-dropdown-list__list-item"><div>Japan</div></li>
+                                                <li role="option" select="kr" selectabbr="Korea" class="qfa1-dropdown-list__list-item"><div>Korea</div></li>
+                                                <li role="option" select="mx" selectabbr="Mexico" class="qfa1-dropdown-list__list-item"><div>Mexico</div></li>
+                                                <li role="option" select="nl" selectabbr="Netherlands" class="qfa1-dropdown-list__list-item"><div>Netherlands</div></li>
+                                                <li role="option" select="nc" selectabbr="New Caledonia" class="qfa1-dropdown-list__list-item"><div>New Caledonia</div></li>
+                                                <li role="option" select="nz" selectabbr="New Zealand" class="qfa1-dropdown-list__list-item"><div>New Zealand</div></li>
+                                                <li role="option" select="na" selectabbr="North America" class="qfa1-dropdown-list__list-item"><div>North America</div></li>
+                                                <li role="option" select="pg" selectabbr="Papua New Guinea" class="qfa1-dropdown-list__list-item"><div>Papua New Guinea</div></li>
+                                                <li role="option" select="ph" selectabbr="Philippines" class="qfa1-dropdown-list__list-item"><div>Philippines</div></li>
+                                                <li role="option" select="sg" selectabbr="Singapore" class="qfa1-dropdown-list__list-item"><div>Singapore</div></li>
+                                                <li role="option" select="za" selectabbr="South Africa" class="qfa1-dropdown-list__list-item"><div>South Africa</div></li>
+                                                <li role="option" select="sa" selectabbr="South America" class="qfa1-dropdown-list__list-item"><div>South America</div></li>
+                                                <li role="option" select="es" selectabbr="Spain" class="qfa1-dropdown-list__list-item"><div>Spain</div></li>
+                                                <li role="option" select="ch" selectabbr="Switzerland" class="qfa1-dropdown-list__list-item"><div>Switzerland</div></li>
+                                                <li role="option" select="tw" selectabbr="Taiwan" class="qfa1-dropdown-list__list-item"><div>Taiwan</div></li>
+                                                <li role="option" select="th" selectabbr="Thailand" class="qfa1-dropdown-list__list-item"><div>Thailand</div></li>
+                                                <li role="option" select="ae" selectabbr="United Arab Emirates" class="qfa1-dropdown-list__list-item"><div>United Arab Emirates</div></li>
+                                                <li role="option" select="gb" selectabbr="United Kingdom" class="qfa1-dropdown-list__list-item"><div>United Kingdom</div></li>
+                                                <li role="option" select="us" selectabbr="United States" class="qfa1-dropdown-list__list-item"><div>United States</div></li>
+                                                <li role="option" select="vu" selectabbr="Venuatu" class="qfa1-dropdown-list__list-item"><div>Venuatu</div></li>
+                                                <li role="option" select="vn" selectabbr="Vietnam" class="qfa1-dropdown-list__list-item"><div>Vietnam</div></li>
+                                        </ul>
+                                        <select class="form-control form-control-sm hidden" id="country">
                                                 <option value="ar">Argentina</option>
                                                 <option value="au" selected>Australia</option>
                                                 <option value="at">Austria</option>
@@ -76,7 +122,52 @@
                         <div class="row">
                                 <div class="col-lg-4 col-lg-offset-4">
                                         <label for="businessUnit">Business unit</label>
-                                        <select class="form-control form-control-sm" id="businessUnit">
+                                        <input type="text" class="form-control input-styles" id="businessUnittemp" value="Qantas Direct" readonly>
+                                        <div class="qfa1-arrow-icon__dropdown qfa1-arrow-icon down-arrow" tabindex="-1" role="button"><svg width="24px" height="24px" viewBox="0 0 48 48" type="button" version="1.1" aria-hidden="true" role="presentation" tabindex="-1" focusable="false" style="background-color: rgb(255, 255, 255);"><title><!-- react-text: 153 -->Arrow <!-- /react-text --><!-- react-text: 154 -->down<!-- /react-text --></title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-1972, -1755)"><g transform="translate(485, 1478)"><g transform="translate(1275, 210)"><path d="M245,88.8026316 L242.24569,86 L236,92.3552632 L229.75431,86 L227,88.8026316 L236,98 L245,88.8026316 Z"></path></g></g></g></g></svg></div>
+                                        <div class="qfa1-arrow-icon__dropdown qfa1-arrow-icon up-arrow hidden" tabindex="-1" role="button"><svg width="24px" height="24px" viewBox="0 0 48 48" type="button" version="1.1" aria-hidden="true" role="presentation" tabindex="-1" focusable="false" style="background-color: rgb(255, 255, 255);"><title><!-- react-text: 153 -->Arrow <!-- /react-text --><!-- react-text: 154 -->up<!-- /react-text --></title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-1172, -1755)"><g transform="translate(425, 1408)"><g transform="translate(532, 281)"><path d="M248,87.8026316 L245.24569,85 L239,91.3552632 L232.75431,85 L230,87.8026316 L239,97 L248,87.8026316 Z" transform="translate(239, 91) scale(1, -1) translate(-239, -91) "></path></g></g></g></g></g></svg></div>
+                                        <ul class="qfa1-dropdown-list__list hidden" role="listbox" id="select-picker-select-input-countryOfResidencelist" tabindex="-1">
+                                                <li role="option" select="ar" selectabbr="Argentina" class="qfa1-dropdown-list__list-item"><div>Argentina</div></li>
+                                                <li role="option" select="au" selectabbr="Australia" class="qfa1-dropdown-list__list-item"><div>Australia</div></li>
+                                                <li role="option" select="at" selectabbr="Austria" class="qfa1-dropdown-list__list-item"><div>Austria</div></li>
+                                                <li role="option" select="be" selectabbr="Belgium" class="qfa1-dropdown-list__list-item"><div>Belgium</div></li>
+                                                <li role="option" select="br" selectabbr="Brazil" class="qfa1-dropdown-list__list-item"><div>Brazil</div></li>
+                                                <li role="option" select="ca" selectabbr="Canada" class="qfa1-dropdown-list__list-item"><div>Canada</div></li>
+                                                <li role="option" select="cl" selectabbr="Chile" class="qfa1-dropdown-list__list-item"><div>Chile</div></li>
+                                                <li role="option" select="cn" selectabbr="China" class="qfa1-dropdown-list__list-item"><div>China</div></li>
+                                                <li role="option" select="fj" selectabbr="Fiji" class="qfa1-dropdown-list__list-item"><div>Fiji</div></li>
+                                                <li role="option" select="fi" selectabbr="Finland" class="qfa1-dropdown-list__list-item"><div>Finland</div></li>
+                                                <li role="option" select="fr" selectabbr="France" class="qfa1-dropdown-list__list-item"><div>France</div></li>
+                                                <li role="option" select="pf" selectabbr="French Polynesia" class="qfa1-dropdown-list__list-item"><div>French Polynesia</div></li>
+                                                <li role="option" select="de" selectabbr="Germany" class="qfa1-dropdown-list__list-item"><div>Germany</div></li>
+                                                <li role="option" select="gl" selectabbr="Global" class="qfa1-dropdown-list__list-item"><div>Global</div></li>
+                                                <li role="option" select="hk" selectabbr="Hong Kong" class="qfa1-dropdown-list__list-item"><div>Hong Kong</div></li>
+                                                <li role="option" select="in" selectabbr="India" class="qfa1-dropdown-list__list-item"><div>India</div></li>
+                                                <li role="option" select="id" selectabbr="Indonesia" class="qfa1-dropdown-list__list-item"><div>Indonesia</div></li>
+                                                <li role="option" select="ie" selectabbr="Ireland" class="qfa1-dropdown-list__list-item"><div>Ireland</div></li>
+                                                <li role="option" select="it" selectabbr="Italy" class="qfa1-dropdown-list__list-item"><div>Italy</div></li>
+                                                <li role="option" select="jp" selectabbr="Japan" class="qfa1-dropdown-list__list-item"><div>Japan</div></li>
+                                                <li role="option" select="kr" selectabbr="Korea" class="qfa1-dropdown-list__list-item"><div>Korea</div></li>
+                                                <li role="option" select="mx" selectabbr="Mexico" class="qfa1-dropdown-list__list-item"><div>Mexico</div></li>
+                                                <li role="option" select="nl" selectabbr="Netherlands" class="qfa1-dropdown-list__list-item"><div>Netherlands</div></li>
+                                                <li role="option" select="nc" selectabbr="New Caledonia" class="qfa1-dropdown-list__list-item"><div>New Caledonia</div></li>
+                                                <li role="option" select="nz" selectabbr="New Zealand" class="qfa1-dropdown-list__list-item"><div>New Zealand</div></li>
+                                                <li role="option" select="na" selectabbr="North America" class="qfa1-dropdown-list__list-item"><div>North America</div></li>
+                                                <li role="option" select="pg" selectabbr="Papua New Guinea" class="qfa1-dropdown-list__list-item"><div>Papua New Guinea</div></li>
+                                                <li role="option" select="ph" selectabbr="Philippines" class="qfa1-dropdown-list__list-item"><div>Philippines</div></li>
+                                                <li role="option" select="sg" selectabbr="Singapore" class="qfa1-dropdown-list__list-item"><div>Singapore</div></li>
+                                                <li role="option" select="za" selectabbr="South Africa" class="qfa1-dropdown-list__list-item"><div>South Africa</div></li>
+                                                <li role="option" select="sa" selectabbr="South America" class="qfa1-dropdown-list__list-item"><div>South America</div></li>
+                                                <li role="option" select="es" selectabbr="Spain" class="qfa1-dropdown-list__list-item"><div>Spain</div></li>
+                                                <li role="option" select="ch" selectabbr="Switzerland" class="qfa1-dropdown-list__list-item"><div>Switzerland</div></li>
+                                                <li role="option" select="tw" selectabbr="Taiwan" class="qfa1-dropdown-list__list-item"><div>Taiwan</div></li>
+                                                <li role="option" select="th" selectabbr="Thailand" class="qfa1-dropdown-list__list-item"><div>Thailand</div></li>
+                                                <li role="option" select="ae" selectabbr="Thailand" class="qfa1-dropdown-list__list-item"><div>United Arab Emirates</div></li>
+                                                <li role="option" select="gb" selectabbr="United Kingdom" class="qfa1-dropdown-list__list-item"><div>United Kingdom</div></li>
+                                                <li role="option" select="us" selectabbr="United States" class="qfa1-dropdown-list__list-item"><div>United States</div></li>
+                                                <li role="option" select="vu" selectabbr="Venuatu" class="qfa1-dropdown-list__list-item"><div>Venuatu</div></li>
+                                                <li role="option" select="vn" selectabbr="Vietnam" class="qfa1-dropdown-list__list-item"><div>Vietnam</div></li>
+                                        </ul>
+                                        <select class="form-control form-control-sm hidden" id="businessUnit">
                                                 <option value="Select">Select a Qantas Business unit</option>
                                                 <option value="qd" selected>Qantas Direct</option>
                                                 <option value="re">Regional</option>
@@ -146,7 +237,7 @@
                         <div class="row">
                                 <div class="col-lg-4 col-lg-offset-4">
                                         <label for="link">Link</label>
-                                        <input type="text" class="form-control" id="link" placeholder="Eg www.qantas.com/au/en.html">
+                                        <input type="text" class="form-control input-styles" id="link" placeholder="Eg www.qantas.com/au/en.html">
                                 </div>
                         </div>
                 </div>
@@ -154,7 +245,7 @@
                         <div class="row">
                                 <div class="col-lg-4 col-lg-offset-4">
                                         <label for="cname">Campaign name</label>
-                                        <input type="text" class="form-control" id="cname" placeholder="Eg TTAS" maxlength="25">
+                                        <input type="text" class="form-control input-styles" id="cname" placeholder="Eg TTAS" maxlength="25">
                                 </div>
                         </div>
                 </div>
