@@ -122,17 +122,22 @@ let editFirstPageTagsData=function(displayValue){
     displayValue=displayValue.replace("External|","").replace("Internal|","").trim();
     displayValue.split('|').forEach(function(tag,index){
         switch(index){
-            case 0:document.querySelector('#country [value="' + tag + '"]').selected = true;break;
+            case 0:document.querySelector('#country [value="' + tag + '"]').selected = true;
+                   document.querySelector('#countrytemp').value=document.querySelector('#country').options[document.querySelector('#country').selectedIndex].text; 
+                   break;
             case 1:
                 if(!isInternalCampaign){
                     document.querySelector('#businessUnit [value="' + tag + '"]').selected = true;
+                    document.querySelector('#businessUnittemp').value=document.querySelector('#businessUnit').options[document.querySelector('#businessUnit').selectedIndex].text; 
                 }else{
                     document.querySelector('#language [value="' + tag + '"]').selected = true;
+                    document.querySelector('#languagetemp').value=document.querySelector('#language').options[document.querySelector('#language').selectedIndex].text; 
                 }
                 break;
             case 2:
                 if(!isInternalCampaign){
                     document.querySelector('#agency [value="' + tag + '"]').selected = true;
+                    document.querySelector('#agencytemp').value=document.querySelector('#agency').options[document.querySelector('#agency').selectedIndex].text; 
                 }else{
                     if(tag!='n'){
                         document.querySelector('#cname').value = tag;   
@@ -205,8 +210,6 @@ let addEventListenersOnCheckBoxes=function(){
 
     document.querySelectorAll('.qfa1-dropdown-list__list-item').forEach(function(elem){
       elem.addEventListener('click',function(){
-        console.log(this.parentNode.parentNode.querySelector('select').id);
-        console.log(this.attributes['select'].value);
         var id=this.parentNode.parentNode.querySelector('select').id;
         document.querySelector('#'+id+' [value="' + this.attributes['select'].value + '"]').selected = true;
         document.querySelector('#'+id+'temp').value=this.attributes['selectabbr'].value;
@@ -230,12 +233,16 @@ let addEventListenersOnCheckBoxes=function(){
         displayCampaignForm('.external','.internal');
     });
 
-    document.querySelector('.input-styles').addEventListener('click',function(){
-        replaceArrows();
-        
+    document.querySelectorAll('.input-styles').forEach(function(elem){
+        elem.addEventListener('click',function(){
+            replaceArrows(elem);
+        })
     })
-    document.querySelector('.down-arrow').addEventListener('click',function(){
-        replaceArrows();
+
+    document.querySelectorAll('.down-arrow').forEach(function(elem){
+        elem.addEventListener('click',function(){
+            replaceArrows();
+        });
     })
 }
 

@@ -184,6 +184,22 @@ h1,h2{
     cursor: pointer;
 }
 
+.input-styles-noclick{
+    border:2px solid #dadada;
+    border-radius: 0;
+    box-sizing: border-box;
+    color: #323232;
+    font-size: 18px;
+    height: 48px;
+    line-height: 25.5px;
+    padding:10.5px 35px 12px 14px;
+    width:100%;
+}
+
+.increased-margin{
+    margin-bottom:2.75rem;
+}
+
 path{
     fill:#323232;
 }
@@ -234,4 +250,20 @@ svg[type=button]{
 
 .form-control:disabled, .form-control[readonly]{
     background-color: #ffffff;
+}
+
+.submit-button{
+    height:48px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 1.5px;
+    text-align: center;
+    text-transform: uppercase;
+    width:49%;
+    border-radius: 4px;
+    padding-top:11px;
+    padding-bottom:1px;
+    padding-left:6px;
+    padding-right: 6px;
 }
