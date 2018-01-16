@@ -10,7 +10,6 @@ body{
     color:green
 }
 .customAnchor{
-    float: right;
     margin-top: 10px;
 }
 .fa-minus-square{
@@ -266,4 +265,17 @@ svg[type=button]{
     padding-bottom:1px;
     padding-left:6px;
     padding-right: 6px;
+}
+
+a.anchor-display,a.anchor-display:hover{
+    color: red;
+    font-size: 18px;
+}
+
+.invalid-feedback{
+    font-size: 18px;
+}
+
+.add-margin{
+    margin-bottom: 35px;
 }

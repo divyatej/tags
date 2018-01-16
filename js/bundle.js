@@ -74,18 +74,20 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             //<a href="javascript:void('0');"><i class="fa fa-minus-square" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
             if(template.indexOf('createTagsChannels')!=-1){
                 addEventListenerOnPlcmentSelectBox();
+                addEventListenersOnCheckBoxes();
             }
-            document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
+            document.querySelector('.exisitngInfo').innerHTML='<a class="anchor-display" href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
             if(valuesHTML!=''){
                 document.querySelector('.values').innerHTML=valuesHTML;    
             }
             var icon=document.createElement('a');
+            icon.className="anchor-display";
             icon.innerHTML="<i class=\"fa fa-minus-square "+displayNextValue.split(' ').join('').split('|').join("")+"\" aria-hidden=\"true\"></i>";
             icon.href="javascript:lib.removeTag('"+displayNextValue.split(' ').join('').split('|').join("")+"');";
             document.querySelector('.values').appendChild(icon);
             var element=document.createElement('a');
             element.innerHTML=displayNextValue;
-            element.className=displayNextValue.split(' ').join('').split('|').join("") + " anchorTag";
+            element.className=displayNextValue.split(' ').join('').split('|').join("") + " anchorTag anchor-display";
             element.href="javascript:lib.editTag('"+displayNextValue.split(' ').join('').split('|').join("")+"');";
             document.querySelector('.values').appendChild(element);
             var breakElement=document.createElement('br');
@@ -100,7 +102,7 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         //This is for confirmation page
         else if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined"){
             localStorage.setItem('exisitngInfo',displayValue);
-            document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
+            document.querySelector('.exisitngInfo').innerHTML='<a class="anchor-display" href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
             var indexCount=0;
             var isMoreThanOne=false;
             if(values!=null && values!=''){
@@ -108,7 +110,7 @@ let respondToRequest=function(template,displayValue,displayNextValue){
                         if(tag.trim()!=''){
                             isMoreThanOne=true;
                             indexCount=index;
-                            let anchorHTML="<a href=\"javascript:lib.editFinalTag('"+index+"');\">";
+                            let anchorHTML="<a class=\"anchor-display\" href=\"javascript:lib.editFinalTag('"+index+"');\">";
                             document.querySelector('.exisitngInfoNext').innerHTML+=(anchorHTML+'<u>'+tag+'</u></a><br/>');
                             let isExternalCampaign=false;
                             if(displayValue.indexOf('External')!=-1){
@@ -127,7 +129,7 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             }
             localStorage.setItem('tagEdited',indexCount);
             //Add the things that are present in fields when generate button is clicked
-            let anchorHTML="<a href=\"javascript:lib.editFinalTag('"+indexCount+"');\">";
+            let anchorHTML="<a class=\"anchor-display\" href=\"javascript:lib.editFinalTag('"+indexCount+"');\">";
             document.querySelector('.exisitngInfoNext').innerHTML+=(anchorHTML+'<u>'+displayNextValue+'</u></a>');
             localStorage.setItem('exisitngInfoNext',document.querySelector('.exisitngInfoNext').innerText);
             let tags=displayValue.split(' ').join('').replace("External|","").replace("Internal|","");
@@ -140,8 +142,8 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             if(displayNextValue!==''){
                 tags=getTagsText(tags,displayNextValue,isExternalCampaign);
                 document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+'<strong><br/>');
-                var lastAnchor="<a href=\"javascript:lib.removeTag('"+displayNextValue.split('').join('').split('|').join('')+"');\"><i class=\"fa fa-minus-square "+displayNextValue.split(' ').join('').split('|').join('')+"\"></i></a>";
-                var anotherAnchor="<a class=\""+displayNextValue.split(' ').join('').split('|').join('')+" anchorTag\" href=\"javascript:lib.editTag('"+displayNextValue.split(' ').join('').split('|').join('')+"');\">"+displayNextValue+"</a>";
+                var lastAnchor="<a class=\"anchor-display\" href=\"javascript:lib.removeTag('"+displayNextValue.split('').join('').split('|').join('')+"');\"><i class=\"fa fa-minus-square "+displayNextValue.split(' ').join('').split('|').join('')+"\"></i></a>";
+                var anotherAnchor="<a class=\""+displayNextValue.split(' ').join('').split('|').join('')+" anchorTag anchor-display\" href=\"javascript:lib.editTag('"+displayNextValue.split(' ').join('').split('|').join('')+"');\">"+displayNextValue+"</a>";
                 var breakElement="<br class=\""+displayNextValue.split(' ').join('').split('|').join('')+"\">";
                 valuesHTML=valuesHTML+lastAnchor+anotherAnchor+breakElement;
             }     
@@ -151,8 +153,9 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         }
         //This is for adding channel page
         else if(typeof displayValue!=="undefined"){
-            document.querySelector('.exisitngInfo').innerHTML='<a href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
+            document.querySelector('.exisitngInfo').innerHTML='<a class=\"anchor-display\" href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
             addEventListenerOnPlcmentSelectBox();
+            addEventListenersOnCheckBoxes();
         }
         //This is for adding event listeners to campaign checkboxes on first create page
         else if(template=="/include/createTags.html"){
@@ -221,7 +224,7 @@ let editFirstPageTagsData=function(displayValue){
 }
 
 let addEventListenerOnPlcmentSelectBox=function(){
-    document.querySelector('#placement') && document.querySelector('#placement').addEventListener('change', function(event) {
+    document.querySelector('#placementtemp') && document.querySelector('#placementtemp').addEventListener('change', function(event) {
         if(this.value=="other"){
             document.querySelector('.textField').classList.remove('hidden');
         }else{
@@ -263,24 +266,29 @@ let getTagsText=function(tags,displayNextValue,isExternalCampaign){
 
 let addEventListenersOnCheckBoxes=function(){
 
-    document.querySelectorAll('.qfa1-dropdown-list__list-item').forEach(function(elem){
+    document.querySelectorAll('.qfa1-dropdown-list__list-item') && document.querySelectorAll('.qfa1-dropdown-list__list-item').forEach(function(elem){
       elem.addEventListener('click',function(){
         var id=this.parentNode.parentNode.querySelector('select').id;
         document.querySelector('#'+id+' [value="' + this.attributes['select'].value + '"]').selected = true;
         document.querySelector('#'+id+'temp').value=this.attributes['selectabbr'].value;
+        if(id=="placement" && this.attributes['select'].value=="other"){
+            document.querySelector('.textField').classList.remove('hidden');
+        }else{
+            document.querySelector('.textField').classList.add('hidden');
+        }
         replaceArrows(this);
     });  
     });
 
-    document.querySelector('.internalCampaign').addEventListener('click',function(){
+    document.querySelector('.internalCampaign') && document.querySelector('.internalCampaign').addEventListener('click',function(){
         document.querySelector('#internalCampaign').attributes.setNamedItem(document.createAttribute('checked'));
         document.querySelector('#externalCampaign').attributes['checked'] && document.querySelector('#externalCampaign').attributes.removeNamedItem('checked');
         document.querySelector('.radiobutton-icon__check.internalCampaign').classList.remove('hidden');
         document.querySelector('.radiobutton-icon__check.externalCampaign').classList.add('hidden');
         displayCampaignForm('.internal','.external');
     });
-    
-    document.querySelector('.externalCampaign').addEventListener('click',function(){
+
+    document.querySelector('.externalCampaign') && document.querySelector('.externalCampaign').addEventListener('click',function(){
         document.querySelector('#externalCampaign').attributes.setNamedItem(document.createAttribute('checked'));
         document.querySelector('#internalCampaign').attributes['checked'] && document.querySelector('#internalCampaign').attributes.removeNamedItem('checked');
         document.querySelector('.radiobutton-icon__check.externalCampaign').classList.remove('hidden');
@@ -288,13 +296,13 @@ let addEventListenersOnCheckBoxes=function(){
         displayCampaignForm('.external','.internal');
     });
 
-    document.querySelectorAll('.input-styles').forEach(function(elem){
+    document.querySelectorAll('.input-styles') && document.querySelectorAll('.input-styles').forEach(function(elem){
         elem.addEventListener('click',function(){
             replaceArrows(elem);
         })
     })
 
-    document.querySelectorAll('.down-arrow').forEach(function(elem){
+    document.querySelectorAll('.down-arrow') && document.querySelectorAll('.down-arrow').forEach(function(elem){
         elem.addEventListener('click',function(){
             replaceArrows();
         });
@@ -339,7 +347,7 @@ let editTag=function(className,overrideData){
     if(overrideData!=null && overrideData!='' && typeof overrideData!=="undefined"){
         tagData=overrideData;
     }
-    tagData=tagData.split(' ').join('').replace('<spanclass="hidden">','').replace('</span>','');
+    tagData=tagData.split(' ').join('').replace('<span class="hidden">','').replace('</span>','');
     let isExternalCampaign=false;
     if(tagData.indexOf('External')!=-1){
         isExternalCampaign=true;
@@ -354,16 +362,20 @@ let editTag=function(className,overrideData){
             case 0:
             if(isExternalCampaign){
                 document.querySelector('#channel [value="' + tag + '"]').selected = true;
+                document.querySelector('#channeltemp').value=document.querySelector('#channel').options[document.querySelector('#channel').selectedIndex].text; 
             }else{
                 document.querySelector('#product [value="' + tag + '"]').selected = true;
+                document.querySelector('#producttemp').value=document.querySelector('#product').options[document.querySelector('#product').selectedIndex].text; 
             }
             break;
             case 1:
             if(isExternalCampaign){
                 if(document.querySelector('#placement [value="' + tag + '"]')!=null){
                     document.querySelector('#placement [value="' + tag + '"]').selected = true;
+                    document.querySelector('#placementtemp').value=document.querySelector('#placement').options[document.querySelector('#placement').selectedIndex].text; 
                 }else{
                     document.querySelector('#placement [value="other"]').selected = true;
+                    document.querySelector('#placementtemp').value=document.querySelector('#placement').options[document.querySelector('#placement').selectedIndex].text; 
                     document.querySelector('.textField').classList.remove('hidden');
                     document.querySelector('#plcment').value=tag;
                 }
@@ -407,6 +419,10 @@ let editTag=function(className,overrideData){
             default:break;
         }
     });
+    if(typeof overrideData!=="undefined"){
+        addEventListenersOnCheckBoxes();
+        addEventListenerOnPlcmentSelectBox();
+    }
 }
 
 let validateTags=function(){
@@ -422,17 +438,19 @@ let clearField=function(){
 }
 
 let expandTags=function(){
-    if(document.querySelector('.fa-angle-down')!=null){
+    if(document.querySelector('.createTags')!=null && !document.querySelector('.createTags').className.includes('less')){
         Array.from(document.querySelectorAll('.expandField')).forEach(link=>{
             link.className=link.className.replace('hidden','');
         });
-        document.querySelector('.fa-angle-down').className=(document.querySelector('.fa-angle-down').className.replace('fa-angle-down','')+'fa-angle-up');
+        document.querySelector('.createTags').className+=' less';
+        document.querySelector('.createTags').text='- Show less data points';
     }
     else{
         Array.from(document.querySelectorAll('.expandField')).forEach(link=>{
             link.className+=' hidden';
         });
-        document.querySelector('.fa-angle-up').className=(document.querySelector('.fa-angle-up').className.replace('fa-angle-up','')+'fa-angle-down');
+        document.querySelector('.createTags').className=document.querySelector('.createTags').className.replace('less','');
+        document.querySelector('.createTags').text='+ Additional data points (optional)';
     }
 }
 
@@ -441,6 +459,7 @@ let highlightErrors=function(validationData){
     let displayAbbreviations=validationData.displayAbbrList;
     validationData.errors.forEach(function(error,index){
         var errorField=errorFields[index];
+        console.log(errorField);
         document.querySelector(errorField).className+=' is-invalid';
         var divElement=document.createElement('div');
         divElement.innerHTML=error;
@@ -734,11 +753,11 @@ let validateChannelsForm=function(){
     if(campaignType=="External"){
         if(document.querySelector('#channel').value=="Select"){
             validationData.errors.push("Please select from dropdown");
-            validationData.errorFields.push("#channel");
+            validationData.errorFields.push("#channeltemp");
         }
         if(document.querySelector('#placement').value=="Select"){
             validationData.errors.push("Please select from dropdown");
-            validationData.errorFields.push("#placement");
+            validationData.errorFields.push("#placementtemp");
         }
         if(document.querySelector('#placement').value=="other" && !/^[a-z0-9-]{1,25}$/i.test(document.querySelector('#plcment').value)){
             document.querySelector('#plcment').value!==""?validationData.errors.push("Placement cannot include any special characters except \"-\""):validationData.errors.push("Provide a Placement");
@@ -1106,13 +1125,14 @@ Library.prototype.stateManagement=function(){
             }
             if(document.querySelector('.exisitngInfo')!=null){
                 var anchor=document.createElement('a');
+                anchor.className="anchor-display";
                 anchor.href="javascript:lib.editFirstPageTags();";
                 anchor.innerHTML=localStorage.getItem('exisitngInfo');
                 document.querySelector('.exisitngInfo').appendChild(anchor);
             }
             if(document.querySelector('.exisitngInfoNext')!=null){
                 localStorage.getItem('exisitngInfoNext').split('\n').forEach(function(tag,index){
-                    let anchorHTML="<a href=\"javascript:lib.editFinalTag('"+index+"');\">";
+                    let anchorHTML="<a class=\"anchor-display\" href=\"javascript:lib.editFinalTag('"+index+"');\">";
                     document.querySelector('.exisitngInfoNext').innerHTML+=(anchorHTML+'<u>'+tag+'</u></a><br/>');
                 })
             }

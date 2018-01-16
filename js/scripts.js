@@ -82,13 +82,14 @@ Library.prototype.stateManagement=function(){
             }
             if(document.querySelector('.exisitngInfo')!=null){
                 var anchor=document.createElement('a');
+                anchor.className="anchor-display";
                 anchor.href="javascript:lib.editFirstPageTags();";
                 anchor.innerHTML=localStorage.getItem('exisitngInfo');
                 document.querySelector('.exisitngInfo').appendChild(anchor);
             }
             if(document.querySelector('.exisitngInfoNext')!=null){
                 localStorage.getItem('exisitngInfoNext').split('\n').forEach(function(tag,index){
-                    let anchorHTML="<a href=\"javascript:lib.editFinalTag('"+index+"');\">";
+                    let anchorHTML="<a class=\"anchor-display\" href=\"javascript:lib.editFinalTag('"+index+"');\">";
                     document.querySelector('.exisitngInfoNext').innerHTML+=(anchorHTML+'<u>'+tag+'</u></a><br/>');
                 })
             }

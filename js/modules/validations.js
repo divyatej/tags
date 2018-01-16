@@ -200,11 +200,11 @@ let validateChannelsForm=function(){
     if(campaignType=="External"){
         if(document.querySelector('#channel').value=="Select"){
             validationData.errors.push("Please select from dropdown");
-            validationData.errorFields.push("#channel");
+            validationData.errorFields.push("#channeltemp");
         }
         if(document.querySelector('#placement').value=="Select"){
             validationData.errors.push("Please select from dropdown");
-            validationData.errorFields.push("#placement");
+            validationData.errorFields.push("#placementtemp");
         }
         if(document.querySelector('#placement').value=="other" && !/^[a-z0-9-]{1,25}$/i.test(document.querySelector('#plcment').value)){
             document.querySelector('#plcment').value!==""?validationData.errors.push("Placement cannot include any special characters except \"-\""):validationData.errors.push("Provide a Placement");
