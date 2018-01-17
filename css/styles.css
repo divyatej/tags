@@ -20,6 +20,16 @@ body{
     color:brown;
 }
 
+.text-margin {
+    position: relative;
+    top: 2px;
+    left: 7px;
+}
+
+.no-underline:hover{
+    text-decoration: none;
+}
+
 .btn-primary{
     background-color: #e0001b;
     border:0;
@@ -197,6 +207,16 @@ h1,h2{
 
 .increased-margin{
     margin-bottom:2.75rem;
+}
+.addButton{
+    background-color: #e00;
+    fill:#fff;
+    border-radius: 100%;
+    vertical-align: middle;
+}
+
+.addButton path{
+    fill:#fff;
 }
 
 path{

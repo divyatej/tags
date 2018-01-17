@@ -447,6 +447,7 @@ let expandTags=function(){
     }
     else{
         Array.from(document.querySelectorAll('.expandField')).forEach(link=>{
+            link.querySelector('input').value='';
             link.className+=' hidden';
         });
         document.querySelector('.createTags').className=document.querySelector('.createTags').className.replace('less','');
@@ -472,6 +473,8 @@ let highlightErrors=function(validationData){
                 anchor.target="_blank";
                 anchor.innerText="Abbreviations list";
                 anchor.className=errorField.replace('#','');
+                anchor.className+=' anchor-display';
+                anchor.style='text-decoration:underline;font-size:18px;'
                 document.querySelector(errorField.replace('#','.')).insertAdjacentElement('afterend',anchor);
             }
         }
