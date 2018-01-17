@@ -1,26 +1,51 @@
-<img src="/img/Koala.jpg" class="img-thumbnail float-left" width="50" alt="..." style="display:none;">
-<section class="jumbotron">
+<section class="customcontainer">
     <div class="container">
-        <h3 class="text-center">Who needs it and what campaign is it for?</h3>
+        <h1>Campaign Tagging</h1>
+        <h2>Who needs it and what campaign is it for?</h2>
         <p class="exisitngInfo"></p>
-        <h4 class="text-center">How and where it will be used?</h3>
+        <h2>How and where it will be used?</h2>
         <form id="form">
                 <div class="form-group">
                         <div class="row valuesDiv hidden">
-                                <div class="col-lg-4 col-lg-offset-4"></div>
-                                <div class="col-lg-4 col-lg-offset-4 values">
+                                <div class="col-lg-8 col-lg-offset-4 values">
                                     
                                 </div>
                         </div>
                 </div>
                 <div class="form-group">
                         <div class="row">
-                                <div class="col-lg-4 col-lg-offset-4"></div>
                                 <div class="col-lg-4 col-lg-offset-4">
                                         <label for="product">Product</label>
-                                        <select class="form-control form-control-sm" id="product">
+                                        <input type="text" class="form-control input-styles" id="producttemp" value="Flights" readonly>
+                                        <div class="qfa1-arrow-icon__dropdown qfa1-arrow-icon down-arrow" tabindex="-1" role="button"><svg width="24px" height="24px" viewBox="0 0 48 48" type="button" version="1.1" aria-hidden="true" role="presentation" tabindex="-1" focusable="false" style="background-color: rgb(255, 255, 255);"><title><!-- react-text: 153 -->Arrow <!-- /react-text --><!-- react-text: 154 -->down<!-- /react-text --></title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-1972, -1755)"><g transform="translate(485, 1478)"><g transform="translate(1275, 210)"><path d="M245,88.8026316 L242.24569,86 L236,92.3552632 L229.75431,86 L227,88.8026316 L236,98 L245,88.8026316 Z"></path></g></g></g></g></svg></div>
+                                        <div class="qfa1-arrow-icon__dropdown qfa1-arrow-icon up-arrow hidden" tabindex="-1" role="button"><svg width="24px" height="24px" viewBox="0 0 48 48" type="button" version="1.1" aria-hidden="true" role="presentation" tabindex="-1" focusable="false" style="background-color: rgb(255, 255, 255);"><title><!-- react-text: 153 -->Arrow <!-- /react-text --><!-- react-text: 154 -->up<!-- /react-text --></title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-1172, -1755)"><g transform="translate(425, 1408)"><g transform="translate(532, 281)"><path d="M248,87.8026316 L245.24569,85 L239,91.3552632 L232.75431,85 L230,87.8026316 L239,97 L248,87.8026316 Z" transform="translate(239, 91) scale(1, -1) translate(-239, -91) "></path></g></g></g></g></g></svg></div>
+                                        <ul class="qfa1-dropdown-list__list hidden" role="listbox">
+                                                <li role="option" select="flights" selectabbr="Flights" class="qfa1-dropdown-list__list-item"><div>Flights</div></li>
+                                                <li role="option" select="cars" selectabbr="Cars" class="qfa1-dropdown-list__list-item"><div>Cars</div></li>
+                                                <li role="option" select="hotels" selectabbr="Hotels" class="qfa1-dropdown-list__list-item"><div>Hotels</div></li>
+                                                <li role="option" select="seats" selectabbr="Seats" class="qfa1-dropdown-list__list-item"><div>Seats</div></li>
+                                                <li role="option" select="transfers" selectabbr="Transfers" class="qfa1-dropdown-list__list-item"><div>Transfers</div></li>
+                                                <li role="option" select="activities" selectabbr="Activities" class="qfa1-dropdown-list__list-item"><div>Activities</div></li>
+                                                <li role="option" select="insurance" selectabbr="Insurance" class="qfa1-dropdown-list__list-item"><div>Insurance</div></li>
+                                                <li role="option" select="manage-your-trip" selectabbr="Manage Your Trip" class="qfa1-dropdown-list__list-item"><div>Manage Your Trip</div></li>
+                                                <li role="option" select="qantas-store" selectabbr="Qantas Store" class="qfa1-dropdown-list__list-item"><div>Qantas Store</div></li>
+                                                <li role="option" select="epiqure" selectabbr="epiQure" class="qfa1-dropdown-list__list-item"><div>epiQure</div></li>
+                                                <li role="option" select="cash" selectabbr="Cash" class="qfa1-dropdown-list__list-item"><div>Cash</div></li>
+                                                <li role="option" select="financial-services" selectabbr="Financial Services" class="qfa1-dropdown-list__list-item"><div>Financial Services</div></li>
+                                                <li role="option" select="points" selectabbr="Points" class="qfa1-dropdown-list__list-item"><div>Points</div></li>
+                                                <li role="option" select="online-mall" selectabbr="Online Mall" class="qfa1-dropdown-list__list-item"><div>Online Mall</div></li>
+                                                <li role="option" select="aquire" selectabbr="Aquire" class="qfa1-dropdown-list__list-item"><div>Aquire</div></li>
+                                                <li role="option" select="golf-club" selectabbr="Golf Club" class="qfa1-dropdown-list__list-item"><div>Golf Club</div></li>
+                                                <li role="option" select="restaurants" selectabbr="Restaurants" class="qfa1-dropdown-list__list-item"><div>Restaurants</div></li>
+                                                <li role="option" select="movies" selectabbr="Movies" class="qfa1-dropdown-list__list-item"><div>Movies</div></li>
+                                                <li role="option" select="gift-cards-cash" selectabbr="Gift Cards Cash" class="qfa1-dropdown-list__list-item"><div>Gift Cards Cash</div></li>
+                                                <li role="option" select="gift-cards-points" selectabbr="Gift Cards Points" class="qfa1-dropdown-list__list-item"><div>Gift Cards Points</div></li>
+                                                <li role="option" select="assure" selectabbr="Assure" class="qfa1-dropdown-list__list-item"><div>Assure</div></li>
+                                                <li role="option" select="frequent-flyer" selectabbr="Frequent Flyer" class="qfa1-dropdown-list__list-item"><div>Frequent Flyer</div></li>
+                                        </ul>
+                                        <select class="form-control form-control-sm hidden" id="product">
                                                 <option value="Select">Select a product</option>
-                                                <option value="flights">Flights</option>
+                                                <option value="flights" selected>Flights</option>
                                                 <option value="cars">Cars</option>
                                                 <option value="hotels">Hotels</option>
                                                 <option value="baggage">Baggage</option>
@@ -49,29 +74,32 @@
                 </div>
                 <div class="form-group">
                         <div class="row">
-                                <div class="col-lg-4 col-lg-offset-4"></div>
                                 <div class="col-lg-4 col-lg-offset-4">
                                         <label for="page">Page</label>
-                                        <input type="text" class="form-control" id="page" placeholder="" maxlength="25">
+                                        <input type="text" class="form-control input-styles-noclick" id="page" placeholder="" maxlength="25">
                                 </div>
                         </div>
                 </div>
                 <div class="form-group">
                         <div class="row">
-                                <div class="col-lg-4 col-lg-offset-4"></div>
                                 <div class="col-lg-4 col-lg-offset-4">
                                         <label for="plcment">Placement</label>
-                                        <input type="text" class="form-control" id="plcment" placeholder="" maxlength="25">
+                                        <input type="text" class="form-control input-styles-noclick" id="plcment" placeholder="" maxlength="25">
+                                </div>
+                        </div>
+                </div>
+                <div class="form-group">
+                        <div class="row">
+                                <div class="col-lg-4 col-lg-offset-4">
+                                        <a href="javascript:lib.addAnotherChannel();" class="no-underline anchor-display"><svg class="addButton" width="30px" height="30px" viewBox="0 0 30 30" fill="currentColor"><g stroke="none" stroke-width="1" fill-rule="evenodd"><g transform="translate(-278.000000, -1963.000000)"><g transform="translate(15.000000, 1872.000000)"><g transform="translate(10.000000, 60.000000)"><path d="M269,45 L269,41 L267,41 L267,45 L263,45 L263,47 L267,47 L267,51 L269,51 L269,47 L273,47 L273,45 L269,45 Z"></path></g></g></g></g></svg><span class="text-margin">&nbsp;Add another channel</span></a>
                                 </div>
                         </div>
                 </div>
                 <div class="form-group text-center">
                         <div class="row">
-                                <div class="col-lg-4 col-lg-offset-4"></div>
                                 <div class="col-lg-4 col-lg-offset-4">
-                                        <a href="javascript:lib.generateTags();" class="btn btn-primary">Generate</a>
-                                        <a href="javascript:lib.back();" class="btn btn-primary">Back</a>
-                                        <u><a href="javascript:lib.addAnotherChannel();" class="customAnchor"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;Add another channel</a></u>
+                                        <a href="javascript:lib.back();" class="link-font">Back</a>
+                                        <a href="javascript:lib.generateTags();" class="btn btn-primary submit-button float-right">Generate</a>
                                 </div>
                                 
                         </div>

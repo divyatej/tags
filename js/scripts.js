@@ -95,6 +95,19 @@ Library.prototype.stateManagement=function(){
             }
             if(document.querySelector('.finalTags')!=null){
                 document.querySelector('.finalTags').innerHTML=localStorage.getItem('finalTags');
+                document.querySelectorAll('.fa-clipboard').forEach(function(link){
+                    link.addEventListener('click',function(){
+                        let textarea = document.createElement('textarea')
+                        textarea.id = 't'
+                        textarea.style.height = 0
+                        document.body.appendChild(textarea)
+                        textarea.value = this.parentNode.querySelector('span').innerText;
+                        let selector = document.querySelector('#t')
+                        selector.select()
+                        document.execCommand('copy')
+                        document.body.removeChild(textarea)
+                    });
+                });
             }
             if(document.querySelector('.list-group')!=null){
                 document.querySelector('.list-group').innerHTML=localStorage.getItem('validationResults');

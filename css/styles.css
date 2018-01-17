@@ -3,6 +3,8 @@
 body{
     font-family:"Ciutadella",Helvetica,Arial,sans-serif;
 }
+
+
 .hidden{
     display: none;
 }
@@ -23,6 +25,16 @@ body{
 .text-margin {
     position: relative;
     top: 2px;
+    left: 7px;
+}
+
+.fa-minus-circle{
+    font-size: 28px;
+}
+
+.text-margin-top {
+    position: relative;
+    top: -3px;
     left: 7px;
 }
 
@@ -63,7 +75,7 @@ body{
 }
 
 .logo-oneworld{
-    background-image: url(http://www.qantas.com/etc/designs/qantas/global/img/spritesheet-44c17a2a871b686092b066021387c451.png);
+    background-image: url(../img/spritesheet-44c17a2a871b686092b066021387c451.png);
     background-position: 0 -109px;
     width: 32px;
     height: 32px;
@@ -205,6 +217,18 @@ h1,h2{
     width:100%;
 }
 
+#existingTags{
+    border:2px solid #dadada;
+    border-radius: 0;
+    box-sizing: border-box;
+    color: #323232;
+    font-size: 18px;
+    height: 120px;
+    line-height: 25.5px;
+    padding:10.5px 35px 12px 14px;
+    width:100%;
+}
+
 .increased-margin{
     margin-bottom:2.75rem;
 }
@@ -287,9 +311,20 @@ svg[type=button]{
     padding-right: 6px;
 }
 
+.big-button{
+    width:100%;
+}
+
 a.anchor-display,a.anchor-display:hover{
     color: red;
     font-size: 18px;
+}
+
+.link-font,.link-font:hover{
+    color: red;
+    font-size: 20px;
+    float: left;
+    margin-top: 10px;
 }
 
 .invalid-feedback{
@@ -298,4 +333,51 @@ a.anchor-display,a.anchor-display:hover{
 
 .add-margin{
     margin-bottom: 35px;
+}
+
+.width-handler{
+    width:80%;
+    padding:10px;
+    border-radius: 0;
+    box-sizing: border-box;
+    color: #323232;
+    font-size: 20px;
+    height: 48px;
+    line-height: 25.5px;
+    padding:10.5px 35px 12px 14px;
+    width:100%;
+}
+
+.finalTags{
+    padding:20px 10px;
+    background-color: #f4f5f6;
+}
+
+.fa-clipboard {
+    font-size: 23px;
+    color: black;
+    cursor: pointer;
+}
+
+.finalTags div{
+    padding-bottom:40px;
+}
+
+.values {
+    background-color: #f4f5f6;
+    padding: 20px;
+    width: 100% !important;
+}
+
+.margin-top{
+    margin-top:45px;
+}
+
+.float-right{
+    float:right;
+}
+
+.list-group-item-action{
+    margin-bottom:10px;
+    font-size: 18px;
 }

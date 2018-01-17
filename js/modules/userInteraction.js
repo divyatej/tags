@@ -16,8 +16,8 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         appendResponse(response);
         //This is for adding another channel page
         if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined" && (template.indexOf('createTagsChannels')!=-1 || template.indexOf('createInternalTagsChannels')!=-1)){
-            //<a href="javascript:void('0');"><i class="fa fa-minus-square" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
-            if(template.indexOf('createTagsChannels')!=-1){
+            //<a href="javascript:void('0');"><i class="fa fa-minus-circle" aria-hidden="true"></i>&nbsp;SEO|GOOGLE</a>
+            if(template.indexOf('createTagsChannels')!=-1 || template.indexOf('createInternalTagsChannels')!=-1){
                 addEventListenerOnPlcmentSelectBox();
                 addEventListenersOnCheckBoxes();
             }
@@ -27,12 +27,12 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             }
             var icon=document.createElement('a');
             icon.className="anchor-display";
-            icon.innerHTML="<i class=\"fa fa-minus-square "+displayNextValue.split(' ').join('').split('|').join("")+"\" aria-hidden=\"true\"></i>";
+            icon.innerHTML="<i class=\"fa fa-minus-circle "+displayNextValue.split(' ').join('').split('|').join("")+"\" aria-hidden=\"true\"></i>";
             icon.href="javascript:lib.removeTag('"+displayNextValue.split(' ').join('').split('|').join("")+"');";
             document.querySelector('.values').appendChild(icon);
             var element=document.createElement('a');
             element.innerHTML=displayNextValue;
-            element.className=displayNextValue.split(' ').join('').split('|').join("") + " anchorTag anchor-display";
+            element.className=displayNextValue.split(' ').join('').split('|').join("") + " anchorTag anchor-display text-margin-top";
             element.href="javascript:lib.editTag('"+displayNextValue.split(' ').join('').split('|').join("")+"');";
             document.querySelector('.values').appendChild(element);
             var breakElement=document.createElement('br');
@@ -65,7 +65,8 @@ let respondToRequest=function(template,displayValue,displayNextValue){
                             let url=tags.split('|')[tags.split('|').length-1];
                             tags=tags.replace('|'+url,'');
                             tags=getTagsText(tags,tag,isExternalCampaign);
-                            document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+'<strong><br/>');
+                            var html='<div><i class="fa fa-clipboard" copytext="'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+ '"></i><span class="width-handler">'+ url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase()) +'</span>'+'</div>';
+                            document.querySelector('.finalTags').innerHTML+=(html);
                         }
                 });   
             }
@@ -86,15 +87,31 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             }
             if(displayNextValue!==''){
                 tags=getTagsText(tags,displayNextValue,isExternalCampaign);
-                document.querySelector('.finalTags').innerHTML+=('<strong>'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+'<strong><br/>');
-                var lastAnchor="<a class=\"anchor-display\" href=\"javascript:lib.removeTag('"+displayNextValue.split('').join('').split('|').join('')+"');\"><i class=\"fa fa-minus-square "+displayNextValue.split(' ').join('').split('|').join('')+"\"></i></a>";
-                var anotherAnchor="<a class=\""+displayNextValue.split(' ').join('').split('|').join('')+" anchorTag anchor-display\" href=\"javascript:lib.editTag('"+displayNextValue.split(' ').join('').split('|').join('')+"');\">"+displayNextValue+"</a>";
+                var html='<div><i class="fa fa-clipboard" copytext="'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+ '"></i><span class="width-handler">'+ url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase()) +'</span>'+'</div>';
+                document.querySelector('.finalTags').innerHTML+=(html);
+                var lastAnchor="<a class=\"anchor-display\" href=\"javascript:lib.removeTag('"+displayNextValue.split('').join('').split('|').join('')+"');\"><i class=\"fa fa-minus-circle "+displayNextValue.split(' ').join('').split('|').join('')+"\"></i></a>";
+                var anotherAnchor="<a class=\""+displayNextValue.split(' ').join('').split('|').join('')+" anchorTag anchor-display text-margin-top\" href=\"javascript:lib.editTag('"+displayNextValue.split(' ').join('').split('|').join('')+"');\">"+displayNextValue+"</a>";
                 var breakElement="<br class=\""+displayNextValue.split(' ').join('').split('|').join('')+"\">";
                 valuesHTML=valuesHTML+lastAnchor+anotherAnchor+breakElement;
             }     
             //<a class="Externaledmfbnnnn anchorTag" href="javascript:lib.editTag('Externaledmfbnnnn');">External|edm|fb|n|n|n|n</a><br class="Externaledmfbnnnn">
             localStorage.setItem('valuesHTML',valuesHTML);
             localStorage.setItem('finalTags',document.querySelector('.finalTags').innerHTML);
+            document.querySelectorAll('.fa-clipboard').forEach(function(link){
+                link.addEventListener('click',function(){
+                    let textarea = document.createElement('textarea')
+                    textarea.id = 't'
+                    textarea.style.height = 0
+                    document.body.appendChild(textarea)
+                    textarea.value = this.parentNode.querySelector('span').innerText;
+                    let selector = document.querySelector('#t')
+                    selector.select()
+                    document.execCommand('copy')
+                    document.body.removeChild(textarea)
+                });
+            });
+            addEventListenerOnPlcmentSelectBox();
+            addEventListenersOnCheckBoxes();
         }
         //This is for adding channel page
         else if(typeof displayValue!=="undefined"){
@@ -218,7 +235,7 @@ let addEventListenersOnCheckBoxes=function(){
         document.querySelector('#'+id+'temp').value=this.attributes['selectabbr'].value;
         if(id=="placement" && this.attributes['select'].value=="other"){
             document.querySelector('.textField').classList.remove('hidden');
-        }else{
+        }else if(id=="placement" && this.attributes['select'].value!=="other"){
             document.querySelector('.textField').classList.add('hidden');
         }
         replaceArrows(this);
@@ -277,7 +294,7 @@ let displayCampaignForm=function(campaignType,hideCampaign){
 }
 
 let removeTag=function(className){
-    document.querySelector(".fa-minus-square."+className).parentNode.remove();
+    document.querySelector(".fa-minus-circle."+className).parentNode.remove();
     document.querySelector("a."+className).remove();
     document.querySelector("br."+className).remove();
 }
@@ -298,7 +315,7 @@ let editTag=function(className,overrideData){
         isExternalCampaign=true;
     }
     tagData=tagData.replace("External|","").replace("Internal|","").trim();
-    document.querySelector(".fa-minus-square."+className) && document.querySelector(".fa-minus-square."+className).parentNode.remove();
+    document.querySelector(".fa-minus-circle."+className) && document.querySelector(".fa-minus-circle."+className).parentNode.remove();
     document.querySelector("a."+className) && document.querySelector("a."+className).remove();
     document.querySelector("br."+className) && document.querySelector("br."+className).remove();
     let expanded=false;
@@ -405,13 +422,14 @@ let highlightErrors=function(validationData){
     let displayAbbreviations=validationData.displayAbbrList;
     validationData.errors.forEach(function(error,index){
         var errorField=errorFields[index];
-        console.log(errorField);
         document.querySelector(errorField).className+=' is-invalid';
         var divElement=document.createElement('div');
         divElement.innerHTML=error;
         divElement.className='invalid-feedback '+errorField.replace('#','');
         if(typeof document.querySelector(errorField).nextSibling.className=="undefined"){
             document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
+            document.querySelector(errorField).parentNode.querySelector('.down-arrow').style='bottom:67px;'
+            document.querySelector(errorField).parentNode.querySelector('.up-arrow').style='bottom:67px;'
             if(document.querySelector(errorField).type=="text" && displayAbbreviations){
                 var anchor=document.createElement('a');
                 anchor.href="/include/abbreviations.html";
@@ -434,6 +452,13 @@ let highlightErrors=function(validationData){
             this.className=this.className.replace(' is-invalid','');
             document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
             document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
+        });
+        link.addEventListener('click', function(event) {
+            this.className=this.className.replace(' is-invalid','');
+            document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
+            document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
+            document.querySelector('#'+this.id).parentNode.querySelector('.down-arrow').style='bottom:37px;'
+            document.querySelector('#'+this.id).parentNode.querySelector('.up-arrow').style='bottom:37px;'
         });
     });
 }
