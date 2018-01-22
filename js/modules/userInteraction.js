@@ -204,7 +204,7 @@ let getTagsText=function(tags,displayNextValue,isExternalCampaign){
         tagArray.push(tagSplits[1]);
         tagArray.push(tagSplits[2]);
         tagArray.push(displaySplits[0]);
-        tagArray.push(tagSplits[1]);
+        tagArray.push(displaySplits[1]);
         tagArray.push(tagSplits[3]);
         tagArray.push(displaySplits[2]);
         tagArray.push(displaySplits[3]);
