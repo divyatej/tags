@@ -483,8 +483,8 @@ let highlightErrors=function(validationData){
         divElement.className='invalid-feedback '+errorField.replace('#','');
         if(typeof document.querySelector(errorField).nextSibling.className=="undefined"){
             document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
-            document.querySelector(errorField).parentNode.querySelector('.down-arrow').style='bottom:67px;'
-            document.querySelector(errorField).parentNode.querySelector('.up-arrow').style='bottom:67px;'
+            document.querySelector(errorField).parentNode.querySelector('.down-arrow') ? document.querySelector(errorField).parentNode.querySelector('.down-arrow').style='bottom:67px;' : "";
+            document.querySelector(errorField).parentNode.querySelector('.up-arrow') ? document.querySelector(errorField).parentNode.querySelector('.up-arrow').style='bottom:67px;' : "";
             if(document.querySelector(errorField).type=="text" && displayAbbreviations){
                 var anchor=document.createElement('a');
                 anchor.href="/include/abbreviations.html";
@@ -512,8 +512,8 @@ let highlightErrors=function(validationData){
             this.className=this.className.replace(' is-invalid','');
             document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
             document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
-            document.querySelector('#'+this.id).parentNode.querySelector('.down-arrow').style='bottom:37px;'
-            document.querySelector('#'+this.id).parentNode.querySelector('.up-arrow').style='bottom:37px;'
+            document.querySelector('#'+this.id).parentNode.querySelector('.down-arrow') ? document.querySelector('#'+this.id).parentNode.querySelector('.down-arrow').style='bottom:37px;':"";
+            document.querySelector('#'+this.id).parentNode.querySelector('.up-arrow') ? document.querySelector('#'+this.id).parentNode.querySelector('.up-arrow').style='bottom:37px;':"";
         });
     });
 }
@@ -671,6 +671,7 @@ let internalTagValidationAPI={
 }
 
 let isValidPlacementOrCampaignInt=function(input){
+    input=input.toLowerCase();
     if(regexp.test(input) && input!=='n'){
         if(isValidLanguage(input) || isValidProduct(input) || isValidCountryCode(input)){
             return false;
@@ -682,6 +683,7 @@ let isValidPlacementOrCampaignInt=function(input){
 }
 
 let isValidLanguage=function(input){
+    input=input.toLowerCase();
     if(codesList.getLanguageCodeList().split(',').includes(input)){
         return true;
     }else{
@@ -690,6 +692,7 @@ let isValidLanguage=function(input){
 }
 
 let isValidProduct=function(input){
+    input=input.toLowerCase();
     if(codesList.getProductCodeList().split(',').includes(input)){
         return true;
     }else{
@@ -698,6 +701,7 @@ let isValidProduct=function(input){
 }
 
 let isValidCountryCode=function(input){
+    input=input.toLowerCase();
     if(codesList.getCountryCodeList().split(',').includes(input)){
         return true;
     }else{
@@ -706,6 +710,7 @@ let isValidCountryCode=function(input){
 }
 
 let isValidBusinessUnitCode=function(input){
+    input=input.toLowerCase();
     if(codesList.getBusinessUnitCodeList().split(',').includes(input)){
         return true;
     }else{
@@ -714,6 +719,7 @@ let isValidBusinessUnitCode=function(input){
 }
 
 let isValidAgencyUnitCode=function(input){
+    input=input.toLowerCase();
     if(codesList.getAgencyCodeList().split(',').includes(input)){
         return true;
     }else{
@@ -722,6 +728,7 @@ let isValidAgencyUnitCode=function(input){
 }
 
 let isValidChannelCode=function(input){
+    input=input.toLowerCase();
     if(codesList.getChannelCodeList().split(',').includes(input)){
         return true;
     }else{
@@ -730,6 +737,7 @@ let isValidChannelCode=function(input){
 }
 
 let isValidPlacementCode=function(input){
+    input=input.toLowerCase();
     if(codesList.getPlacementList().split(',').includes(input)){
         return true;
     }else{
@@ -738,6 +746,7 @@ let isValidPlacementCode=function(input){
 }
 
 let isValidPlacementOrCampaign=function(input){
+    input=input.toLowerCase();
     if(regexp.test(input) && input!=='n'){
         if(isValidChannelCode(input) || isValidAgencyUnitCode(input) || isValidBusinessUnitCode(input) || isValidCountryCode(input) || isValidPlacementCode(input)){
             return false;
@@ -749,6 +758,7 @@ let isValidPlacementOrCampaign=function(input){
 }
 
 let isValidPlcOrConOrSegOrKey=function(input,isKeyWord){
+    input=input.toLowerCase();
     if(typeof input=="undefined" || input=="" || input=="n"){
         input="--NA--";
     }
@@ -763,6 +773,7 @@ let isValidPlcOrConOrSegOrKey=function(input,isKeyWord){
 }
 
 let isValidURL=function (input){
+    input=input.toLowerCase();
     try{
         if(!/https|http/.test(input)){
             input='https://'+input;
