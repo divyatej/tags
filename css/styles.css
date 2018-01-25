@@ -3,7 +3,16 @@
 body{
     font-family:"Ciutadella",Helvetica,Arial,sans-serif;
 }
-
+.qantas-logo{
+    position: relative;
+    float: left;
+    top: 1rem;
+    width: 12.875rem;
+    margin-bottom: 1rem;
+    height:2.5rem;
+    display: block;
+    overflow: hidden;
+}
 
 .hidden{
     display: none;
@@ -99,7 +108,7 @@ body{
 }
 
 .headerRow{
-    margin-left: 291px;
+    margin-left: 280px;
     margin-right:291px;
     width:1140px;
     padding-left:15px;
@@ -111,9 +120,9 @@ body{
     margin-right:291px;
 }
 
-.customcontainer{
+/*.customcontainer{
     margin-left:160px;
-}
+}*/
 
 h1,h2{
     margin-top:0.67em;
@@ -185,7 +194,7 @@ h1,h2{
 }
 
 .labelText{
-    padding-left:10px;
+    padding-left:32px;
 }
 
 .form-check-inline{
@@ -229,9 +238,9 @@ h1,h2{
     width:100%;
 }
 
-.increased-margin{
+/*.increased-margin{
     margin-bottom:2.75rem;
-}
+}*/
 .addButton{
     background-color: #e00;
     fill:#fff;
@@ -243,7 +252,7 @@ h1,h2{
     fill:#fff;
 }
 
-path{
+.qfa1-arrow-icon__dropdown path{
     fill:#323232;
 }
 
@@ -251,9 +260,14 @@ svg[type=button]{
     -webkit-appearance: none;
 }
 
+.form-group-nomargin{
+    margin-bottom: 0rem;
+}
+
 .up-arrow,.down-arrow{
     bottom:37px;
     left:319px;
+    height:18px;
     position: relative;
     cursor: pointer;
 }
@@ -312,7 +326,8 @@ svg[type=button]{
 }
 
 .big-button{
-    width:100%;
+    width:68%;
+    float:right;
 }
 
 a.anchor-display,a.anchor-display:hover{
@@ -380,4 +395,17 @@ a.anchor-display,a.anchor-display:hover{
 .list-group-item-action{
     margin-bottom:10px;
     font-size: 18px;
+}
+
+.list-group{
+    width:83%;
+}
+
+span.list-group-item-success:focus, span.list-group-item-success:hover{
+    color: #155724;
+    background-color: #b1dfbb;
+}
+span.list-group-item-danger:focus, span.list-group-item-danger:hover{
+    color: #721c24;
+    background-color: #f5c6cb;
 }

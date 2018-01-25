@@ -259,16 +259,28 @@ let addEventListenersOnCheckBoxes=function(){
     });
 
     document.querySelectorAll('.input-styles') && document.querySelectorAll('.input-styles').forEach(function(elem){
-        elem.addEventListener('click',function(){
+        elem.addEventListener('click',function(e){
+            e.stopPropagation();
             replaceArrows(elem);
         })
-    })
+    });
+
+    document.addEventListener("click",function(){
+        document.querySelectorAll('.input-styles').forEach(function(elem){
+            var node=typeof elem!=="undefined"?elem.parentNode.parentNode:document;
+            if(node.querySelector('.down-arrow').classList.value.includes('hidden')){
+                node.querySelector('.down-arrow').classList.remove('hidden');
+                node.querySelector('.up-arrow').classList.add('hidden');
+                node.querySelector('.qfa1-dropdown-list__list').classList.add('hidden');
+            }
+        });
+    });
 
     document.querySelectorAll('.down-arrow') && document.querySelectorAll('.down-arrow').forEach(function(elem){
         elem.addEventListener('click',function(){
             replaceArrows();
         });
-    })
+    });
 }
 
 let replaceArrows=function(elem){
@@ -297,6 +309,9 @@ let removeTag=function(className){
     document.querySelector(".fa-minus-circle."+className).parentNode.remove();
     document.querySelector("a."+className).remove();
     document.querySelector("br."+className).remove();
+    if(document.querySelector('.values').querySelectorAll('a').length<2){
+        document.querySelector('.values').parentNode.classList.add('hidden');
+    }
 }
 
 let editFirstPageTags=function(){
@@ -318,6 +333,9 @@ let editTag=function(className,overrideData){
     document.querySelector(".fa-minus-circle."+className) && document.querySelector(".fa-minus-circle."+className).parentNode.remove();
     document.querySelector("a."+className) && document.querySelector("a."+className).remove();
     document.querySelector("br."+className) && document.querySelector("br."+className).remove();
+    if(document.querySelector('.values').querySelectorAll('a').length<2){
+        document.querySelector('.values').parentNode.classList.add('hidden');
+    }
     let expanded=false;
     tagData.split('|').forEach(function(tag,index){
         switch(index){
@@ -490,14 +508,14 @@ let displayResults=function(errorsArray){
         if(errorsArray.length>0){
             errorsArray.forEach(function(error){
                 if(error.success){
-                    document.querySelector('.list-group').innerHTML+=('<a href="javascript:void(\'0\');" class="list-group-item list-group-item-action list-group-item-success"><p>'+error.url+'</p><p>No errors in this campaign tag</p></a>');
+                    document.querySelector('.list-group').innerHTML+=('<span class="list-group-item list-group-item-action list-group-item-success"><p>'+error.url+'</p><p>No errors in this campaign tag</p></span>');
                 }else{
                     var errors='<p>';
                     error.error.forEach(function(err){
                         errors+=err+'<br/>';
                     })
                     errors+='</p>';
-                    document.querySelector('.list-group').innerHTML+=('<a href="javascript:void(\'0\');" class="list-group-item list-group-item-action list-group-item-danger"><p>'+(error.url!=""?error.url:"No url entered for validation")+'</p>'+errors+'</a>');
+                    document.querySelector('.list-group').innerHTML+=('<span class="list-group-item list-group-item-action list-group-item-danger"><p>'+(error.url!=""?error.url:"No url entered for validation")+'</p>'+errors+'</span>');
                 }
             });
         }
