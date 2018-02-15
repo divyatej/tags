@@ -1,0 +1,108 @@
+@font-face{font-family:'Ciutadella';src:url("../fonts/315CA1_3_0.eot?#iefix") format("embedded-opentype"),url("../fonts/315CA1_3_0.woff2") format("woff2"),url("../fonts/315CA1_3_0.woff") format("woff"),url("../fonts/315CA1_3_0.ttf") format("truetype");font-weight:normal;font-style:normal}
+@font-face{font-family:'Ciutadella';src:url("../fonts/315CA1_1_0.eot?#iefix") format("embedded-opentype"),url("../fonts/315CA1_1_0.woff2") format("woff2"),url("../fonts/315CA1_1_0.woff") format("woff"),url("../fonts/315CA1_1_0.ttf") format("truetype");font-weight:bold;font-style:normal}
+
+body{
+    font-family:"Ciutadella",Helvetica,Arial,sans-serif;
+}
+
+.qantas-logo{
+    position: relative;
+    float: left;
+    top: 1.25rem;
+    left: 0.5rem;
+    display: block;
+    width: 8.9375rem;
+    height: 2rem;
+    overflow: hidden;
+}
+
+header{
+    border-bottom:1px solid #e5e5e5;
+    height:4rem;
+}
+
+h1{
+    font-size: 2.25rem;
+}
+
+main{
+    padding-top: 1rem;
+}
+
+.btn-second{
+    margin-top:1rem;
+}
+
+.createTags,.validateTags{
+    background: transparent;
+    color:#e0001b;
+    -webkit-font-smoothing:antialiased;
+    border:2px solid #e00;
+    box-shadow: 0 0 0.2rem #fff;
+    font-weight:bold;
+    font-size: 1rem;
+    letter-spacing: .125rem;
+    border-radius: .1875rem;
+    line-height: 1.5rem;
+    text-align: center;
+    padding:.625rem 1.5rem;
+}
+.createTags:hover,.validateTags:hover,.createTags:visited,.createTags:focus,
+.validateTags:hover,.validateTags:visited,.validateTags:focus{
+    color:#cd0000;
+    border:2px solid #cd0000;
+    background: transparent;
+}
+
+.createTags:not([disabled]):not(.disabled).active, .createTags:not([disabled]):not(.disabled):active, .show>.createTags.dropdown-toggle{
+    background: transparent;
+    border:2px solid #e00;
+    box-shadow: 0 0 0.2rem #cd0000;
+    color:#cd0000;
+}
+
+.validateTags:not([disabled]):not(.disabled).active, .validateTags:not([disabled]):not(.disabled):active, .show>.validateTags.dropdown-toggle{
+    background: transparent;
+    border:2px solid #e00;
+    box-shadow: 0 0 0.2rem #cd0000;
+    color:#cd0000;
+}
+
+.createTags:not(:disabled):not(.disabled).active:focus, .createTags:not(:disabled):not(.disabled):active:focus, .show>.createTags.dropdown-toggle:focus{
+    background: transparent;
+    border:2px solid #e00;
+    box-shadow: 0 0 0.2rem #cd0000;
+    color:#cd0000;
+}
+
+.validateTags:not(:disabled):not(.disabled).active:focus, .validateTags:not(:disabled):not(.disabled):active:focus, .show>.validateTags.dropdown-toggle:focus{
+    background: transparent;
+    border:2px solid #e00;
+    box-shadow: 0 0 0.2rem #cd0000;
+    color:#cd0000;
+}
+
+/*Tablet */
+@media (min-width: 48em){
+    .btn-second{
+        margin-bottom: 1rem;
+    }
+    header{
+        height:6rem;
+    }
+    .qantas-logo{
+        position: relative;
+        float: left;
+        top: 2rem;
+        width: 12.875rem;
+        margin-bottom: 1rem;
+        height:2.5rem;
+        display: block;
+        overflow: hidden;
+        left:0rem;
+    }
+}
+/*Desktop */
+@media (min-width: 60em){
+    
+}
