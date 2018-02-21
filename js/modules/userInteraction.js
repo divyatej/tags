@@ -446,8 +446,8 @@ let highlightErrors=function(validationData){
         divElement.className='invalid-feedback '+errorField.replace('#','');
         if(typeof document.querySelector(errorField).nextSibling.className=="undefined"){
             document.querySelector(errorField).insertAdjacentElement('afterend',divElement);
-            document.querySelector(errorField).parentNode.querySelector('.down-arrow') ? document.querySelector(errorField).parentNode.querySelector('.down-arrow').style='bottom:67px;' : "";
-            document.querySelector(errorField).parentNode.querySelector('.up-arrow') ? document.querySelector(errorField).parentNode.querySelector('.up-arrow').style='bottom:67px;' : "";
+            document.querySelector(errorField).parentNode.querySelector('.down-arrow') ? document.querySelector(errorField).parentNode.querySelector('.down-arrow').style='top:-36px;' : "";
+            document.querySelector(errorField).parentNode.querySelector('.up-arrow') ? document.querySelector(errorField).parentNode.querySelector('.up-arrow').style='top:-36px;' : "";
             if(document.querySelector(errorField).type=="text" && displayAbbreviations){
                 var anchor=document.createElement('a');
                 anchor.href="/include/abbreviations.html";
@@ -475,8 +475,8 @@ let highlightErrors=function(validationData){
             this.className=this.className.replace(' is-invalid','');
             document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
             document.querySelector('.'+this.id)&&document.querySelector('.'+this.id).remove();
-            document.querySelector('#'+this.id).parentNode.querySelector('.down-arrow') ? document.querySelector('#'+this.id).parentNode.querySelector('.down-arrow').style='bottom:37px;':"";
-            document.querySelector('#'+this.id).parentNode.querySelector('.up-arrow') ? document.querySelector('#'+this.id).parentNode.querySelector('.up-arrow').style='bottom:37px;':"";
+            document.querySelector('#'+this.id).parentNode.querySelector('.down-arrow') ? document.querySelector('#'+this.id).parentNode.querySelector('.down-arrow').style='top:10px;':"";
+            document.querySelector('#'+this.id).parentNode.querySelector('.up-arrow') ? document.querySelector('#'+this.id).parentNode.querySelector('.up-arrow').style='top:10px;':"";
         });
     });
 }
