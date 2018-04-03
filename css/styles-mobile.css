@@ -307,6 +307,42 @@ a.anchor-display,a.anchor-display:hover{
     margin-left:100px;
 }
 
+.validateButton{
+    width:60%;
+    margin-left:118px;
+}
+
+.realignLastButton{
+    margin-top:-40px;
+}
+
+.table{
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: solid 1px #dadada;
+    border-right: 0;
+}
+
+.table th{
+    color:#323232;    
+    border-right: solid 1px #dadada;
+    text-align: left;
+    min-width: 7rem;
+}
+
+.table td{
+    padding: 1rem;
+    line-height: 1.5;
+    font-size: 1rem;
+    border-right: solid 1px #dadada;
+    text-align: left;
+    min-width: 7rem;
+}
+
+.table thead th{
+    border-bottom:0px;
+}
+
 /*Tablet */
 @media (min-width: 48em){
     .btn-second{
@@ -358,6 +394,9 @@ a.anchor-display,a.anchor-display:hover{
     .tablet-style{
         width:76%;
         margin-left:77px;
+    }
+    .realignLastButton{
+        margin-top:-48px;
     }
 }
 

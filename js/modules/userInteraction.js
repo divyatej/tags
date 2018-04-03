@@ -506,17 +506,28 @@ let displayResults=function(errorsArray){
         document.querySelector('.contentSection').innerHTML=response;
         history.pushState({pageName:'/include/validationResults.html',response:response},null,'validationResults.html');
         if(errorsArray.length>0){
-            errorsArray.forEach(function(error){
+            //{\"key\":\"value\"}
+            var exportToExcel={};
+            errorsArray.forEach(function(error,index){
                 if(error.success){
-                    document.querySelector('.list-group').innerHTML+=('<span class="list-group-item list-group-item-action list-group-item-success"><p>'+error.url+'</p><p>No errors in this campaign tag</p></span>');
+                    exportToExcel[index]=error.url+',No Errors,'+'';
+                    document.querySelector('.appendResults').innerHTML+=('<tr><td class="tableBorder">'+error.url+'</td><td class="tableBorder">No Errors</td><td class="tableBorder"></td></tr>');
                 }else{
-                    var errors='<p>';
-                    error.error.forEach(function(err){
-                        errors+=err+'<br/>';
+                    var errors='';
+                    var excelErrors='';
+                    error.error.forEach(function(err,index){
+                        errors+='<li>';
+                        if(index>0){
+                            excelErrors+='\n'; 
+                        }
+                        errors+=err;
+                        excelErrors+=err;
+                        errors+='</li>';
                     })
-                    errors+='</p>';
-                    document.querySelector('.list-group').innerHTML+=('<span class="list-group-item list-group-item-action list-group-item-danger"><p>'+(error.url!=""?error.url:"No url entered for validation")+'</p>'+errors+'</span>');
+                    exportToExcel[index]=(error.url!=""?error.url:"No url entered for validation")+',Errors,'+excelErrors;
+                    document.querySelector('.appendResults').innerHTML+=('<tr><td class="tableBorder">'+(error.url!=""?error.url:"No url entered for validation")+'</td><td class="tableBorder">Errors</td><td class="tableBorder"><ul>'+errors+'</ul></td></tr>');
                 }
+                document.querySelector('.excelErrors').innerText=JSON.stringify(exportToExcel);
             });
         }
     },function(error){

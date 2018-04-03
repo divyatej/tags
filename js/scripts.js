@@ -139,4 +139,24 @@ Library.prototype.editFinalTag=function(index){
     history.go(-1);//Check stateManagement for next step
 }
 
+Library.prototype.clickHere=function(){
+    var xhr=new XMLHttpRequest();
+    xhr.open('POST','downloadExcel');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.responseType='blob';
+    console.log('Before onload');
+    xhr.onload=function(e){
+        if(this.status==200){
+            let link=document.createElement('a');
+            link.href=window.URL.createObjectURL(this.response);
+            link.download="results.xlsx";
+            link.click();
+        }else{
+            console.log('Invalid request');
+        }
+    }
+    xhr.send(document.querySelector('.excelErrors').innerText);
+    //document.querySelector('#downloadExcel').submit();
+}
+
 module.exports=Library;
