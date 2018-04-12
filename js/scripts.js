@@ -93,8 +93,8 @@ Library.prototype.stateManagement=function(){
                     document.querySelector('.exisitngInfoNext').innerHTML+=(anchorHTML+'<u>'+tag+'</u></a><br/>');
                 })
             }
-            if(document.querySelector('.finalTags')!=null){
-                document.querySelector('.finalTags').innerHTML=localStorage.getItem('finalTags');
+            if(document.querySelector('.appendResults')!=null){
+                document.querySelector('.appendResults').innerHTML=localStorage.getItem('appendResults');
                 document.querySelectorAll('.fa-clipboard').forEach(function(link){
                     link.addEventListener('click',function(){
                         let textarea = document.createElement('textarea')
@@ -144,15 +144,29 @@ Library.prototype.clickHere=function(){
     xhr.open('POST','downloadExcel');
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.responseType='blob';
-    console.log('Before onload');
     xhr.onload=function(e){
         if(this.status==200){
             let link=document.createElement('a');
             link.href=window.URL.createObjectURL(this.response);
             link.download="results.xlsx";
             link.click();
-        }else{
-            console.log('Invalid request');
+        }
+    }
+    xhr.send(document.querySelector('.excelErrors').innerText);
+    //document.querySelector('#downloadExcel').submit();
+}
+
+Library.prototype.createTagsExcel=function(){
+    var xhr=new XMLHttpRequest();
+    xhr.open('POST','downloadExcelCreate');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.responseType='blob';
+    xhr.onload=function(e){
+        if(this.status==200){
+            let link=document.createElement('a');
+            link.href=window.URL.createObjectURL(this.response);
+            link.download="results.xlsx";
+            link.click();
         }
     }
     xhr.send(document.querySelector('.excelErrors').innerText);

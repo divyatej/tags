@@ -48,6 +48,7 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         else if(typeof displayValue!=="undefined" && typeof displayNextValue!=="undefined"){
             localStorage.setItem('exisitngInfo',displayValue);
             document.querySelector('.exisitngInfo').innerHTML='<a class="anchor-display" href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
+            var exportToExcel={};
             var indexCount=0;
             var isMoreThanOne=false;
             if(values!=null && values!=''){
@@ -65,8 +66,10 @@ let respondToRequest=function(template,displayValue,displayNextValue){
                             let url=tags.split('|')[tags.split('|').length-1];
                             tags=tags.replace('|'+url,'');
                             tags=getTagsText(tags,tag,isExternalCampaign);
-                            var html='<div><i class="fa fa-clipboard" copytext="'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+ '"></i><span class="width-handler">'+ url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase()) +'</span>'+'</div>';
-                            document.querySelector('.finalTags').innerHTML+=(html);
+                            //var html='<div><i class="fa fa-clipboard" copytext="'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+ '"></i><span class="width-handler">'+ url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase()) +'</span>'+'</div>';
+                            var html=('<tr><td class="tableBorder">'+ url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase()) +'</td></tr>');
+                            exportToExcel[index]=url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase());
+                            document.querySelector('.appendResults').innerHTML+=(html);
                         }
                 });   
             }
@@ -87,8 +90,10 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             }
             if(displayNextValue!==''){
                 tags=getTagsText(tags,displayNextValue,isExternalCampaign);
-                var html='<div><i class="fa fa-clipboard" copytext="'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+ '"></i><span class="width-handler">'+ url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase()) +'</span>'+'</div>';
-                document.querySelector('.finalTags').innerHTML+=(html);
+                //var html='<div><i class="fa fa-clipboard" copytext="'+url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase())+ '"></i><span class="width-handler">'+ url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase()) +'</span>'+'</div>';
+                var html=('<tr><td class="tableBorder">'+ url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase()) +'</td></tr>');
+                document.querySelector('.appendResults').innerHTML+=(html);
+                exportToExcel[indexCount]=url+(isExternalCampaign?'?alt_cam=':'?int_cam=')+(tags.split(' ').join('').toLowerCase());
                 var lastAnchor="<a class=\"anchor-display\" href=\"javascript:lib.removeTag('"+displayNextValue.split('').join('').split('|').join('')+"');\"><i class=\"fa fa-minus-circle "+displayNextValue.split(' ').join('').split('|').join('')+"\"></i></a>";
                 var anotherAnchor="<a class=\""+displayNextValue.split(' ').join('').split('|').join('')+" anchorTag anchor-display text-margin-top\" href=\"javascript:lib.editTag('"+displayNextValue.split(' ').join('').split('|').join('')+"');\">"+displayNextValue+"</a>";
                 var breakElement="<br class=\""+displayNextValue.split(' ').join('').split('|').join('')+"\">";
@@ -96,8 +101,9 @@ let respondToRequest=function(template,displayValue,displayNextValue){
             }     
             //<a class="Externaledmfbnnnn anchorTag" href="javascript:lib.editTag('Externaledmfbnnnn');">External|edm|fb|n|n|n|n</a><br class="Externaledmfbnnnn">
             localStorage.setItem('valuesHTML',valuesHTML);
-            localStorage.setItem('finalTags',document.querySelector('.finalTags').innerHTML);
-            document.querySelectorAll('.fa-clipboard').forEach(function(link){
+            localStorage.setItem('appendResults',document.querySelector('.appendResults').innerHTML);
+            document.querySelector('.excelErrors') && (document.querySelector('.excelErrors').innerHTML=JSON.stringify(exportToExcel));
+            document.querySelectorAll('.fa-clipboard') && document.querySelectorAll('.fa-clipboard').forEach(function(link){
                 link.addEventListener('click',function(){
                     let textarea = document.createElement('textarea')
                     textarea.id = 't'

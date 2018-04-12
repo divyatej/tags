@@ -19,16 +19,17 @@ var getFile=function(localPath, res, mimeType) {
 		}
 	});
 }
-var next=function(data,res){
+var next=function(data,res,change){
 	var ws_data = [
 		[ "URL", "Status","Errors" ]
 	  ];
+	  if(change){
+		ws_data=[["TAGS"]];
+	  }
 	var arr=[];
 	Object.keys(data).forEach(function(key){
 		arr=[];
-		console.log('key-------'+key);
 		data[key].split(',').forEach(function(keyData){
-			console.log('keyData-------'+keyData);
 			arr.push(keyData);
 		});
 		ws_data.push(arr);
@@ -45,15 +46,21 @@ var next=function(data,res){
 }
 http.createServer(function(req, res) {
 	var filename = req.url;
-	console.log('Request for'+filename);
-	if(filename.includes('downloadExcel')){
-		console.log('excel');
+	if(filename.includes('downloadExcel') && !filename.includes('downloadExcelCreate')){
 		var data = '';
 		req.on('data', function( chunk ) {
 		  data= JSON.parse(chunk);
 		});
 		req.on('end', function() {
-		  next(data,res);
+		  next(data,res,false);
+		});
+	}else if(filename.includes('downloadExcelCreate')){
+		var data = '';
+		req.on('data', function( chunk ) {
+		  data= JSON.parse(chunk);
+		});
+		req.on('end', function() {
+		  next(data,res,true);
 		});
 	}else{
 		var params = filename.substring(filename.indexOf('?')+1,filename.length);
@@ -75,7 +82,6 @@ http.createServer(function(req, res) {
 				if(exists) {
 					getFile(localPath, res, mimeType);
 				} else {
-					console.log('not exists'+localPath);
 					getFile(copyLocalPath+'/home.html', res, mimeType);
 					//res.writeHead(404);
 					//res.end();
