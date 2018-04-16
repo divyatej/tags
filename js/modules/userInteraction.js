@@ -121,6 +121,7 @@ let respondToRequest=function(template,displayValue,displayNextValue){
         }
         //This is for adding channel page
         else if(typeof displayValue!=="undefined"){
+            displayValue=displayValue.split('?')[0];
             document.querySelector('.exisitngInfo').innerHTML='<a class=\"anchor-display\" href="javascript:lib.editFirstPageTags();"><u>'+displayValue+'</u></a>';
             addEventListenerOnPlcmentSelectBox();
             addEventListenersOnCheckBoxes();
