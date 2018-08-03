@@ -218,8 +218,15 @@ let editFirstPageTagsData=function(displayValue){
                 break;
             case 2:
                 if(!isInternalCampaign){
-                    document.querySelector('#agency [value="' + tag + '"]').selected = true;
-                    document.querySelector('#agencytemp').value=document.querySelector('#agency').options[document.querySelector('#agency').selectedIndex].text; 
+                    if(document.querySelector('#agency [value="' + tag + '"]')!=null){
+                        document.querySelector('#agency [value="' + tag + '"]').selected = true;
+                        document.querySelector('#agencytemp').value=document.querySelector('#agency').options[document.querySelector('#agency').selectedIndex].text; 
+                    }else{
+                        document.querySelector('#agency [value="other"]').selected = true;
+                        document.querySelector('#agencytemp').value=document.querySelector('#agency').options[document.querySelector('#agency').selectedIndex].text; 
+                        document.querySelector('.textField').classList.remove('hidden');
+                        document.querySelector('#agncy').value=tag;
+                    }
                 }else{
                     if(tag!='n'){
                         document.querySelector('#cname').value = tag;   
@@ -295,9 +302,9 @@ let addEventListenersOnCheckBoxes=function(){
         var id=this.parentNode.parentNode.querySelector('select').id;
         document.querySelector('#'+id+' [value="' + this.attributes['select'].value + '"]').selected = true;
         document.querySelector('#'+id+'temp').value=this.attributes['selectabbr'].value;
-        if(id=="placement" && this.attributes['select'].value=="other"){
+        if((id=="placement" || id=="agency") && this.attributes['select'].value=="other"){
             document.querySelector('.textField').classList.remove('hidden');
-        }else if(id=="placement" && this.attributes['select'].value!=="other"){
+        }else if((id=="placement" || id=="agency") && this.attributes['select'].value!=="other"){
             document.querySelector('.textField').classList.add('hidden');
         }
         replaceArrows(this);
@@ -948,6 +955,15 @@ let validateForm=function(){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#agency");
         }
+        if(document.querySelector('#agency').value=="other" && !/^[a-z0-9-]{1,25}$/i.test(document.querySelector('#agncy').value)){
+            document.querySelector('#agncy').value!==""?validationData.errors.push("Agency cannot include any special characters except \"-\""):validationData.errors.push("Provide an Agency");
+            validationData.errorFields.push("#agncy");
+        }
+        else if(document.querySelector('#agency').value=="other" && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#agncy').value)){
+            validationData.errors.push("Agency cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
+            validationData.errorFields.push("#agncy");
+        }
         if(!validationmethods.isValidURL(document.querySelector('#link').value)){
             validationData.errors.push("Provide a valid URL. Eg. www.qantas.com/au/en.html");
             validationData.errorFields.push("#link");
@@ -976,7 +992,11 @@ let validateForm=function(){
         validationData.displayValue+=(" | "+document.querySelector('#country').value);
         if(!isInternalCampaign){
             validationData.displayValue+=(" | "+document.querySelector('#businessUnit').value);
-            validationData.displayValue+=(" | "+document.querySelector('#agency').value);
+            if(document.querySelector('#agency').value=="other"){
+                validationData.displayValue+=(' | '+document.querySelector('#agncy').value);
+            }else{
+                validationData.displayValue+=(' | '+document.querySelector('#agency').value);
+            }
         }else{
             validationData.displayValue+=(" | "+document.querySelector('#language').value);
         }
@@ -1027,6 +1047,17 @@ let validateField=function(){
                             }
                         }else if(validationKey=="placement"){
                             isValid=true;//Placement can be entered manually
+                        }
+                        if(validationKey=="agency" && !/^[a-z0-9-]{1,25}$/i.test(param)){
+                            if(param.length>25){
+                                urlObject.error.push("Agency cannot be more than 25 characters"+"::"+param);
+                                isValid=true;
+                            }else{
+                                param!==""?urlObject.error.push("Agency cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide an Agency");
+                                isValid=true;
+                            }
+                        }else if(validationKey=="agency"){
+                            isValid=true;//Agency can be entered manually
                         }
                         if(validationKey=="cname" && !/^[a-z0-9-]{1,25}$/i.test(param)){
                             if(param.length>25){

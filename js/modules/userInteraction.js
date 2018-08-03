@@ -163,8 +163,15 @@ let editFirstPageTagsData=function(displayValue){
                 break;
             case 2:
                 if(!isInternalCampaign){
-                    document.querySelector('#agency [value="' + tag + '"]').selected = true;
-                    document.querySelector('#agencytemp').value=document.querySelector('#agency').options[document.querySelector('#agency').selectedIndex].text; 
+                    if(document.querySelector('#agency [value="' + tag + '"]')!=null){
+                        document.querySelector('#agency [value="' + tag + '"]').selected = true;
+                        document.querySelector('#agencytemp').value=document.querySelector('#agency').options[document.querySelector('#agency').selectedIndex].text; 
+                    }else{
+                        document.querySelector('#agency [value="other"]').selected = true;
+                        document.querySelector('#agencytemp').value=document.querySelector('#agency').options[document.querySelector('#agency').selectedIndex].text; 
+                        document.querySelector('.textField').classList.remove('hidden');
+                        document.querySelector('#agncy').value=tag;
+                    }
                 }else{
                     if(tag!='n'){
                         document.querySelector('#cname').value = tag;   
@@ -240,9 +247,9 @@ let addEventListenersOnCheckBoxes=function(){
         var id=this.parentNode.parentNode.querySelector('select').id;
         document.querySelector('#'+id+' [value="' + this.attributes['select'].value + '"]').selected = true;
         document.querySelector('#'+id+'temp').value=this.attributes['selectabbr'].value;
-        if(id=="placement" && this.attributes['select'].value=="other"){
+        if((id=="placement" || id=="agency") && this.attributes['select'].value=="other"){
             document.querySelector('.textField').classList.remove('hidden');
-        }else if(id=="placement" && this.attributes['select'].value!=="other"){
+        }else if((id=="placement" || id=="agency") && this.attributes['select'].value!=="other"){
             document.querySelector('.textField').classList.add('hidden');
         }
         replaceArrows(this);

@@ -331,6 +331,15 @@ let validateForm=function(){
             validationData.errors.push("Please select from dropdown");
             validationData.errorFields.push("#agency");
         }
+        if(document.querySelector('#agency').value=="other" && !/^[a-z0-9-]{1,25}$/i.test(document.querySelector('#agncy').value)){
+            document.querySelector('#agncy').value!==""?validationData.errors.push("Agency cannot include any special characters except \"-\""):validationData.errors.push("Provide an Agency");
+            validationData.errorFields.push("#agncy");
+        }
+        else if(document.querySelector('#agency').value=="other" && !validationmethods.isValidPlacementOrCampaign(document.querySelector('#agncy').value)){
+            validationData.errors.push("Agency cannot use any of the standard abbreviations");
+            validationData.displayAbbrList=true;
+            validationData.errorFields.push("#agncy");
+        }
         if(!validationmethods.isValidURL(document.querySelector('#link').value)){
             validationData.errors.push("Provide a valid URL. Eg. www.qantas.com/au/en.html");
             validationData.errorFields.push("#link");
@@ -359,7 +368,11 @@ let validateForm=function(){
         validationData.displayValue+=(" | "+document.querySelector('#country').value);
         if(!isInternalCampaign){
             validationData.displayValue+=(" | "+document.querySelector('#businessUnit').value);
-            validationData.displayValue+=(" | "+document.querySelector('#agency').value);
+            if(document.querySelector('#agency').value=="other"){
+                validationData.displayValue+=(' | '+document.querySelector('#agncy').value);
+            }else{
+                validationData.displayValue+=(' | '+document.querySelector('#agency').value);
+            }
         }else{
             validationData.displayValue+=(" | "+document.querySelector('#language').value);
         }
@@ -410,6 +423,17 @@ let validateField=function(){
                             }
                         }else if(validationKey=="placement"){
                             isValid=true;//Placement can be entered manually
+                        }
+                        if(validationKey=="agency" && !/^[a-z0-9-]{1,25}$/i.test(param)){
+                            if(param.length>25){
+                                urlObject.error.push("Agency cannot be more than 25 characters"+"::"+param);
+                                isValid=true;
+                            }else{
+                                param!==""?urlObject.error.push("Agency cannot include any special characters except \"-\""+"::"+param):urlObject.error.push("Provide an Agency");
+                                isValid=true;
+                            }
+                        }else if(validationKey=="agency"){
+                            isValid=true;//Agency can be entered manually
                         }
                         if(validationKey=="cname" && !/^[a-z0-9-]{1,25}$/i.test(param)){
                             if(param.length>25){
