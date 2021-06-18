@@ -9,7 +9,7 @@
     "start": "node config/server.js"
   },
   "dependencies": {
-    "xlsx": "^0.12.3"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "browserify": "^14.5.0"
